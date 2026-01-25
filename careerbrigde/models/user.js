@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import autoIncrementFactory from "mongoose-sequence";
+import AutoIncrementFactory from "mongoose-sequence";
 
-const connection = mongoose.createConnection(process.env.MONGO_URI);
-const autoIncrement = autoIncrementFactory(connection);
+const connection = mongoose.connection;
+const AutoIncrement = AutoIncrementFactory(connection);
 const Schema = mongoose.Schema;
 
 const users = new Schema({
@@ -39,14 +39,17 @@ const users = new Schema({
  }
 }, { timestamps: true });
 
-// users.pre("save", async function() {
-//   if (!this.isModified("password") || !this.password) return;
+users.pre("save", async function() {
+  if (!this.isModified("password") || !this.password) return;
 
-//   const salt = await bcrypt.genSalt(10);
-//   this.password = await bcrypt.hash(this.password, salt);
-// });
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 
 // users.plugin(autoIncrement, { inc_field: "userId", start_seq: 1 });
+// if (!mongoose.models.users) {
+//   users.plugin(AutoIncrement, { inc_field: "userId" });
+// }
 
 export default mongoose.models.users || mongoose.model("users", users);
