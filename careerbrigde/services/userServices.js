@@ -1,5 +1,5 @@
 import user from "@/models/user";
-import connect from "@/dbConfig/dbConfig";
+import connect from "@/Lib/dbConfig/dbConfig";
 import bcrypt from "bcryptjs"
 
 export const createUser=async(data)=>{
@@ -29,4 +29,16 @@ export const singin=async(data)=>{
         throw new Error("wrong password");
     }
     return isUserExist;
+}
+
+export const getAllUserService=async()=>{
+
+            await connect();
+            const users= await user.find();
+
+            if(!users){
+                 throw new Error("No users exists");
+            }
+
+            return users;
 }

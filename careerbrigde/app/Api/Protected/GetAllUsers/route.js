@@ -1,14 +1,12 @@
-import connect from "@/dbConfig/dbConfig";
-import user from "@/models/user";
+import { getAllUserService } from "@/services/userServices";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
 
     try{
        
-        await connect();
-
-        const users= await user.find();
+        
+        const users= await getAllUserService();
         //  const userHeader = req.headers.get("user");
         //  const tokenDetail = userHeader ? JSON.parse(userHeader) : null;
 

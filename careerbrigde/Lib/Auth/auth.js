@@ -7,9 +7,10 @@ export async function verifyAuth(token) {
         const {payload}=await jwtVerify(token,secret);
         return { success: true, payload };
     }catch(err){
-        return { 
-          success: false, 
-          error: err.code === 'ERR_JWT_EXPIRED' ? 'Token expired' : 'Invalid token' 
-        };
+       if (err.name === "JWTExpired") {
+      return { success: false, error: "Token expired" };
     }
+    return { success: false, error: "Invalid token" };
+  }
+    
 }

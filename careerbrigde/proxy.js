@@ -16,8 +16,13 @@ export async function proxy(req) {
 
     try{
         
-        const payload=await verifyAuth(token);
+        const { success, payload, error }=await verifyAuth(token);
         
+        if (!success) {
+           // token invalid or expired → return 401
+           return NextResponse.json({ message: error }, { status: 401 });
+         }
+
          const requestHeaders= new Headers(req.headers);
          requestHeaders.set("user",JSON.stringify(payload));
 
