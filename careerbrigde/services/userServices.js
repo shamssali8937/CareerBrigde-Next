@@ -16,11 +16,11 @@ export const createUser=async(data)=>{
 
 export const singin=async(data)=>{
     await connect();
-    const isUserExist=await user.findOne({email:data.email,name:data.name});
-    if(isUserExist){
-        throw new Error("Email already exist");
+    const isUserExist=await user.findOne({email:data.email});
+    if(!isUserExist){
+        throw new Error("User not found");
     }
-    else if(isUserExist.googleId!==null){
+    if(isUserExist.googleId!==null){
         throw new Error("You already have account please signIn with google");
     }
     const matchPassword=await bcrypt.compare(data.password,isUserExist.password);
