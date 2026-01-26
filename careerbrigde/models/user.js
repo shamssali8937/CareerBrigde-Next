@@ -47,9 +47,6 @@ users.pre("save", async function() {
 });
 
 
-// users.plugin(autoIncrement, { inc_field: "userId", start_seq: 1 });
-// if (!mongoose.models.users) {
-//   users.plugin(AutoIncrement, { inc_field: "userId" });
-// }
+// users.plugin(AutoIncrement, { inc_field: "userId", start_seq: 1 });
 
 export default mongoose.models.users || mongoose.model("users", users);
