@@ -17,7 +17,8 @@ const users = new Schema({
      type: String, required: true, unique: true 
  },
   photo: { 
-    type: String, required: true 
+    url: String,
+    publicId: String 
  },
   role: {
      type: String, enum: ["jobseeker", "jobprovider"], required: true 
@@ -35,7 +36,7 @@ const users = new Schema({
      type: String, default: "" 
  },
   otp: { 
-    type: Number, default: null 
+    type: String, default: null 
  }
 }, { timestamps: true });
 
