@@ -1,4 +1,3 @@
-import connect from "@/dbConfig/dbConfig";
 import { signupUser } from "@/controllers/userController";
 import { NextResponse } from "next/server";
 
