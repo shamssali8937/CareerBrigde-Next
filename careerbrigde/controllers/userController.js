@@ -1,12 +1,21 @@
 import { createUser, singin } from "@/services/userServices";
+import { NextResponse } from "next/server";
 
-export const signupUser=async(body)=>{
-    const {name, email, password, role, photo }=body;
-    if (!email || !role || !name || !password || !photo) {
-    throw new Error("Required fields missing");
-  }
-   return await createUser(body);
+export const signupUser=async(req)=>{
+       try{
+            const newUser=await createUser(req);
+            if(!newUser){
+              return NextResponse.json({ message: "User creation failed" },{ status: 500 });    
+            }
+
+              return NextResponse.json({ message: "User created successfully" },{ status: 200 });    
+
+       }catch(err){
+           console.log(err);
+          return NextResponse.json({ message: "User creation failed" },{ status: 500 });
+       }
 }
+
 
 export const  signinUser=async(body)=>{
   const {email,password}=body;
@@ -21,3 +30,5 @@ export const  signinUser=async(body)=>{
   return await singin(data);
 
 }
+
+
