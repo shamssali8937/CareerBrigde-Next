@@ -37,7 +37,12 @@ const users = new Schema({
  },
   otp: { 
     type: String, default: null 
- }
+ },
+ otpExpiry:{
+   type:Date
+ } 
+
+
 }, { timestamps: true });
 
 users.pre("save", async function() {

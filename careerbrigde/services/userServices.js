@@ -25,8 +25,8 @@ export const createUser=async(req)=>{
        userData=await req.json();
     }
 
-    const { email, password } = userData;
-     if (!email || !password) {
+    const { email, password, role ,name } = userData;
+     if (!email || !password ||!role||!name) {
        throw new Error("Required fields missing");
      }
    
