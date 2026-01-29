@@ -16,7 +16,7 @@ export const sendMail=async(to,subject,message)=>{
             to,
             subject,
             text:message,
-            html:`<p>${message}</p>`
+            // html:`<p>${message}</p>`
         });
 
           return { success: true, message: "Email sent!" };
