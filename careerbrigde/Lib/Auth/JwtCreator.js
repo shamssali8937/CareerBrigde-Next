@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 
 
 export const jwtAcessTokenCreator=(data)=>{
-    return jwt.sign({email:data.email,role:data.role},process.env.JWT_SECRET,{expiresIn:"2m"});
+    return jwt.sign({email:data.email,role:data.role},process.env.JWT_SECRET,{expiresIn:"30m"});
 }
 
 export const jwtRefreshTokenCreator=(data)=>{
