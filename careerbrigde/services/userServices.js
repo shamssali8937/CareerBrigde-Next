@@ -2,6 +2,7 @@ import user from "@/models/user";
 import connect from "@/Lib/dbConfig/dbConfig";
 import bcrypt from "bcryptjs"
 import { uploadFile } from "@/Lib/cloudinary";
+import mongoose from "mongoose";
 
 
 export const createUser=async(req)=>{
@@ -98,7 +99,7 @@ export const updateUser=async(req)=>{
 
 export const singin=async(data)=>{
     await connect();
-    const isUserExist=await user.findOne({email:data.email});
+    const isUserExist=await user.findOne({email:data.email,isdelete:false});
     if(!isUserExist){
         throw new Error("User not found");
     }
@@ -116,11 +117,26 @@ export const singin=async(data)=>{
 export const getAllUserService=async()=>{
 
             await connect();
-            const users= await user.find();
+        //     mongoose.connection.name
+        //    console.log(await user.db.name);
 
-            if(!users){
-                 throw new Error("No users exists");
+           const users = await user.find({ isdelete: false });
+
+            if(users.length===0){
+                 return {success:false,message:"No users found"};
             }
 
-            return users;
+            return {success:true,users:users};;
+}
+
+
+export const getSpecificUser=async(email,role)=>{
+           await connect();
+           const userToFind = await user.findOne({email:email,role:role,isdelete: false });
+
+            if(!userToFind){
+                 return {success:false,message:"No users found"};
+            }
+
+            return {success:true,users:userToFind};;
 }

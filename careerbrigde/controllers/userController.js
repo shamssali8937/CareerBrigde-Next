@@ -1,4 +1,4 @@
-import { createUser, singin, updateUser } from "@/services/userServices";
+import { createUser, getSpecificUser, singin, updateUser } from "@/services/userServices";
 import { NextResponse } from "next/server";
 import { jwtAcessTokenCreator, jwtRefreshTokenCreator } from "@/Lib/Auth/JwtCreator";
 export const signupUser=async(req)=>{
@@ -60,3 +60,21 @@ export const updateUserController=async(req)=>{
 }
 
 
+
+export const getSpecificUserController=async(req)=>{
+       try{
+            
+            const userHeader = req.headers.get("user");
+            const tokenDetail = userHeader ? JSON.parse(userHeader) : null;
+            const result=await getSpecificUser(tokenDetail.email,tokenDetail.role);
+            if(!result || result.success === false){
+              return NextResponse.json({ message: result?.message },{ status: 400 });    
+            }
+
+              return NextResponse.json({ message: "User updated successfully",user:result },{ status: 200 });    
+
+       }catch(err){
+           //console.log(err);
+          return NextResponse.json({ message: "error in finding user" },{ status: 500 });
+       }
+}

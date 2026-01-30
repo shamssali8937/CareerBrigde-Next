@@ -1,5 +1,5 @@
 import { updateUserController } from "@/controllers/userController";
 
-export async function POST(req) {
+export async function PUT(req) {
     return await updateUserController(req);
 }
