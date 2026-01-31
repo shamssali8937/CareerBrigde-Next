@@ -10,5 +10,5 @@ export const jwtRefreshTokenCreator=(data)=>{
 }
 
 export const jwtForgotTokenCreator=(email,otp)=>{
-    return jwt.sign({email:email,otp:otp},process.env.JWT_SECRET,{expiresIn:"4m"});
+    return jwt.sign({email:email,otp:otp},process.env.JWT_SECRET,{expiresIn:"10m"});
 }

@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import AutoIncrementFactory from "mongoose-sequence";
+// import AutoIncrementFactory from "mongoose-sequence";
 
-const connection = mongoose.connection;
-const AutoIncrement = AutoIncrementFactory(connection);
+// const connection = mongoose.connection;
+// const AutoIncrement = AutoIncrementFactory(connection);
+//  mongoose.connection.name
+        //    console.log(await user.db.name);
+
 const Schema = mongoose.Schema;
 
 const users = new Schema({
@@ -39,7 +42,8 @@ const users = new Schema({
     type: String, default: null 
  },
  otpExpiry:{
-   type:Date
+   type:Date,
+   default:null
  } 
 
 

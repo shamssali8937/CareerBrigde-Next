@@ -23,6 +23,9 @@ export const verifyOtp=async(email,otp)=>{
         return { success: false, message: "No user found" };
 
     }
+    if(userToVerify.otpExpiry< Date.now()){
+        return { success: false, message: "OTP expired" };
+    }
     if (userToVerify.otp !== otp) {
          return { success: false, message: "Incorrect OTP" };
     }
@@ -41,6 +44,7 @@ export const resetPassword=async(email,newPassword)=>{
     userToChangePassword.password=newPassword;
     userToChangePassword.otp = null;
     userToChangePassword.forgetToken = "";
+    userToChangePassword.otpExpiry=null;
   
     await userToChangePassword.save();
     return { success: true, message: "succesfully changed" };;
