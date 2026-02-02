@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+mongoose.connection.name
 const Schema= mongoose.Schema; 
 
 const experience=new Schema({
@@ -65,7 +65,7 @@ const seeker=new Schema({
      user:{
         type:mongoose.Schema.ObjectId,
         required:true,
-        ref:"Users"
+        ref:"users"
      },
      headline:{
         type:String,
@@ -100,8 +100,8 @@ const seeker=new Schema({
         default:false
     },
      cv:{
-        type:String,
-        required:true
+        url: String,
+        publicId: String 
      }
 },{timestamps:true});
 
