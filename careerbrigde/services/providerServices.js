@@ -35,3 +35,23 @@ export const updateProvider=async(User,data)=>{
 
 }
 
+
+export const getProviderProfile=async(email)=>{
+    await connect();
+
+    const userProfile=await user.findOne({email:email,role:"jobprovider",isdelete:false});
+
+    if(!userProfile){
+      return {success:false,message:"cant find user"};
+    }
+
+      const providerProfile = await provider
+     .findOne({ user: userProfile._id, isdelete: false })
+     .populate({
+       path: "user",
+       select: "name email photo role userId"
+     });
+
+    return {success:true,message:"successfully fetched profile",provider:providerProfile};
+   
+}
