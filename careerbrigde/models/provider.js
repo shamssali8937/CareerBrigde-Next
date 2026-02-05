@@ -8,7 +8,7 @@ const provider=new Schema({
      user:{
         type:mongoose.Schema.ObjectId,
          required:true,
-        ref:"Users"
+        ref:"users"
      },
      contact:{
         type:String,
