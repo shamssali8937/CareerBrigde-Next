@@ -9,7 +9,7 @@ const appliedJobs=new Schema({
      seeker:{
         type:mongoose.Schema.ObjectId,
         required:true,
-        ref:"deeker"
+        ref:"seeker"
      },
      job:{
         type:mongoose.Schema.ObjectId,
