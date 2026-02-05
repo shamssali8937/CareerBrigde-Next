@@ -9,12 +9,12 @@ const appliedJobs=new Schema({
      seeker:{
         type:mongoose.Schema.ObjectId,
         required:true,
-        ref:"Seeker"
+        ref:"deeker"
      },
      job:{
         type:mongoose.Schema.ObjectId,
         required:true,
-        ref:"Jobs"
+        ref:"jobs"
      },
      applyDate:{
         type:Date,
