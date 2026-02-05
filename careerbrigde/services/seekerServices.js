@@ -64,5 +64,25 @@ export const updateSeeker=async(req)=>{
                 select: "name email photo role userId",})
     
            
-        return {success:true,message:"succesfully updated",data:updatedSeeker};
+        return {success:true,message:"succesfully updated",seeker:updatedSeeker};
+}
+
+export const getSeekerProfile=async(email)=>{
+    await connect();
+
+    const userProfile=await user.findOne({email:email,role:"jobseeker",isdelete:false});
+
+    if(!userProfile){
+      return {success:false,message:"cant find user"};
+    }
+
+      const seekerProfile = await seeker
+     .findOne({ user: userProfile._id, isdelete: false })
+     .populate({
+       path: "user",
+       select: "name email photo role userId"
+     });
+
+    return {success:true,message:"successfully fetched profile",seeker:seekerProfile};
+   
 }
