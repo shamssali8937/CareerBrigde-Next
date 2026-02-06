@@ -23,8 +23,8 @@ const appliedJobs=new Schema({
      },
      screeningAnswers:[String],
      cv:{
-        type:String,
-        required:true
+        url: String,
+        publicId: String
      },
      status:{
        type: String, 
