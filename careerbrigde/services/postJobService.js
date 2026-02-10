@@ -77,3 +77,23 @@ export const getAlljobsForSeeker=async(email)=>{
     return {success:true,message:"successfully fethced",jobs:matchedJobs};
 
 }
+
+export const getJobsOfSpecificProvider=async(email)=>{
+    await connect();
+    const userToFind=await user.findOne({email:email,role:"jobprovider",isdelete:false});
+    if(!userToFind){
+        return {success:false,message:"cant find user in db"};
+    }
+
+    const providerProfile=await provider.findOne({user:userToFind._id,isdelete:false});
+    if(!providerProfile){
+        return {success:false,message:"cant find user as provider in db"};
+    }
+
+    const populatedJobs=await jobs.find({provider:providerProfile._id,isdelete:false}).populate({path:"provider",populate:{path:"user",select: "name email photo role"}});
+      if (!populatedJobs||populatedJobs.length===0) {
+        return [];
+      }
+
+      return {success:true,message:"success",jobs:populatedJobs};
+}
