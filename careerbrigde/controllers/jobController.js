@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { editJob, getAllCompanies, getAlljobsForSeeker, getJobsOfSpecificProvider, postJob } from "@/services/postJobService";
+import { editJob, getAllCompanies, getAlljobsForSeeker, getJobsOfSpecificProvider, postJob, searchJobs } from "@/services/postJobService";
 
 export const postJobController=async(req)=>{
     try{
@@ -81,5 +81,22 @@ export const getAllProvidersWithJobsController=async(req)=>{
     }catch(err){
         console.log(err);
          return NextResponse.json({message:"error in fetching providers..",err},{status:500});
+    }
+}
+
+
+export const searchJobsController=async(req)=>{
+    try{
+            const body=await req.json();
+            const {searchWord,jobType,salary,location} =body;
+            const result= await searchJobs(searchWord,jobType,salary,location);
+
+            if(!result.success){
+             return NextResponse.json({message:result.message},{status:404});      
+            }
+       return NextResponse.json({message:"succesfully searched job..",data:result},{status:200});      
+    }catch(err){
+          console.log(err)
+          return NextResponse.json({message:"error in searching job..",err},{status:500});
     }
 }

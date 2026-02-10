@@ -135,3 +135,34 @@ export const getAllCompanies=async()=>{
   return {success:true,message:"success",companies:companies}
 
 }
+
+export const searchJobs=async(searchWord,jobType,salary,location)=>{
+    await connect();
+    const andConditions = [{ isdelete: false }];
+
+    if (jobType) andConditions.push({ jobType: { $regex: jobType, $options: "i" } });
+    if (location) andConditions.push({ location: { $regex: location, $options: "i" } });
+    if (salary) andConditions.push({ salary: { $regex: salary, $options: "i" } });
+
+    let jobsTofind = await jobs.find({ $and: andConditions })
+    .populate({
+      path: "provider",
+      populate: { path: "user", select: "name email photo role" },
+    })
+    .lean();
+
+    let filteredJobs = jobsTofind;
+
+    if (searchWord && searchWord.trim() !== "") {
+    const keywordRegex = new RegExp(searchWord, "i");
+     filteredJobs = jobsTofind.filter(job =>
+      keywordRegex.test(job.title) ||
+      keywordRegex.test(job.description) ||
+      keywordRegex.test(job.location)||
+      keywordRegex.test((job.requirements || []).join(" ")) ||
+      (job.provider.companyname && keywordRegex.test(job.provider.companyname))
+    );
+  }
+
+  return {success:true,message:"success",jobs:filteredJobs};
+}
