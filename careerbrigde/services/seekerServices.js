@@ -34,7 +34,7 @@ export const updateSeeker=async(req)=>{
            seekerData=await req.json();
         }
 
-         ["education", "experience", "socialLinks"].forEach((field) => {
+         ["skills","education", "experience", "socialLinks"].forEach((field) => {
             if (typeof seekerData[field] === "string") {
               try {
                 seekerData[field] = JSON.parse(seekerData[field]);

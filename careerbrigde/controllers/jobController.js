@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { editJob, postJob } from "@/services/postJobService";
+import { editJob, getAlljobsForSeeker, postJob } from "@/services/postJobService";
 
 export const postJobController=async(req)=>{
     try{
@@ -32,5 +32,22 @@ export const editJobController=async(req)=>{
     }catch(err){
           console.log(err)
           return NextResponse.json({message:"error in editing job..",err},{status:500});
+    }
+}
+
+export const getAllJobsForSeekerController=async(req)=>{
+    try{
+            const userHeader = req.headers.get("user");
+            const tokenDetail = userHeader ? JSON.parse(userHeader) : null;
+            const result= await getAlljobsForSeeker(tokenDetail.email)
+
+            if(!result.success){
+             return NextResponse.json({message:result.message},{status:404});      
+            }
+       return NextResponse.json({message:"succesfully fetched jobs for seeker..",data:result},{status:200});      
+
+    }catch(err){
+        console.log(err);
+         return NextResponse.json({message:"error in fetching job..",err},{status:500});
     }
 }
