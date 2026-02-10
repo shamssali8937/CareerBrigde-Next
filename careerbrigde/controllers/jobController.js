@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { editJob, getAllCompanies, getAlljobsForSeeker, getJobsOfSpecificProvider, postJob, searchJobs } from "@/services/postJobService";
+import { deleteJob, editJob, getAllCompanies, getAlljobsForSeeker, getJobsOfSpecificProvider, postJob, searchJobs } from "@/services/postJobService";
 
 export const postJobController=async(req)=>{
     try{
@@ -100,3 +100,21 @@ export const searchJobsController=async(req)=>{
           return NextResponse.json({message:"error in searching job..",err},{status:500});
     }
 }
+
+export const deleteJobController=async(req,params)=>{
+    try{
+            const {jobId}=await params;
+            const userHeader = req.headers.get("user");
+            const tokenDetail = userHeader ? JSON.parse(userHeader) : null;
+            const result= await deleteJob(tokenDetail.email,jobId);
+
+            if(!result.success){
+             return NextResponse.json({message:result.message},{status:404});      
+            }
+       return NextResponse.json({message:"succesfully deleted job..",data:result},{status:200});      
+    }catch(err){
+          console.log(err)
+          return NextResponse.json({message:"error in deleting job..",err},{status:500});
+    }
+}
+

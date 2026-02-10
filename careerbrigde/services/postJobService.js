@@ -3,6 +3,7 @@ import user from "@/models/user";
 import connect from "@/Lib/dbConfig/dbConfig";
 import jobs from "@/models/jobs";
 import seeker from "@/models/seeker";
+import appliedJobs from "@/models/appliedJobs";
 
 export const postJob=async(email,data)=>{
     await connect();
@@ -165,4 +166,36 @@ export const searchJobs=async(searchWord,jobType,salary,location)=>{
   }
 
   return {success:true,message:"success",jobs:filteredJobs};
+}
+
+
+export const deleteJob=async(email,jobId)=>{
+    await connect();
+    const userToFind=await user.findOne({email:email,role:"jobprovider",isdelete:false});
+    if(!userToFind){
+        return {success:false,message:"cant find user in db"};
+    }
+    const providerProfile=await provider.findOne({user:userToFind._id,isdelete:false});
+    if(!providerProfile){
+        return {success:false,message:"cant find user as provider in db"};
+    }
+    const jobToDelete=await jobs.findOne({_id:jobId,provider:providerProfile._id});
+    if(!jobToDelete){
+        return {success:false,message:"cant find job you want to delete"};
+    }else if(jobToDelete.isdelete===true){
+        return {success:false,message:"Already deleted"};
+    }
+
+    if(jobToDelete.provider.toString() !== providerProfile._id.toString())
+      {
+         return {success:false,message:"you are not authourized to delete job"}
+      }
+
+     jobToDelete.isdelete=true;
+     const deletedjob=await jobToDelete.save();
+
+     await appliedJobs.updateMany({ job: jobToDelete._id },{ $set: { isdelete: true } }); 
+
+     return {success:true,message:"successfully deleted",job:deletedjob};
+
 }
