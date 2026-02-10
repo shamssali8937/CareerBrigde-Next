@@ -97,3 +97,41 @@ export const getJobsOfSpecificProvider=async(email)=>{
 
       return {success:true,message:"success",jobs:populatedJobs};
 }
+
+export const getAllCompanies=async()=>{
+    await connect();
+    const providers = await provider.find().lean()
+    .populate({
+      path: "user",
+      select: "name photo email"
+    });
+
+  if (!providers || providers.length === 0) {
+    return {success:false,message:"cant find providers/companies in db"};
+  }
+
+    const companies = [];
+ 
+   for (const provider of providers) {
+     // Jobs of this provider
+     const providerJobs = await jobs.find({
+       provider: provider._id,
+       isdelete: false
+     }).populate({
+       path: "provider",
+       populate: { path: "user", select: "name email photo role" }
+     }).lean();
+ 
+ 
+     // Push formatted company object
+     if (providerJobs.length > 0) {
+       companies.push({
+         ...provider,
+         providerJobs,
+       });
+     }
+  }
+
+  return {success:true,message:"success",companies:companies}
+
+}
