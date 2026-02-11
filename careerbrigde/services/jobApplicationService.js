@@ -4,6 +4,7 @@ import appliedJobs from "@/models/appliedJobs";
 import connect from "@/Lib/dbConfig/dbConfig";
 import { uploadFile } from "@/Lib/cloudinary";
 import seeker from "@/models/seeker";
+import provider from "@/models/provider";
 
 export const applyJob=async(req)=>{
     await connect();
@@ -65,4 +66,36 @@ export const applyJob=async(req)=>{
          .populate("job");
 
         return {success:true,meesage:"success fully applied",jobApplication:populatedJobApplication};
+}
+
+export const getAllJobApllicationsOfSeeker=async(email)=>{
+    await connect();
+    const userToFind=await user.findOne({email:email,role:"jobseeker",isdelete:false});
+        if(!userToFind){
+            return {success:false,message:"cant find user in db"};
+        }
+    const seekerProfile=await seeker.findOne({user:userToFind._id,isdelete:false});
+        if(!seekerProfile){
+            return {success:false,message:"cant find user as seeker in db"};
+        }
+
+    const jobApplications=await appliedJobs.find({seeker:seekerProfile._id,isdelete:false}).populate({
+         path: "seeker",
+         populate: { path: "user", select: "name email photo role" },
+       })
+       .populate({
+      path: "job", 
+      populate: {
+        path: "provider", 
+        populate: { 
+            path: "user", 
+            select: "name email photo role" 
+        } 
+      }
+    });
+        if(!jobApplications){
+            return {success:false,message:"no job is applied yet"};
+        }
+
+     return {success:true,message:"success",applications:jobApplications};     
 }
