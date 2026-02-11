@@ -93,9 +93,31 @@ export const getAllJobApllicationsOfSeeker=async(email)=>{
         } 
       }
     });
-        if(!jobApplications){
+        if(!jobApplications||jobApplications.length === 0){
             return {success:false,message:"no job is applied yet"};
         }
 
      return {success:true,message:"success",applications:jobApplications};     
+}
+
+export const deleteJobApplication=async(email,appId)=>{
+    await connect();
+     const userToFind=await user.findOne({email:email,role:"jobseeker",isdelete:false});
+        if(!userToFind){
+            return {success:false,message:"cant find user in db"};
+        }
+    const seekerProfile=await seeker.findOne({user:userToFind._id,isdelete:false});
+        if(!seekerProfile){
+            return {success:false,message:"cant find user as seeker in db"};
+        }
+    const applicationToDelete=await appliedJobs.findOne({_id:appId,seeker:seekerProfile._id,isdelete:false});
+    if(!applicationToDelete){
+          return {success:false,message:"no job application with id found"};
+    }else if(applicationToDelete.isdelete===true){
+          return {success:false,message:"Already deleted"};
+    }
+
+    applicationToDelete.isdelete=true;
+    await applicationToDelete.save();
+    return {success:true,message:"Job application deleted succesfuly",application:applicationToDelete};
 }
