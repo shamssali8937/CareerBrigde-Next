@@ -121,3 +121,26 @@ export const deleteJobApplication=async(email,appId)=>{
     await applicationToDelete.save();
     return {success:true,message:"Job application deleted succesfuly",application:applicationToDelete};
 }
+
+
+export const changeApplicationStatus=async(email,apId,data)=>{
+      await connect();
+       const userToFind=await user.findOne({email:email,role:"jobprovider",isdelete:false});
+        if(!userToFind){
+            return {success:false,message:"cant find user in db"};
+        }
+    const providerProfile=await provider.findOne({user:userToFind._id,isdelete:false});
+        if(!providerProfile){
+            return {success:false,message:"cant find user as provider in db"};
+        }
+    const application=await appliedJobs.findOne({_id:apId,isdelete:false}).populate("job");
+    if(!application){
+     return {success:false,message:"job application not found"};
+    }else if(application.job.provider.toString() !== providerProfile._id.toString()){
+      return {success:false,message:"u are not authorized to change status"};
+    }   
+
+    const updatedApllication=await appliedJobs.findByIdAndUpdate(application._id,{...data,isViewed:true},{new:true})
+
+    return {success:true,message:"success",application:updatedApllication};
+}

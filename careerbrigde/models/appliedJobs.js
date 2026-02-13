@@ -28,7 +28,7 @@ const appliedJobs=new Schema({
      },
      status:{
        type: String, 
-       enum: ["Pending", "Accepted", "Rejected","Shortlisted"], 
+       enum: ["Pending", "Hired", "Rejected","Shortlisted"], 
        default: "Pending"
      },
      isViewed:{
