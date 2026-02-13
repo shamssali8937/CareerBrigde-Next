@@ -220,3 +220,43 @@ export const getAllJobApllicationsForSpecificJob=async(jobId) => {
 
      return {success:true,message:"successfuly fetched",applications:specificApplications};
 }
+
+
+export const getApplicationsForJobOfSpecificProvider=async(email)=>{
+     await connect();
+
+     const userToFind=await user.findOne({email:email,role:"jobprovider",isdelete:false});
+      if(!userToFind){
+        return {success:false,message:"user is not register with id you logedin"};
+      }
+
+    const providerProfile = await provider.findOne({ user:userToFind._id,isdelete: false });
+      if (!provider) {
+           return {success:false,message:"No company found"};
+      }
+    
+      // Find all jobs posted by this provider
+      const allJobs = await jobs.find({ provider: providerProfile._id,isdelete: false}).populate({
+        path: "provider",
+        populate: { path: "user", select: "name email photo role _id" }
+      });
+    
+      // Attach applications to each job
+      const jobsWithApplications = [];
+      for (const job of allJobs) {
+        const applications = await appliedJobs.find({ job: job._id, isdelete: false })
+          .populate({
+            path: "seeker",
+            populate: { path: "user", select: "name email photo role _id" }
+          });
+       if (applications.length > 0) {
+          jobsWithApplications.push({
+            ...job.toObject(),
+            applications
+          });
+        }
+      }
+
+      return {success:true,message:"successfully fethched ",jobApplication:jobsWithApplications}
+
+}

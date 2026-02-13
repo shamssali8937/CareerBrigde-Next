@@ -1,4 +1,4 @@
-import { applyJob, changeApplicationStatus, deleteJobApplication, getAllJobApllicationsForSpecificJob, getAllJobApllicationsOfSeeker, searchApplicants } from "@/services/jobApplicationService";
+import { applyJob, changeApplicationStatus, deleteJobApplication, getAllJobApllicationsForSpecificJob, getAllJobApllicationsOfSeeker, getApplicationsForJobOfSpecificProvider, searchApplicants } from "@/services/jobApplicationService";
 import { NextResponse } from "next/server";
 
 export const applyJobController=async(req)=>{
@@ -101,5 +101,23 @@ export const getApplicationsForSpecificJobController=async(req,params)=>{
         }catch(err){
              console.log(err);
              return NextResponse.json({message:"error in get applicantions or jobid Incorrect..",err},{status:500});
+        }
+}
+
+
+export const getApplicationsForJobOfSpecificProviderController=async(req)=>{
+     try{
+                const userHeader = req.headers.get("user");
+                const tokenDetail = userHeader ? JSON.parse(userHeader) : null;
+                const result= await getApplicationsForJobOfSpecificProvider(tokenDetail.email);
+    
+                if(!result.success){
+                 return NextResponse.json({message:result.message},{status:404});      
+                }
+           return NextResponse.json({message:"succesfully get applicantions for job..",data:result},{status:200});      
+    
+        }catch(err){
+             console.log(err);
+             return NextResponse.json({message:"error in get applicantions for job or jobid Incorrect..",err},{status:500});
         }
 }
