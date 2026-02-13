@@ -62,7 +62,7 @@ export const applyJob=async(req)=>{
 
          const populatedJobApplication=await appliedJobs.findById(savedJobApplication._id).populate({
            path: "seeker",
-           populate: { path: "user", select: "name email photo role" }
+           populate: { path: "user", select: "name email photo role _id" }
          })
          .populate("job");
 
@@ -82,7 +82,7 @@ export const getAllJobApllicationsOfSeeker=async(email)=>{
 
     const jobApplications=await appliedJobs.find({seeker:seekerProfile._id,isdelete:false}).populate({
          path: "seeker",
-         populate: { path: "user", select: "name email photo role" },
+         populate: { path: "user", select: "name email photo role _id" },
        })
        .populate({
       path: "job", 
@@ -90,7 +90,7 @@ export const getAllJobApllicationsOfSeeker=async(email)=>{
         path: "provider", 
         populate: { 
             path: "user", 
-            select: "name email photo role" 
+            select: "name email photo role _id" 
         } 
       }
     });
@@ -169,7 +169,7 @@ export const searchApplicants=async (jobId,status,viewed,searchword)=>{
       path: "seeker",
       populate: {
         path: "user",
-        select: "name email photo role"
+        select: "name email photo role _id"
       }
     });
 
@@ -195,4 +195,28 @@ export const searchApplicants=async (jobId,status,viewed,searchword)=>{
 
   return {success:true,message:"successfult fethched application",applicatnts:applications};
 
+}
+
+export const getAllJobApllicationsForSpecificJob=async(jobId) => {
+    await connect();
+     const job=await jobs.findOne({_id:jobId,isdelete:false});
+      if(!job){
+        return {success:false,message:"job not found"}
+      }
+           
+     const specificApplications=await appliedJobs.find({job:job._id}).populate({
+      path: "job",
+    })
+    .populate({
+      path: "seeker",
+      populate: {
+        path: "user",
+        select: "name email photo role _id"
+      }
+    });
+     if(!specificApplications||specificApplications.length === 0){
+       return [];
+     }
+
+     return {success:true,message:"successfuly fetched",applications:specificApplications};
 }
