@@ -1,4 +1,4 @@
-import { applyJob, changeApplicationStatus, deleteJobApplication, getAllJobApllicationsOfSeeker } from "@/services/jobApplicationService";
+import { applyJob, changeApplicationStatus, deleteJobApplication, getAllJobApllicationsOfSeeker, searchApplicants } from "@/services/jobApplicationService";
 import { NextResponse } from "next/server";
 
 export const applyJobController=async(req)=>{
@@ -66,5 +66,23 @@ export const changeApplicationStatusController=async(req,params)=>{
         }catch(err){
           //   console.log(err);
              return NextResponse.json({message:"error in changing application status Incorrect id..",err},{status:500});
+        }
+}
+
+export const searchApplicantsController=async(req,params)=>{
+     try{
+                const {jobId}=await params;
+                const body=await req.json();
+                const {viewed,status,searchWord}=body
+                const result= await searchApplicants(jobId,status,viewed,searchWord);
+    
+                if(!result.success){
+                 return NextResponse.json({message:result.message},{status:404});      
+                }
+           return NextResponse.json({message:"succesfully get applicants..",data:result},{status:200});      
+    
+        }catch(err){
+             console.log(err);
+             return NextResponse.json({message:"error in get applicants or jobid Incorrect..",err},{status:500});
         }
 }

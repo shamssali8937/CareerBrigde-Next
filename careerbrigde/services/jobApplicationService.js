@@ -6,6 +6,7 @@ import { uploadFile } from "@/Lib/cloudinary";
 import seeker from "@/models/seeker";
 import provider from "@/models/provider";
 
+
 export const applyJob=async(req)=>{
     await connect();
     const contentType=req.headers.get("content-type")||" ";
@@ -143,4 +144,55 @@ export const changeApplicationStatus=async(email,apId,data)=>{
     const updatedApllication=await appliedJobs.findByIdAndUpdate(application._id,{...data,isViewed:true},{new:true})
 
     return {success:true,message:"success",application:updatedApllication};
+}
+
+
+export const searchApplicants=async (jobId,status,viewed,searchword)=>{
+    await connect();
+    const filter = { isdelete: false };
+
+  const job = await jobs.findOne({_id:jobId});
+  if(!job){
+    return {success:false,message:"can't find the job"}
+  }
+  if(job.isdelete){
+     return {success:false,message:"job is deleted"}
+  }
+
+  filter.job = job._id;
+
+  if (status) filter.status = status;
+  if (viewed !== undefined) filter.isViewed = viewed;
+
+  let applications = await appliedJobs.find(filter)
+    .populate({
+      path: "seeker",
+      populate: {
+        path: "user",
+        select: "name email photo role"
+      }
+    });
+
+  if (searchword) {
+    const keyword = searchword.toLowerCase();
+
+    applications = applications.filter(app => {
+      const seeker = app.seeker || {};
+      const user = seeker.user || {};
+
+      const nameMatch = user.name?.toLowerCase().includes(keyword);
+      const headlineMatch = seeker.headline?.toLowerCase().includes(keyword);
+      const skillMatch = seeker.skills?.some(s =>
+        s?.toLowerCase().includes(keyword)
+      );
+      const expMatch = seeker.experience?.some(e =>
+        e?.title?.toLowerCase().includes(keyword)
+      );
+
+      return nameMatch || skillMatch || expMatch || headlineMatch;
+    });
+  }
+
+  return {success:true,message:"successfult fethched application",applicatnts:applications};
+
 }
