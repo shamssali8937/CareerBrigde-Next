@@ -9,12 +9,12 @@ const appliedJobs=new Schema({
      seeker:{
         type:mongoose.Schema.ObjectId,
         required:true,
-        ref:"Seeker"
+        ref:"seeker"
      },
      job:{
         type:mongoose.Schema.ObjectId,
         required:true,
-        ref:"Jobs"
+        ref:"jobs"
      },
      applyDate:{
         type:Date,
@@ -23,12 +23,12 @@ const appliedJobs=new Schema({
      },
      screeningAnswers:[String],
      cv:{
-        type:String,
-        required:true
+        url: String,
+        publicId: String
      },
      status:{
        type: String, 
-       enum: ["Pending", "Accepted", "Rejected","Shortlisted"], 
+       enum: ["Pending", "Hired", "Rejected","Shortlisted"], 
        default: "Pending"
      },
      isViewed:{

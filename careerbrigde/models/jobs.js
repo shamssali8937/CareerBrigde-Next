@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const Schema=mongoose.Schema;
 
-const job=new Schema({
+const jobs=new Schema({
      jobId:{
         type:Number
      },
      provider:{
         type:mongoose.Schema.ObjectId,
          required:true,
-        ref:"Provider"
+        ref:"provider"
      },
       title:{
         type:String,
