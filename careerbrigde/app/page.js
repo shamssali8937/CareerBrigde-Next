@@ -17,7 +17,7 @@ export default function Home() {
          </div>
         
          <div className="mb-2">
-        <Typography variant="h6" className="text-black text-sm sm:text-base md:text-lg lg:text-xl mb-6">
+        <Typography variant="h5" className="text-black text-center text-sm sm:text-base md:text-lg lg:text-xl mb-6">
           Get started on your path to ensure success. To get your dream job
           on our platform, this is where dreams come true.
         </Typography>
