@@ -27,7 +27,7 @@ export default function Layout({ children, rightImage }) {
         {/* CONTENT */}
         <Container
           maxWidth="lg"
-          className="flex flex-1 flex-col justify-center items-start px-6 py-4"
+          className="flex flex-1 flex-col justify-center items-center px-6 py-4"
         >
           {children}
         </Container>
