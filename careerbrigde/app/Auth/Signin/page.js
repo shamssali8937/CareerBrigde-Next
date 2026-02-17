@@ -77,7 +77,7 @@ export default function Signin(){
     return(
         <Layout rightImage="/login.svg">
            
-           <h2 className="font-[Open_Sans] text-center font-bold text-2xl mt-2 mb-2">
+           <h2 className="font-[Open_Sans] text-center text-black font-bold text-2xl mt-2 mb-2">
                 Welcome Back!
               </h2>
         
