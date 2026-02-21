@@ -23,7 +23,7 @@ export default function Home() {
         </Typography>
          </div>
          <div className="mt-4"> 
-        <Link href="/Home" className="w-40">
+        <Link href="/Auth/Signin" className="w-40">
           <Button
             variant="contained"
             sx={{

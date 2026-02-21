@@ -130,7 +130,7 @@ export default function Signin(){
         
               <p className="text-center mt-9 font-bold text-[#A8A8A8]">
                 Dont have an Account?{" "}
-                <Link href="/Signup" className="underline text-[#956fe2]">
+                <Link href="/Auth/Signup" className="underline text-[#956fe2]">
                   signup
                 </Link>
               </p>
