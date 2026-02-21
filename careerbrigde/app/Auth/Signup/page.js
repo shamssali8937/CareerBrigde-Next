@@ -6,14 +6,18 @@ import Layout from "@/layouts/Layout";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import Link from "next/link";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setEmail, setRole } from "@/redux/slices/signupSlice";
 
 export default function Signup() {
 
-  
+  const dispatch=useDispatch();
+  const reduxSignupData=useSelector((state)=>state.signup);
 
   const [data,setdata]=useState({
-    email:"",
-    role:""
+    email:reduxSignupData.email||"",
+    role:reduxSignupData.role||""
   });
 
   const [clicked,setclicked]=useState({});
@@ -42,7 +46,8 @@ export default function Signup() {
        setCanGo(false);
        return;
      }
-   
+     dispatch(setEmail(data.email));
+     dispatch(setRole(data.role));
      setCanGo(true);
    }
 
@@ -57,8 +62,8 @@ export default function Signup() {
 //   // redirect to backend Google OAuth route
 //   window.location.href = `http://localhost:4321/auth/google/signup?role=${data.role}`;
 //   console.log("loc",window.location.href);
-// dispatch(setRole(data.role));
-        setsnackbarmessage("Successfully signed");
+         dispatch(setRole(data.role));
+         setsnackbarmessage("Successfully signed");
          setsnackbarseverity("success");
          setopensackbar(true);
    }
