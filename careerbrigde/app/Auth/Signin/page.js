@@ -5,16 +5,22 @@ import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import { Button,  } from "@mui/material";
 import Link from "next/link";
 import {useState} from "react"
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setEmail } from "@/redux/slices/signupSlice";
 
 export default function Signin(){
 
     const [opensnackbar, setopensackbar] = useState(false);
     const [snackbarmessage, setsnackbarmessage] = useState("");
     const [snackbarseverity, setsnackbarseverity] = useState("success");
+
+    const dispatch=useDispatch();
+    const reduxSignupData=useSelector((state)=>state.signup)
     
     const [data, setData] = useState({
-        email: "",
-        password: "",
+        email: reduxSignupData.email||"",
+        password:"",
       });
 
       const handleFieldDataChange=(e)=>{
@@ -48,7 +54,7 @@ export default function Signin(){
           return;
         }
     
-        
+        dispatch(setEmail(data.email));
         setsnackbarmessage(`Welcome, ${data.email}!`);
         setsnackbarseverity("success");
         setopensackbar(true);
