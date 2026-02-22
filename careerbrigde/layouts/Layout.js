@@ -18,7 +18,7 @@ export default function Layout({ children, rightImage }) {
             variant="h5"
             fontWeight="bold"
             sx={{ fontFamily: "Montserrat, sans-serif" }}
-            className="text-[#666568] text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
+            className="!font-[Open_Sans] text-[#666568] text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
           >
             The<span className="text-[#020202]">Career</span>Bridge
           </Typography>
