@@ -26,11 +26,11 @@ function SignUpDetail() {
 
 
   const [data,setdata]=useState({
-    name:statedata.details.name,
-    phone:statedata.details.phone,
+    name:statedata.details.name||"",
+    phone:statedata.details.phone||"",
     password:"",
     password2:"",
-    img:statedata.details.img
+    img:statedata.details.img||""
   })
 
   
