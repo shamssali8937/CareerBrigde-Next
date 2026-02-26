@@ -4,7 +4,8 @@ const signupSlice=createSlice({
     name:"signup",
     initialState:{
         email:"",
-        role:""
+        role:"",
+        details:{}
     },
     reducers:{
         setEmail:(state,action)=>{
@@ -12,9 +13,12 @@ const signupSlice=createSlice({
         },
         setRole:(state,action)=>{
           state.role=action.payload
+        },
+        setDetails:(state,action)=>{
+          state.details=action.payload
         }
     }
 });
 
-export const {setEmail,setRole}=signupSlice.actions;
+export const {setEmail,setRole,setDetails}=signupSlice.actions;
 export default signupSlice.reducer;

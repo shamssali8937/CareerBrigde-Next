@@ -9,10 +9,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setEmail, setRole } from "@/redux/slices/signupSlice";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
 
   const dispatch=useDispatch();
+  const router=useRouter();
   const reduxSignupData=useSelector((state)=>state.signup);
 
   const [data,setdata]=useState({
@@ -33,7 +35,7 @@ export default function Signup() {
   const [canGo,setCanGo]=useState(false);
 
    const handlesubmit=(e)=>{
-     e.preventDefault();
+      e.preventDefault();
    
      setclicked({email:true,role:true});
    
@@ -49,6 +51,7 @@ export default function Signup() {
      dispatch(setEmail(data.email));
      dispatch(setRole(data.role));
      setCanGo(true);
+     router.push("/Auth/SignupDetail");
    }
 
     const handlegooglesignup=(e)=>{
@@ -95,9 +98,6 @@ export default function Signup() {
       <Button
         variant="contained"
         color="primary"
-        
-        component={Link}
-        href={canGo?"/signupdetail":"/Auth/signup"}
         onClick={handlesubmit}
         fullWidth
         sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
