@@ -1,16 +1,19 @@
 "use client";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import Layout from "@/layouts/Layout";
 import TextInput from "@/components/TextInput";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import { Button,  } from "@mui/material";
 import Link from "next/link";
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setEmail } from "@/redux/slices/signupSlice";
 
 export default function Signin(){
 
+    const searchParams = useSearchParams()
     const [opensnackbar, setopensackbar] = useState(false);
     const [snackbarmessage, setsnackbarmessage] = useState("");
     const [snackbarseverity, setsnackbarseverity] = useState("success");
@@ -75,10 +78,30 @@ export default function Signin(){
     
       
       const handlegooglelogin = () => {
-        setsnackbarmessage("Google login clicked");
-        setsnackbarseverity("info");
-        setopensackbar(true);
+        document.cookie = `oauth_type=login; path=/; max-age=300`;
+        signIn("google", {
+          callbackUrl: "/Home", // e.g., "/Protected", "/Dashboard", or "/"
+        });
+        // setsnackbarmessage("Google login clicked");
+        // setsnackbarseverity("info");
+        // setopensackbar(true);
       };
+      
+      useEffect(()=>{
+        const error = searchParams.get("error");
+        if (error === "AccessDenied") {
+          setsnackbarmessage("Account not found. Please sign up first!");
+          setsnackbarseverity("error");
+          setopensackbar(true);
+        }
+
+        if (error === "UseEmail") {
+        setsnackbarmessage("This email is already registered. Please sign in with your email and password.");
+        setsnackbarseverity("warning"); 
+        setopensackbar(true);
+        }
+
+      },[searchParams])
 
     return(
         <Layout rightImage="/login.svg">
