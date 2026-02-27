@@ -62,13 +62,14 @@ export default function Signup() {
          setopensackbar(true);
          return;
       }
+      document.cookie = `oauth_type=signup; path=/; max-age=300`;
+      document.cookie = `oauth_role=${data.role}; path=/; max-age=300`;
+    
+      // 2. Call signIn normally
       signIn("google", {
-        callbackUrl: "/Auth/SignupDetail",
-        state: JSON.stringify({
-          type: "signup",
-          role: data.role,
-        }),
+        callbackUrl: "/Auth/Signin",
       });
+
 //   // redirect to backend Google OAuth route
 //   window.location.href = `http://localhost:4321/auth/google/signup?role=${data.role}`;
 //   console.log("loc",window.location.href);
