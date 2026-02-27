@@ -1,5 +1,5 @@
 "use client";
-
+import {signIn} from "next-auth/react"
 import { Button, Typography, Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import TextInput from "@/components/TextInput";
 import Layout from "@/layouts/Layout";
@@ -62,6 +62,13 @@ export default function Signup() {
          setopensackbar(true);
          return;
       }
+      signIn("google", {
+        callbackUrl: "/Auth/SignupDetail",
+        state: JSON.stringify({
+          type: "signup",
+          role: data.role,
+        }),
+      });
 //   // redirect to backend Google OAuth route
 //   window.location.href = `http://localhost:4321/auth/google/signup?role=${data.role}`;
 //   console.log("loc",window.location.href);
