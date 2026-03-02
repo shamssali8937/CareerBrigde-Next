@@ -2,48 +2,42 @@ import { Container, Typography } from "@mui/material";
 
 export default function Layout({ children, rightImage }) {
   return (
-    <div className="flex flex-col md:flex-row min-h-[100dvh]">
-
-      {/* LEFT */}
-      <div className="flex flex-col w-full md:w-1/2 bg-[#faf4ff] min-h-[100dvh]">
-
-        {/* LOGO */}
-        <div className="flex items-center p-4">
+     <div className="flex flex-col md:flex-row h-screen">
+      
+      <div className="w-full md:w-1/2 flex flex-col bg-[#faf4ff] ">
+        <div className="flex items-center mt-4 ml-4">
           <img
             src="/iconpeople.svg"
             alt="CareerBridge Logo"
-            className="w-10 h-10 mr-2"
+            className="w-10 h-10 mr-2 background-white"
           />
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            sx={{ fontFamily: "Montserrat, sans-serif" }}
-            className="!font-[Open_Sans] text-[#666568] text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
-          >
+          {/* <span className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#666568]">
             The<span className="text-[#020202]">Career</span>Bridge
-          </Typography>
+          </span> */}
+          <Typography variant="h5" fontWeight="bold" className="text-[#666568] text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+             The<span className="text-[#020202]">Career</span>Bridge
+           </Typography>
+
         </div>
 
-        {/* CONTENT */}
         <Container
           maxWidth="lg"
-          className="flex flex-1 flex-col justify-center items-center px-6 py-4"
+        //   className="m-6 md:w-[70%] lg:w-[50%] h-auto p-4 bg-[#faf4ff] rounded-lg flex flex-col items-center justify-center"
+        className="flex-grow m-4 p-6 bg-[#faf4ff] rounded-lg flex flex-col justify-center items-center overflow-y-hidden"
         >
           {children}
         </Container>
-
       </div>
 
-      {/* RIGHT IMAGE */}
-      {rightImage && (
-        <div className="hidden md:flex md:w-1/2 h-[100dvh]">
+      <div className="hidden md:block md:w-1/2 h-full">
+        {rightImage && (
           <img
             src={rightImage}
-            alt="Right Visual"
+            alt="RightSideImage"
             className="w-full h-full object-cover"
           />
-        </div>
-      )}
+        )}
+      </div>
 
     </div>
   );

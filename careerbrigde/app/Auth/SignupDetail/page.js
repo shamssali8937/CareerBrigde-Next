@@ -83,18 +83,19 @@ function SignUpDetail() {
         //       console.log("Erorr in creating user")
         //     }
         //   }).catch((err) => console.log(err));
-       
+      console.log("ROLE:", role); 
       dispatch(setDetails({name:data.name,img:data.img}));
       setsnackbarmessage("succuss signedUP");
       setsnackbarseverity("success");
       setopensackbar(true);
       
-    //   if (role === "jobseeker") {
-    //   navigate("/signupseeker");
-    //   } else {
-    //     navigate("/signupprovider");
-    //   }
+      if (role === "jobseeker") {
+      router.push("/Seeker/SignupSeeker");
+      } else {
+        router.push("/Auth/SignupDetail");
+      }
       console.log(statedata.details);
+      
     //  setIsValid(true);
       
     }

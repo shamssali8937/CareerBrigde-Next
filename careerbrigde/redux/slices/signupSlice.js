@@ -5,7 +5,9 @@ const signupSlice=createSlice({
     initialState:{
         email:"",
         role:"",
-        details:{}
+        details:{},
+        seekerInfo:{},
+        providerInfo:{}
     },
     reducers:{
         setEmail:(state,action)=>{
@@ -16,9 +18,22 @@ const signupSlice=createSlice({
         },
         setDetails:(state,action)=>{
           state.details=action.payload
+        },
+        setSeekerInfo: (state, action) => {
+          state.seekerInfo = action.payload;
+        },
+        setProviderInfo: (state, action) => {
+          state.providerInfo = action.payload;
+        },
+        resetSignup: (state) => {
+          state.email = "";
+          state.role = "";
+          state.details = {};
+          state.seekerInfo = {};
+          state.providerInfo = {};
         }
     }
 });
 
-export const {setEmail,setRole,setDetails}=signupSlice.actions;
+export const {setEmail,setRole,setDetails,setSeekerInfo, setProviderInfo, resetSignup}=signupSlice.actions;
 export default signupSlice.reducer;
