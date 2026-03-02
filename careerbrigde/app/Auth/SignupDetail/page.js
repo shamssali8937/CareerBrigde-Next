@@ -92,7 +92,7 @@ function SignUpDetail() {
       if (role === "jobseeker") {
       router.push("/Seeker/SignupSeeker");
       } else {
-        router.push("/Auth/SignupDetail");
+        router.push("/Provider/SignupProvider");
       }
       console.log(statedata.details);
       
