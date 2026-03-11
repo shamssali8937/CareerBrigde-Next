@@ -351,7 +351,7 @@ export default function HomePage() {
                     )}
                  </div>
               </div>
-              <div className="lg:col-span-3 hidden lg:block space-y-6">
+              <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
                   <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md p-6 sticky top-24">
                     <Typography className="text-gray-800 !font-bold !text-lg !mb-4 flex items-center !gap-2">
                       <FaChevronRight className="text-[#a78cdd]" />
@@ -368,6 +368,27 @@ export default function HomePage() {
                       <Typography className="!text-xs !font-[Open_sans] text-gray-500">
                         💡 Jobs with at least 3 requirements get 2x more applications.
                       </Typography>
+                    </div>
+                  </Card>
+
+                  <Card variant="h6" className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md !p-6 sticky">
+                    <Typography className="!text-gray-800 !font-bold !font-[Open_sans] text-lg !mb-3 flex items-center !gap-2">
+                      <FaUsers className="text-[#a78cdd]" />
+                      Quick Stats
+                    </Typography>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Active jobs:</span>
+                        <span className="font-semibold">{jobs.length}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Total applicants:</span>
+                        <span className="font-[Open_sans]">24</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Profile views:</span>
+                        <span className="font-[Open_sans]">142</span>
+                      </div>
                     </div>
                   </Card>
               </div>
