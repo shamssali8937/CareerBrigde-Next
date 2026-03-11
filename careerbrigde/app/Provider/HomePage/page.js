@@ -1,13 +1,16 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { Accordion, AccordionDetails, AccordionSummary, Button, Card, CardActions, CardContent, CardMedia, Skeleton, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, IconButton, MenuItem, Modal, Skeleton, Stack, TextField, Typography } from "@mui/material";
 import { FaBriefcase, FaBuilding, FaCalendarAlt, FaChevronRight, FaEdit, FaGlobe, FaInfoCircle, FaPhoneAlt, FaUsers } from "react-icons/fa";
 import AddIcon from "@mui/icons-material/Add";
+import { ExpandMore } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react"
-import { ExpandMore } from "@mui/icons-material";
-import { Delete } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function HomePage() {
 
@@ -17,10 +20,31 @@ export default function HomePage() {
   const dispatch = useDispatch();
   
   const imagePath = stateData.photo?.url || "https://res.cloudinary.com/dj0mkrv8f/image/upload/v1770986917/user_uploads/nilvruogrdogvzk5zlof.jpg";
-
+  const [ jobDetail, setJobDetail] = useState({
+    title: "",
+    jobType: "Remote",
+    location: "",
+    salary: "",
+    postDate: "",
+    lastDate: "",
+    description: "",
+  });
+  const [ screeningQuestions, setScreeningQuestions ] = useState([]);
+  const [ newRequirement, setNewRequirement ] = useState("");
+  const [ requirements, setRequirements ] = useState([]);
+  const [ newScreeningQues, setNewScreeningQues ] = useState("");
+  const [ jobToEdit, setJobToEdit ] = useState(null);
+  const [ clicked, setClicked ] = useState({});
   const [ loading, setLoading ] = useState(true);
   const [ jobs, setJobs ] = useState([]);
   const [ expanded, setExpanded ] = useState(false);
+  const [ openPostJobPopUp, setOpenPostJobPopUp] = useState(false);
+  
+
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
 
 
@@ -28,9 +52,72 @@ export default function HomePage() {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+    setJobDetail((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const addRequirements = () => {
+    if (newRequirement.trim()) {
+      setRequirements([...requirements, newRequirement.trim()]);
+      setNewRequirement("");
+    }
+  };
+
+  const addScreeningQues = () => {
+    if (newScreeningQues.trim()) {
+      setScreeningQuestions([...screeningQuestions, newScreeningQues.trim()]);
+      setNewScreeningQues("");
+    }
+  };
+
+  const removeScreeningQues = (question) => {
+    setScreeningQuestions(screeningQuestions.filter((q) => q !== question));
+  };
+
+  const removeRequirements = (req) => {
+    setRequirements(requirements.filter((r) => r !== req));
+  };
+  
+  const handleJobPostPopup = (job = null) => {
+    if (job) {
+      setJobToEdit(job);
+      setJobDetail(job);
+      setRequirements(job.requirements || []);
+      setScreeningQuestions(job.screeningQuestions || []);
+    } else {
+      setJobToEdit(null);
+      setJobDetail({
+        title: "",
+        jobType: "Remote",
+        location: "",
+        salary: "",
+        postDate: "",
+        lastDate: "",
+        description: "",
+      });
+      setRequirements([]);
+      setScreeningQuestions([]);
+      setClicked({});
+    }
+    setOpenPostJobPopUp(true);
+  };
+
   const handleEditButton=()=>{
     console.log("editbutton open")
   }
+
+
+  const formatDateForInput = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const day = d.getDate().toString().padStart(2, "0");
+    return `${d.getFullYear()}-${month}-${day}`;
+  };
 
   const fetchJobsFromDb=async(e)=>{  ///fetching the jobs of specific user and set jobs object
      setLoading(true);
@@ -261,7 +348,7 @@ export default function HomePage() {
                     <Button
                     variant="contained"
                     startIcon={<AddIcon/>}
-//                    onClick={()=>hanleJobPostPopup()}
+                    onClick={()=>handleJobPostPopup()}
                     className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
                     >
                     Post New Job
@@ -395,6 +482,173 @@ export default function HomePage() {
            </div>
         </div>
     </div>
+
+    <Modal open={openPostJobPopUp} onClose={()=>setOpenPostJobPopUp(false)}>
+       <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  w-[95%] max-w-2xl bg-white/90 backdrop-blur-xl rounded-3xl !shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
+           <div className="flex justify-between items-center mb-5">
+                    <Typography variant="h6" className="!font-bold !font-sans text-gray-800">
+                    {jobToEdit ? "Edit Job" : "Post a New Job"}
+                  </Typography>
+                  <IconButton onClick={() => setOpenPostJobPopUp(false)} className="text-gray-500">
+                    <CloseIcon />
+                  </IconButton>
+             </div>
+             <div className="space-y-4">
+                <TextField
+                  name="title"
+                  label="Job Title"
+                  size="small"
+                  onChange={handleChange}
+                  value={jobDetail.title}
+                  fullWidth
+                  error={clicked.title && !jobDetail.title}
+                  helperText={clicked.title && !jobDetail.title ? "Title is required" : ""}
+                  className="!mb-2"
+                />
+                <TextField
+                  name="jobType"
+                  label="Job Type"
+                  select
+                  size="small"
+                  onChange={handleChange}
+                  value={jobDetail.jobType}
+                  fullWidth
+                  className="!mb-2"
+                >
+                  <MenuItem value="Remote">Remote</MenuItem>
+                  <MenuItem value="On-site">On-site</MenuItem>
+                  <MenuItem value="Hybrid">Hybrid</MenuItem>
+                </TextField>
+                <TextField
+                  name="location"
+                  label="Location"
+                  size="small"
+                  onChange={handleChange}
+                  value={jobDetail.location}
+                  fullWidth
+                  error={clicked.location && !jobDetail.location}
+                  helperText={clicked.location && !jobDetail.location ? "Location is required" : ""}
+                  className="!mb-2"
+                />
+                <TextField
+                  name="salary"
+                  label="Salary (e.g., $80k - $100k)"
+                  size="small"
+                  onChange={handleChange}
+                  value={jobDetail.salary}
+                  fullWidth
+                  className="!mb-2"
+                />
+                <TextField
+                  name="description"
+                  label="Description"
+                  multiline
+                  rows={3}
+                  size="small"
+                  onChange={handleChange}
+                  value={jobDetail.description}
+                  fullWidth
+                  error={clicked.description && !jobDetail.description}
+                  helperText={clicked.description && !jobDetail.description ? "Description is required" : ""}
+                  className="!mb-2"
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
+                  <TextField
+                    name="postDate"
+                    label="Post Date"
+                    type="date"
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    onChange={handleChange}
+                    value={formatDateForInput(jobDetail.postDate)}
+                    fullWidth
+                    error={clicked.postDate && !jobDetail.postDate}
+                    helperText={clicked.postDate && !jobDetail.postDate ? "Post date required" : ""}
+                  />
+                  <TextField
+                    name="lastDate"
+                    label="Last Date"
+                    type="date"
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    onChange={handleChange}
+                    value={formatDateForInput(jobDetail.lastDate)}
+                    fullWidth
+                    error={clicked.lastDate && !jobDetail.lastDate}
+                    helperText={clicked.lastDate && !jobDetail.lastDate ? "Last date required" : ""}
+                  />
+                </div>
+                {/* Requirements */}
+                <div>
+                  <Typography className="text-sm font-medium !mb-2 text-gray-700">
+                    Requirements <span className="text-gray-400">(min 3)</span>
+                  </Typography>
+                  <div className="flex gap-2 mb-2">
+                    <TextField
+                      size="small"
+                      fullWidth
+                      value={newRequirement}
+                      onChange={(e) => setNewRequirement(e.target.value)}
+                      placeholder="e.g., 5+ years React"
+                    />
+                    <IconButton onClick={addRequirements} className="bg-indigo-100 text-indigo-700">
+                      <AddIcon />
+                    </IconButton>
+                  </div>
+                  {clicked.requirements && requirements.length < 3 && (
+                    <p className="text-rose-500 text-sm mb-2">Please add at least 3 requirements</p>
+                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {requirements.map((req, idx) => (
+                      <Chip
+                        key={idx}
+                        label={req}
+                        onDelete={() => removeRequirements(req)}
+                        deleteIcon={<DeleteIcon />}
+                        className="bg-indigo-50 text-indigo-700 rounded-full"
+                      />
+                    ))}
+                  </div>
+                </div>
+                {/* Screening Questions */}
+                <div>
+                  <Typography className="text-sm font-medium mb-2 text-gray-700">
+                    Screening Questions (optional)
+                  </Typography>
+                  <div className="flex gap-2 mb-2">
+                    <TextField
+                      size="small"
+                      fullWidth
+                      value={newScreeningQues}
+                      onChange={(e) => setNewScreeningQues(e.target.value)}
+                      placeholder="e.g., Why do you want to work here?"
+                    />
+                    <IconButton onClick={addScreeningQues} className="bg-purple-100 text-purple-700">
+                      <AddIcon />
+                    </IconButton>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {screeningQuestions.map((q, idx) => (
+                      <Chip
+                        key={idx}
+                        label={q}
+                        onDelete={() => removeScreeningQues(q)}
+                        deleteIcon={<DeleteIcon />}
+                        className="bg-purple-50 text-purple-700 rounded-full"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <Button
+                  variant="contained"
+                 // onClick={handlesubmission}
+                  className="w-full !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                >
+                  {jobToEdit ? "Save Changes" : "Post Job"}
+                </Button>
+           </div>
+       </Box>
+    </Modal>
     </>
   );
 }
