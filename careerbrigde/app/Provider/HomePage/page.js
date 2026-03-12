@@ -321,7 +321,7 @@ export default function HomePage() {
       }
         ]);
         setLoading(false);
-      },100);
+      },500);
     };
 
     useEffect(()=>{
@@ -734,8 +734,11 @@ export default function HomePage() {
           sx: {
             width: { xs: "100%", sm: 500 },
             borderRadius: "24px 0 0 24px",
-            backgroundColor: "rgba(255,255,255,0.9)",
+            background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
             backdropFilter: "blur(16px)",
+            backgroundColor: "rgba(250, 248, 255, 0.8)", 
+            borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
+            boxShadow: "-10px 0 30px rgba(0,0,0,0.05)",
           },
         }}
     >
@@ -852,8 +855,11 @@ export default function HomePage() {
           sx: {
             width: { xs: "100%", sm: 500 },
             borderRadius: "0 24px 24px 0",
-            backgroundColor: "rgba(255,255,255,0.9)",
+            background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
             backdropFilter: "blur(16px)",
+            backgroundColor: "rgba(250, 248, 255, 0.8)", 
+            borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
+            boxShadow: "-10px 0 30px rgba(0,0,0,0.05)",
           },
         }}
       >
