@@ -1,8 +1,11 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { Avatar, Card, CardContent, Skeleton, Typography } from "@mui/material";
+import { Avatar, AvatarGroup, Button, Card, CardContent, Chip, Skeleton, Typography } from "@mui/material";
+import { MdOutlineWorkOutline, MdLocationOn } from "react-icons/md";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import { useState, useEffect } from "react"
-import { FaBuilding } from "react-icons/fa";
+import { FaBuilding, FaClock, FaMoneyBillWave } from "react-icons/fa";
 
 export default function jobApplications() {
 
@@ -391,7 +394,7 @@ export default function jobApplications() {
   
     console.log(jobs);
   
-    const handleviewapplicants = (job) => {
+    const handleViewApplicants = (job) => {
       setSelectedJob(job);
       setFilterStatus("All");
       setfilterView("All");
@@ -619,7 +622,67 @@ export default function jobApplications() {
                                         >
                                          <FaBuilding className="text-[#a78cdd]"/>
                                         </Avatar>
+                                        <div className="flex-1">
+                                           <Typography variant="h6" className="!font-[Open_sans] !font-bold text-gray-800 group-hover:text-indigo-700 transition-colors line-clamp-2">
+                                              {job.title}
+                                           </Typography>
+                                           <Typography variant="body2" className="text-gray-500 flex items-center gap-1 !mt-1">
+                                             <FaBuilding className="text-[#a78cdd]" size={12} />
+                                             {job.provider.companyname}
+                                           </Typography>
+                                        </div>
                                      </div>
+                                     <Typography variant="body1" className="!font-[Open_sans] text-gray-700 leading-relaxed !mb-4 line-clamp-3">
+                                       {job.description}
+                                     </Typography>
+                                     <div className="flex flex-wrap gap-2 mb-4">
+                                       <Chip
+                                         icon={<MdLocationOn className="!text-indigo-500" />}
+                                         label={job.location}
+                                         size="small"
+                                         className="!font-[Open_sans] !bg-indigo-100 text-indigo-700 rounded-full text-xs"
+                                       />
+                                       <Chip
+                                         icon={<FaClock className="text-emerald-500" />}
+                                         label={job.jobType}
+                                         size="small"
+                                         className="!font-[Open_sans] !bg-emerald-100 text-emerald-700 rounded-full text-xs"
+                                       />
+                                       {job.salary && (
+                                         <Chip
+                                           icon={<FaMoneyBillWave className="!text-amber-500" />}
+                                           label={job.salary}
+                                           size="small"
+                                           className="!font-[Open_sans] !bg-amber-100 text-amber-700 rounded-full text-xs"
+                                         />
+                                       )}
+                                     </div>
+                                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-200/50">
+                                        <div className="flex items-center gap-2">
+                                          <AvatarGroup max={3} className="applicant-avatars">
+                                            {job.applications.slice(0, 3).map((app, idx) => (
+                                              <Avatar
+                                                key={idx}
+                                                // src={app.seeker.user.photo || "https://via.placeholder.com/30"}
+                                                src="https://via.placeholder.com/30"
+                                                sx={{ width: 24, height: 24 }}
+                                                className="border-2 border-white"
+                                              />
+                                            ))}
+                                          </AvatarGroup>
+                                          <Typography variant="body2" className="text-gray-600">
+                                            {job.applications.length} applicant{job.applications.length !== 1 ? "s" : ""}
+                                          </Typography>
+                                        </div>
+                                        <Button
+                                          size="small"
+                                          variant="contained"
+                                          onClick={() => handleViewApplicants(job)}
+                                          className="!font-[Open_sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] !text-white !rounded-full !px-6 !py-2 !text-sm  !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                        >
+                                          View
+                                        </Button>
+                                      </div>
                                   </CardContent>
                                 </Card>
                              ))
