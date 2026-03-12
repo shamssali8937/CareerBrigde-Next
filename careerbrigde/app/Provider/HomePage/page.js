@@ -1,7 +1,8 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, IconButton, MenuItem, Modal, Skeleton, Stack, TextField, Typography } from "@mui/material";
-import { FaBriefcase, FaBuilding, FaCalendarAlt, FaChevronRight, FaEdit, FaGlobe, FaInfoCircle, FaPhoneAlt, FaUsers } from "react-icons/fa";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Drawer, FormControlLabel, IconButton, MenuItem, Modal, Skeleton, Stack, Switch, TextField, Typography } from "@mui/material";
+import { FaBriefcase, FaBuilding, FaCalendarAlt, FaChevronRight, FaClock, FaEdit, FaGlobe, FaInfoCircle, FaListUl, FaMapMarkedAlt, FaMoneyBillAlt, FaPhoneAlt, FaUsers, FaUserTie } from "react-icons/fa";
+import { MdDescription } from "react-icons/md";
 import AddIcon from "@mui/icons-material/Add";
 import { ExpandMore } from "@mui/icons-material";
 import { Delete } from "@mui/icons-material";
@@ -9,8 +10,11 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react"
 import DeleteIcon from "@mui/icons-material/Delete";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
+import CustomizedSnackbars from "@/components/CustomizedSnackbars";
+import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
+import ProfileAvatar from "@/components/ProfileAvatar";
+import ProviderForm from "@/components/ProviderForm";
 
 export default function HomePage() {
 
@@ -29,6 +33,8 @@ export default function HomePage() {
     lastDate: "",
     description: "",
   });
+  const [ userimg, setuserimg ] = useState(null);
+  const [ showUserUpdateFields, setShowUserUpdateFields ] = useState(true);
   const [ screeningQuestions, setScreeningQuestions ] = useState([]);
   const [ newRequirement, setNewRequirement ] = useState("");
   const [ requirements, setRequirements ] = useState([]);
@@ -39,6 +45,9 @@ export default function HomePage() {
   const [ jobs, setJobs ] = useState([]);
   const [ expanded, setExpanded ] = useState(false);
   const [ openPostJobPopUp, setOpenPostJobPopUp] = useState(false);
+  const [ openRightDrawer, setOpenRightDrawer] = useState(false);
+  const [ openLeftDrawer, setOpenLeftDrawer] = useState(false);
+
   
 
 
@@ -60,6 +69,13 @@ export default function HomePage() {
     }));
   };
 
+  const handleProfileEditButton=() => setOpenLeftDrawer(true);
+
+  const handleImageChange = (file) => {
+    setuserimg({ file, url: URL.createObjectURL(file) });
+  };
+
+
   const addRequirements = () => {
     if (newRequirement.trim()) {
       setRequirements([...requirements, newRequirement.trim()]);
@@ -80,6 +96,37 @@ export default function HomePage() {
 
   const removeRequirements = (req) => {
     setRequirements(requirements.filter((r) => r !== req));
+  };
+
+  const formatDateForInput = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const day = d.getDate().toString().padStart(2, "0");
+    return `${d.getFullYear()}-${month}-${day}`;
+  };
+
+  const deleteJob = (job) => {
+    setJobs((prev) => prev.filter((j) => j._id !== job._id));
+    setSnackbarMessage("Job deleted");
+    setSnackbarSeverity("error");
+    setSnackbarOpen(true);
+  };
+  
+  const handleUserInfoUpdate = async (formData) => {
+    console.log("Update user info:", formData);
+    setSnackbarMessage("User info updated (mock)");
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
+    setopendrawerleft(false);
+  };
+  
+  const updateProviderProfile = async (formData) => {
+    console.log("Update provider profile:", formData);
+    setSnackbarMessage("Profile updated (mock)");
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
+    setopendrawerleft(false);
   };
   
   const handleJobPostPopup = (job = null) => {
@@ -106,18 +153,48 @@ export default function HomePage() {
     setOpenPostJobPopUp(true);
   };
 
-  const handleEditButton=()=>{
-    console.log("editbutton open")
-  }
-
-
-  const formatDateForInput = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    const month = (d.getMonth() + 1).toString().padStart(2, "0");
-    const day = d.getDate().toString().padStart(2, "0");
-    return `${d.getFullYear()}-${month}-${day}`;
+  const handleJobPosting = () => {
+    setClicked({
+      title: true,
+      location: true,
+      postDate: true,
+      lastDate: true,
+      description: true,
+      requirements: true,
+    });
+    if (
+      jobDetail.title &&
+      jobDetail.location &&
+      jobDetail.postDate &&
+      jobDetail.lastDate &&
+      jobDetail.description &&
+      requirements.length >= 3
+    ) {
+      if (jobToEdit) {
+        // editJobInDb(editingjob);
+        setJobs((prev) =>
+          prev.map((j) => (j._id === jobToEdit._id ? { ...j,...jobDetail, requirements, screeningQuestions } : j))
+        );
+        setSnackbarMessage("Job edited");
+      } else {
+        const newJob = {
+          _id: Date.now().toString(),
+          ...jobDetail,
+          requirements,
+          screeningQuestions,
+          provider: { companyname: stateProviderData.companyname, user: { name: stateUserdata.name, photo: null } },
+        };
+        setJobs((prev) => [...prev, newJob]);
+        setSnackbarMessage("Job posted");
+      }
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setOpenPostJobPopUp(false)
+    }
   };
+  
+
+
 
   const fetchJobsFromDb=async(e)=>{  ///fetching the jobs of specific user and set jobs object
      setLoading(true);
@@ -244,7 +321,7 @@ export default function HomePage() {
       }
         ]);
         setLoading(false);
-      },1000);
+      },100);
     };
 
     useEffect(()=>{
@@ -293,7 +370,7 @@ export default function HomePage() {
                         <Button
                         size="small"
                         startIcon={<FaEdit/>}
-                        onClick={handleEditButton}
+                        onClick={handleProfileEditButton}
                         className="bg-indigo-600 hover:bg-indigo text-white text-xs rounded-full px-6 py-2 transition-all hover:scale-105 shadow-md"
                         >  
                         Edit Profile
@@ -331,7 +408,7 @@ export default function HomePage() {
                      <Button
                         size="small"
                         startIcon={<FaEdit/>}
-                        onClick={handleEditButton}
+                        onClick={handleProfileEditButton}
                         className="bg-indigo-600 hover:bg-indigo text-white text-xs rounded-full px-6 py-2 transition-all hover:scale-105 shadow-md"
                         >  
                         Edit Profile
@@ -384,7 +461,6 @@ export default function HomePage() {
                             "&:before": { display: "none" },
                             borderRadius: "24px !important",
                             marginBottom: "12px",
-                            // Ensure the transform doesn't get clipped by parent containers
                             transition: "transform 0.3s ease-in-out", 
                           }}
                         >
@@ -413,10 +489,10 @@ export default function HomePage() {
                               variant="contained"
                               size="small"
                               startIcon={<FaInfoCircle/>}
-                              // onClick={()=>{
-                              //     setJobToEdit(job);
-                              //     setOpenRightDrawer(true);    
-                              // }}
+                              onClick={()=>{
+                                  setJobToEdit(job);
+                                  setOpenRightDrawer(true);    
+                              }}
                               className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
                               >
                               Details
@@ -426,7 +502,7 @@ export default function HomePage() {
                                 color="error"
                                 size="small"
                                 startIcon={<Delete />} 
-                                // onClick={() => deletejob(job)}
+                                onClick={() => deleteJob(job)}
                                 className="!font-['Open_Sans'] !bg-[#ff6b6b] hover:!bg-[#ee5253] !text-white !rounded-full !px-6 !py-2 !text-sm !font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(255,107,107,0.39)] hover:!shadow-[#ff6b6b]/50 !normal-case !border-none"
                               >
                                 Delete Job
@@ -641,7 +717,7 @@ export default function HomePage() {
                 </div>
                 <Button
                   variant="contained"
-                 // onClick={handlesubmission}
+                  onClick={handleJobPosting}
                   className="w-full !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
                 >
                   {jobToEdit ? "Save Changes" : "Post Job"}
@@ -649,6 +725,201 @@ export default function HomePage() {
            </div>
        </Box>
     </Modal>
+
+    <Drawer 
+      anchor="right"
+      open={openRightDrawer}
+      onClose={()=>setOpenRightDrawer(false)}
+      PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 500 },
+            borderRadius: "24px 0 0 24px",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(16px)",
+          },
+        }}
+    >
+      {
+        jobToEdit && (
+          <div className="h-full flex flex-col">
+              <div className="p-6 border-b border-gray-200/50 flex justify-between items center">
+                <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">Job Details</Typography>
+                <IconButton onClick={()=>setOpenRightDrawer(false)} className="text-gray-500">
+                   <CloseIcon/>
+                </IconButton>
+              </div>  
+              <div className="flex-1 overflow-y-auto p-6 space-y-5">
+                <div className="flex items-center gap-4">
+                   <img
+                   src={imagePath || "/iconbridge.jpg"}
+                   alt="Job Provider Image"
+                   className="w-16 h-16 rounded-full object-cover-border-2 border-white shadow-lg"
+                   />
+                   <div>
+                     <Typography className="!font-bold !font-[Open_sans]  !text-gray-800">{jobToEdit.provider?.companyname}</Typography>
+                     <Typography variant="body2" className="text-gray-600 flex items-center gap-1 !font-[Open_sans]">
+                       <FaUserTie className="text-[#a78cdd]"/>
+                       {jobToEdit.provider?.user.name}
+                     </Typography>
+                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm font-[Open_sans]">
+                {jobToEdit.salary && (
+                  <div className="flex items-center gap-2 bg-white/60 p-3 rounded-xl">
+                    <FaMoneyBillAlt className="text-emerald-500" />
+                    <span className="font-medium ">Salary:</span> {jobToEdit.salary}
+                  </div>
+                )}
+                <div className="flex items-center gap-2 bg-white/60 p-3 rounded-xl">
+                  <FaCalendarAlt className="text-amber-500" />
+                  <span className="font-medium">Posted:</span>{" "}
+                  {formatDateForInput(jobToEdit.postDate)}
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 p-3 rounded-xl">
+                  <FaCalendarAlt className="text-rose-500" />
+                  <span className="font-medium">Last Date:</span>{" "}
+                  {formatDateForInput(jobToEdit.lastDate)}
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 p-3 rounded-xl">
+                  <FaMapMarkedAlt className="text-indigo-500" />
+                  <span className="font-medium">Location:</span> {jobToEdit.location}
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 p-3 rounded-xl">
+                  <FaClock className="text-emerald-500" />
+                  <span className="font-medium">Type:</span> {jobToEdit.jobType}
+                </div>
+              </div>
+
+              <div>
+                <Typography className="!font-[Open_sans] !font-bold text-gray-800 !mb-3 flex items-center gap-2">
+                  <FaListUl className="text-purple-600" /> Requirements
+                </Typography>
+                <ul className="font-[Open_sans] list-disc list-inside text-sm text-gray-700 space-y-1 pl-2">
+                  {jobToEdit.requirements?.map((req, idx) => (
+                    <li key={idx}>{req}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {jobToEdit.screeningQuestions?.length > 0 && (
+                <div>
+                  <Typography className="!font-[Open_sans] !font-bold text-gray-800 !mb-3 flex items-center gap-2">
+                    <FaListUl className="text-purple-600" />
+                    Screening Questions
+                  </Typography>
+                  <ul className="font-[Open_sans] list-disc list-inside text-sm text-gray-700 space-y-1 pl-2">
+                    {jobToEdit.screeningQuestions.map((q, idx) => (
+                      <li key={idx}>{q}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div>
+                <Typography className="!font-[Open_sans] !font-bold text-gray-800 !mb-3 flex items-center gap-2">
+                  <MdDescription size={22} className="text-purple-600"/>
+                  Job Description
+                </Typography>
+                <Typography className="!font-[Open_sans] text-sm text-gray-700 leading-relaxed">
+                  {jobToEdit.description}
+                </Typography>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200/50">
+              <Button
+                variant="outlined"
+                startIcon={<FaEdit />}
+                onClick={() => {
+                  setOpenRightDrawer(false);
+                  handleJobPostPopup(jobToEdit);
+                }}
+                className="w-full !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] !text-white !rounded-full !px-6 !py-2 !text-sm  !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+              >
+                Edit This Job
+              </Button>
+              </div>
+          </div>
+        )
+      }
+    </Drawer>
+
+    <Drawer
+        anchor="left"
+        open={openLeftDrawer}
+        onClose={() => setOpenLeftDrawer(false)}
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 500 },
+            borderRadius: "0 24px 24px 0",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(16px)",
+          },
+        }}
+      >
+        <div className="h-full flex flex-col">
+          <div className="p-6 border-b border-gray-200/50 flex justify-between items-center">
+            <Typography variant="h6" className="!font-bold !font-sans text-gray-800">
+              Edit Profile
+            </Typography>
+            <IconButton onClick={() => setOpenLeftDrawer(false)} className="text-gray-500">
+              <CloseIcon />
+            </IconButton>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex flex-col items-center mb-8">
+              <ProfileAvatar
+                file={imagePath || userimg?.url}
+                onChange={handleImageChange}
+                className="w-28 h-28 rounded-full border-4 border-white shadow-xl"
+              />
+              <Typography variant="body2" className="!font-[Open_sans] text-gray-500 mt-2">
+                Click to change photo
+              </Typography>
+            </div>
+
+            <div className="bg-white/60 rounded-2xl p-4 mb-4 shadow-sm flex items-center justify-between">
+              <Typography className="!font-[Open_sans] text-gray-700">
+                Update Account Info?
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={showUserUpdateFields}
+                    onChange={(e) => setShowUserUpdateFields(e.target.checked)}
+                    color="secondary"
+                  />
+                }
+                label=""
+                className="!m-0"
+              />
+            </div>
+
+            {showUserUpdateFields ? (
+              <UpdateUserInfoForm
+                userData={stateUserdata}
+                onSubmit={handleUserInfoUpdate}
+              />
+            ) : (
+              <ProviderForm
+                finishLabel="Update Profile"
+                finishPath="/providerpage"
+                onFinish={updateProviderProfile}
+              />
+            )}
+          </div>
+        </div>
+      </Drawer>
+
+
+      <CustomizedSnackbars
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        onClose={() => setSnackbarOpen(false)}
+      />
+
     </>
   );
 }
