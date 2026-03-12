@@ -825,7 +825,7 @@ export default function jobApplications() {
                  PaperProps={{
                    sx: {
                      width: { xs: "100%", sm: 500 },
-                     borderRadius: "0 24px 24px 0",
+                     borderRadius: "24px 24px 24px 24px",
                      background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
                      backdropFilter: "blur(16px)",
                      backgroundColor: "rgba(250, 248, 255, 0.8)", 
