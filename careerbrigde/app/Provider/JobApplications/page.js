@@ -514,7 +514,7 @@ export default function jobApplications() {
     };
   
     const handleMailSend = async () => {
-      console.log("Mail sent (mock):", mailmessage);
+    //   console.log("Mail sent (mock):", mailMessage);
       setMailPopup(false);
     };
   
