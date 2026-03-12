@@ -1,11 +1,11 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { Avatar, AvatarGroup, Button, Card, CardContent, Chip, Skeleton, Typography } from "@mui/material";
+import { Avatar, AvatarGroup, Box, Button, Card, CardContent, Chip, Drawer, FormControl, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, Select, Skeleton, TextField, Typography } from "@mui/material";
 import { MdOutlineWorkOutline, MdLocationOn } from "react-icons/md";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState, useEffect } from "react"
-import { FaBuilding, FaClock, FaMoneyBillWave } from "react-icons/fa";
+import { FaBuilding, FaCalendarAlt, FaClock, FaEnvelope, FaFileAlt, FaGraduationCap, FaMapMarkedAlt, FaMoneyBillWave, FaQuestionCircle, FaTasks, FaTools, FaUserTie } from "react-icons/fa";
 
 export default function jobApplications() {
 
@@ -18,7 +18,7 @@ export default function jobApplications() {
     const [ mailMessage, setMailMessage ] = useState("");
     const [ searchTerm, setSearchTerm] = useState("");
     const [ filterStatus, setFilterStatus] = useState("All");
-    const [ filterView, setfilterView] = useState("All");
+    const [ filterView, setFilterView] = useState("All");
     const [ filterdApplicants, setFilterApplicants] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const statuses = ["Pending", "Hired", "Shortlisted", "Rejected"];
@@ -392,14 +392,14 @@ export default function jobApplications() {
   
     const [ jobs, setJobs ] = useState(Jobs);
   
-    console.log(jobs);
+    // console.log(jobs);
   
     const handleViewApplicants = (job) => {
       setSelectedJob(job);
       setFilterStatus("All");
-      setfilterView("All");
+      setFilterView("All");
       setSearchTerm("");
-      setOpenPopup(true);
+      setOpenApplicantPopup(true);
     };
   
     const getFileName = (cv) => {
@@ -429,9 +429,9 @@ export default function jobApplications() {
         setSelectedJob(updatedselectedjob);
         setSelectedApplicant({ ...applicant, isViewed: true });
       } else {
-        setAelectedApplicant(applicant);
+        setSelectedApplicant(applicant);
       }
-      setOpenPopup(false);
+      setOpenApplicantPopup(false);
       setOpenRightDrawer(true);
     };
   
@@ -697,6 +697,408 @@ export default function jobApplications() {
               }
            </div>
          </div>
+         <Modal open={openApplicantPopup} onClose={()=>{setOpenApplicantPopup(false); setSearchTerm("")}}>
+            <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 max-h-[85vh] overflow-hidden flex flex-col">
+                <div className="flex justify-between items-center pb-3 border-b border-gray-200/50">
+                  <Typography variant="h6" className="!font-bold !font-[Open_sans] bg-gradient-to-r from-indigo-700 via-purple-600 to-indigo-700 bg-clip-text text-transparent">
+                    Applicants for {selectedJob?.title}
+                  </Typography>
+                  <IconButton onClick={() => setOpenApplicantPopup(false)} className="text-gray-500">
+                    <CloseIcon />
+                  </IconButton>
+                </div>
+                <div className="py-4 flex flex-col sm:flex-row gap-3">
+                  <TextField
+                    placeholder="Search by name, headline, skills..."
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon className="text-gray-400" />
+                        </InputAdornment>
+                      ),
+                    }}
+                    className="bg-white/50 rounded-lg"
+                  />
+                  <FormControl size="small" sx={{ minWidth: 120 }} className="bg-white/50 rounded-lg">
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      value={filterStatus}
+                      label="Status"
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                    >
+                      <MenuItem value="All">All</MenuItem>
+                      {statuses.map((s) => (
+                        <MenuItem key={s} value={s}>
+                          {s}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl size="small" sx={{ minWidth: 120 }} className="bg-white/50 rounded-lg">
+                    <InputLabel>Viewed</InputLabel>
+                    <Select
+                      value={filterView}
+                      label="Viewed"
+                      onChange={(e) => setFilterView(e.target.value)}
+                    >
+                      <MenuItem value="All">All</MenuItem>
+                      <MenuItem value="Viewed">Viewed</MenuItem>
+                      <MenuItem value="Not Viewed">Not Viewed</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="flex-1 overflow-y-auto pr-1">
+                  {filterdApplicants && filterdApplicants.length > 0 ? (
+                    filterdApplicants.map((applicant) => (
+                      <div
+                        key={applicant._id}
+                        onClick={() => handleOpenApplicant(applicant)}
+                        className="group p-4 bg-white/60 backdrop-blur-sm rounded-2xl mb-3 hover:shadow-lg transition-all cursor-pointer border border-transparent hover:border-indigo-200 flex items-center gap-4"
+                      >
+                        <div className="flex-1">
+                          <Typography className="!font-semibold !font-[Open_sans] !text-gray-800">
+                            {applicant.seeker.user.name}
+                          </Typography>
+                          <Typography variant="body2" className="!font-[Open_sans] !text-gray-600 !mt-1">
+                            {applicant.seeker.headline}
+                          </Typography>
+                          <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                            <span className="font-[Open_sans] flex items-center gap-1">
+                              <FaCalendarAlt className="!text-amber-500" />
+                              {new Date(applicant.applyDate).toLocaleDateString()}
+                            </span>
+                            <Chip
+                              size="small"
+                              label={applicant.status || "Pending"}
+                              sx={{
+                                backgroundColor: getStatusColor(applicant.status),
+                                color: "white",
+                                height: 20,
+                                fontSize: "0.7rem",
+                                fontWeight: 500,
+                              }}
+                            />
+                            {applicant.isViewed && (
+                              <Chip
+                                size="small"
+                                label="Viewed"
+                                sx={{
+                                  backgroundColor: "#9ca3af",
+                                  color: "white",
+                                  height: 20,
+                                  fontSize: "0.7rem",
+                                }}
+                              />
+                            )}
+                          </div>
+                        </div>
+                        <img
+                        //   src={
+                        //     applicant.seeker.user.photo
+                        //       ? `${backendUrl}${applicant.seeker.user.photo}`
+                        //       : "https://via.placeholder.com/50"
+                        //   }
+                          src="https://via.placeholder.com/50"
+                          alt={applicant.seeker.user.name}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <Typography className="text-gray-500 text-sm text-center py-8">
+                      No applicants match your filters.
+                    </Typography>
+                  )}
+                </div>
+            </Box>
+         </Modal>
+
+             <Drawer
+                 anchor="right"
+                 open={openRightDrawer}
+                 onClose={() => setOpenRightDrawer(false)}
+                 PaperProps={{
+                   sx: {
+                     width: { xs: "100%", sm: 500 },
+                     borderRadius: "0 24px 24px 0",
+                     background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+                     backdropFilter: "blur(16px)",
+                     backgroundColor: "rgba(250, 248, 255, 0.8)", 
+                     borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
+                     boxShadow: "-10px 0 30px rgba(0,0,0,0.05)",
+                   },
+                 }}
+               >
+                   {selectedApplicant && selectedJob && (
+                     <div className="h-full flex flex-col">
+                          <div className="p-6 border-b border-gray-200/50 flex justify-between items-center">
+                     <Typography variant="h6" className="!font-bold !font-sans text-gray-800">
+                       Review Applicant
+                     </Typography>
+                     <IconButton onClick={() => setOpenRightDrawer(false)} className="text-gray-500">
+                       <CloseIcon />
+                     </IconButton>
+                   </div>
+                       <div className="p-6 border-b border-white/30">
+                         <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
+                           {selectedJob.title}
+                         </Typography>
+                         <div className="flex items-center gap-3 mt-3">
+                           <img
+                            //  src={
+                            //    selectedjob.provider.user.photo
+                            //      ? `${backendUrl}${selectedjob.provider.user.photo}`
+                            //      : "https://via.placeholder.com/40"
+                            //  }
+                             src="/iconbridge.jpg"
+                             alt="company"
+                             className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
+                           />
+                           <div>
+                             <Typography className="!font-medium !font-[Open_sans] text-gray-800">
+                               {selectedJob.provider.user.name}
+                             </Typography>
+                             <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
+                               <FaUserTie className="!text-indigo-500" />
+                               {selectedJob.provider.positionInCompany} at{" "}
+                               {selectedJob.provider.companyname}
+                             </Typography>
+                           </div>
+                         </div>
+                         <div className="flex items-center gap-4 mt-3 text-sm text-gray-700">
+                           <span className="font-[Open_sans] flex items-center gap-1">
+                             <FaMapMarkedAlt className="!text-indigo-500" />
+                             {selectedJob.location}
+                           </span>
+                           <span className="font-[Open_sans] flex items-center gap-1">
+                             <FaClock className="!text-emerald-500" />
+                             {selectedJob.jobType}
+                           </span>
+                         </div>
+                       </div>
+           
+                       <div className="flex-1 overflow-y-auto p-6 space-y-5">
+                         <div className="flex flex-col items-center text-center">
+                           <img
+                            //  src={
+                            //    selectedApplicant.seeker.user.photo
+                            //      ? `${backendUrl}${selectedapplicant.seeker.user.photo}`
+                            //      : "https://via.placeholder.com/80"
+                            //  }
+                             src="/iconbridge.jpg"
+                             alt="applicant"
+                             className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg mb-3"
+                           />
+                           <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
+                             {selectedApplicant.seeker.user.name}
+                           </Typography>
+                           <Typography variant="body1" className="!font-[Open_sans] text-gray-600">
+                             {selectedApplicant.seeker.headline}
+                           </Typography>
+                           <div className="font-[Open_sans] flex items-center gap-2 mt-2 text-xs text-gray-500">
+                             <FaCalendarAlt className="!text-amber-500" />
+                             Applied on{" "}
+                             {new Date(selectedApplicant.applyDate).toLocaleDateString()}
+                           </div>
+                         </div>
+           
+                         <div className="bg-white/60 p-4 rounded-2xl">
+                           <Typography variant="body1" className="!font-[Open_sans] text-gray-700 !leading-relaxed">
+                             {selectedApplicant.seeker.about}
+                           </Typography>
+                         </div>
+           
+                         {selectedApplicant.seeker.education?.length > 0 && (
+                           <div>
+                             <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                               <FaGraduationCap className="!text-indigo-500" /> Education
+                             </Typography>
+                             <div className="space-y-3">
+                               {selectedApplicant.seeker.education.map((edu) => (
+                                 <div key={edu._id} className="bg-white/40 p-3 rounded-xl text-sm">
+                                   <Typography className="!font-medium !font-[Open_sans]">
+                                     {edu.degree}
+                                   </Typography>
+                                   <Typography className="!text-gray-600 !font-[Open_sans]">
+                                     {edu.institute} ({edu.year})
+                                   </Typography>
+                                   <Typography variant="body1" className="!font-[Open_sans] text-gray-500 mt-1">
+                                     {edu.description}
+                                   </Typography>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         )}
+           
+                         {selectedApplicant.seeker.experience?.length > 0 && (
+                           <div>
+                             <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                               <FaTasks className="!text-emerald-500" /> Experience
+                             </Typography>
+                             <div className="space-y-3">
+                               {selectedApplicant.seeker.experience.map((exp) => (
+                                 <div key={exp._id} className="bg-white/40 p-3 rounded-xl text-sm">
+                                   <Typography className="!font-medium !font-[Open_sans]">
+                                     {exp.title} - {exp.company}
+                                   </Typography>
+                                   <Typography className="!text-gray-600 !font-[Open_sans]">
+                                     {exp.duration}
+                                   </Typography>
+                                   <Typography variant="body1" className="!font-[Open_sans] text-gray-500 !mt-1">
+                                     {exp.description}
+                                   </Typography>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         )}
+           
+                         {selectedApplicant.seeker.skills?.length > 0 && (
+                           <div>
+                             <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                               <FaTools className="!text-amber-500" /> Skills
+                             </Typography>
+                             <div className="flex flex-wrap gap-2">
+                               {selectedApplicant.seeker.skills.map((skill, idx) => (
+                                 <Chip
+                                   key={idx}
+                                   label={skill}
+                                   size="small"
+                                   className="!bg-indigo-50 !text-indigo-700 rounded-full"
+                                 />
+                               ))}
+                             </div>
+                           </div>
+                         )}
+           
+                         {selectedJob.screeningQuestions?.length > 0 &&
+                           selectedApplicant.screeningAnswers?.length > 0 && (
+                             <div>
+                               <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                                 <FaQuestionCircle className="!text-purple-500" /> Screening
+                                 Questions
+                               </Typography>
+                               <div className="space-y-3">
+                                 {selectedJob.screeningQuestions.map((q, idx) => (
+                                   <div key={idx} className="bg-white/40 p-3 rounded-xl">
+                                     <Typography variant="body1" className="!font-medium !font-[Open_sans] text-gray-800">
+                                       Q: {q}
+                                     </Typography>
+                                     <Typography variant="body1" className="!font-[Open_sans] text-gray-600 !mt-1">
+                                       A: {selectedApplicant.screeningAnswers[idx] || "No answer"}
+                                     </Typography>
+                                   </div>
+                                 ))}
+                               </div>
+                             </div>
+                           )}
+           
+                         <div className="bg-white/60 p-4 rounded-2xl flex items-center gap-3">
+                           <FaFileAlt className="!text-indigo-500" />
+                           {selectedApplicant.cv ? (
+                             <a
+                            //    href={`${backendUrl}${selectedapplicant.cv}`}
+                               href="#"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               className="font-[Open_sans] text-sm text-indigo-600 hover:underline"
+                             >
+                               CV: {getFileName(selectedApplicant.cv)}
+                             </a>
+                           ) : (
+                             <span className="text-sm text-gray-700">
+                               CV: {selectedApplicant.seeker.cv || "No CV uploaded"}
+                             </span>
+                           )}
+                         </div>
+                       </div>
+           
+                       <div className="p-6 border-t border-white/30">
+                         <Chip
+                           label={selectedApplicant.status || "Pending"}
+                           className="!font-[Open_sans] w-full justify-center !cursor-pointer !rounded-full !py-5"
+                           sx={{
+                             backgroundColor: getStatusColor(selectedApplicant.status),
+                             color: "white",
+                             fontWeight: 500,
+                             fontSize: "1rem",
+                             "&:hover": {
+                               filter: "brightness(0.9)",
+                             },
+                           }}
+                           onClick={handleStatus}
+                         />
+                         <Menu
+                           anchorEl={anchorEl}
+                           open={Boolean(anchorEl)}
+                           onClose={() => setanchorEl(null)}
+                           PaperProps={{
+                             sx: { borderRadius: "16px", mt: 1, backdropFilter: "blur(8px)", backgroundColor: "rgba(255,255,255,0.9)" },
+                           }}
+                         >
+                           {statuses.map((status) => (
+                             <MenuItem
+                               key={status}
+                               onClick={() => handleStatusChange(status)}
+                               className="text-sm !font-[Open_sans]"
+                             >
+                               {status}
+                             </MenuItem>
+                           ))}
+                         </Menu>
+                       </div>
+                     </div>
+                   )}
+               </Drawer>
+              <Modal open={mailPopup} onClose={() => setMailPopup(false)}>
+                <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg bg-white/90 !backdrop-blur-xl !rounded-3xl !shadow-2xl !p-6 flex flex-col max-h-[90vh]">
+                  <div className="flex justify-between items-center mb-4 shrink-0">
+                    <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
+                      Email Preview
+                    </Typography>
+                    <IconButton onClick={() => setMailPopup(false)} className="text-gray-500">
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
+                  <Typography className="text-sm text-gray-600 mb-2 shrink-0">
+                    To: {selectedApplicant?.seeker.user.email || ""}
+                  </Typography>
+                  <TextField
+                    multiline
+                    minRows={8}
+                    maxRows={12}
+                    fullWidth
+                    value={mailMessage}
+                    onChange={(e) => setMailMessage(e.target.value)}
+                    variant="outlined"
+                    className="bg-white/50 rounded-xl overflow-y-auto"
+                    InputProps={{
+                      sx: {
+                        "& textarea": {
+                          scrollbarWidth: "thin", // For Firefox
+                          "&::-webkit-scrollbar": { width: "6px" }, // For Chrome/Safari
+                          "&::-webkit-scrollbar-thumb": { background: "#ccc", borderRadius: "10px" },
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleMailSend}
+                    className="!mt-4 !bg-indigo-600 hover:!bg-indigo-700 !text-white !rounded-full !py-3 !shadow-md hover:!shadow-lg !transition-all shrink-0"
+                    startIcon={<FaEnvelope />}
+                  >
+                    Send Mail
+                  </Button>
+                </Box>
+              </Modal>
         </> 
     );
 }
