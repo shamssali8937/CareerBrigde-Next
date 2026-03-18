@@ -129,6 +129,62 @@ export default function Homepage(){
         jobType: "Hybrid",
         provider: { _id: "comp3" },
       },
+      {
+        _id: "job6",
+        title: "Frontend Developer",
+        location: "New York, NY",
+        lastDate: "2025-07-15T00:00:00.000Z",
+        description:
+          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
+        requirements: ["React", "JavaScript", "CSS", "HTML"],
+        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
+        salary: "$80,000 - $100,000",
+        postDate: "2025-06-01T00:00:00.000Z",
+        jobType: "Full-Time",
+        provider: { _id: "comp1" },
+      },
+      {
+        _id: "job7",
+        title: "Frontend Developer",
+        location: "New York, NY",
+        lastDate: "2025-07-15T00:00:00.000Z",
+        description:
+          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
+        requirements: ["React", "JavaScript", "CSS", "HTML"],
+        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
+        salary: "$80,000 - $100,000",
+        postDate: "2025-06-01T00:00:00.000Z",
+        jobType: "Full-Time",
+        provider: { _id: "comp1" },
+      },
+      {
+        _id: "job8",
+        title: "Frontend Developer",
+        location: "New York, NY",
+        lastDate: "2025-07-15T00:00:00.000Z",
+        description:
+          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
+        requirements: ["React", "JavaScript", "CSS", "HTML"],
+        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
+        salary: "$80,000 - $100,000",
+        postDate: "2025-06-01T00:00:00.000Z",
+        jobType: "Full-Time",
+        provider: { _id: "comp1" },
+      },
+      {
+        _id: "job9",
+        title: "Frontend Developer",
+        location: "New York, NY",
+        lastDate: "2025-07-15T00:00:00.000Z",
+        description:
+          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
+        requirements: ["React", "JavaScript", "CSS", "HTML"],
+        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
+        salary: "$80,000 - $100,000",
+        postDate: "2025-06-01T00:00:00.000Z",
+        jobType: "Full-Time",
+        provider: { _id: "comp1" },
+      }
     ];
     
     // Link jobs to companies (populate company.jobs with full job objects)
@@ -1043,7 +1099,7 @@ export default function Homepage(){
               </Modal>
 
               <Modal open={!!selectedCompany} onClose={() => setselectedCompany(null)}>
-                <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 max-h-[80vh] overflow-y-auto">
+                <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 max-h-[60vh] flex flex-col">
                   {selectedCompany && (
                     <>
                       <div className="flex justify-between items-center mb-4">
@@ -1076,13 +1132,15 @@ export default function Homepage(){
                       <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mt-4 !mb-2">
                         Jobs from this company
                       </Typography>
-                      <div className="space-y-2">
+                      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                         <div className="space-y-2">
+
                         {selectedCompany.jobs.map((job) => (
-                          <div
+                            <div
                             key={job._id}
                             onClick={() => handleToSelectJob(job)}
                             className="p-3 bg-white/60 rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-[#a78cdd] flex justify-between items-center"
-                          >
+                            >
                             <span className="text-sm font-[Open_sans] font-medium text-gray-800">
                               {job.title}
                             </span>
@@ -1090,6 +1148,7 @@ export default function Homepage(){
                           </div>
                         ))}
                       </div>
+                    </div>
                     </>
                   )}
                 </Box>
