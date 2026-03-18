@@ -1,6 +1,6 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { FaBriefcase, FaCalendarAlt, FaEdit, FaLocationArrow } from "react-icons/fa";
+import { FaBriefcase, FaCalendarAlt, FaEdit, FaGraduationCap, FaLocationArrow, FaSchool, FaUserAlt } from "react-icons/fa";
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
@@ -443,9 +443,6 @@ export default function Homepage(){
                                    <FaLocationArrow className="text-[#a78cdd]" />
                                     Manager at Evergreen Pvt Ltd.
                                  </Typography>
-                                 <Typography className="text-xs text-gray-500">
-                                  
-                                 </Typography>
                                </>
                              )}
                            </CardContent>
@@ -459,6 +456,56 @@ export default function Homepage(){
                                Edit Profile
                              </Button>
                            </CardActions>
+                        </Card>
+                        <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                          <CardContent className="p-5">
+                            {stateData?.details?.name ? (
+                              <>
+                                 <div className="flex items-center gap-3 mb-4">
+                                   <div className="p-2 bg-indigo-100 rounded-xl">
+                                     <FaUserAlt className="text-indigo-600 text-xl" />
+                                   </div>
+                                   <Typography
+                                     variant="h6"
+                                     className="!font-bold !font-[Open_sans] text-gray-800"
+                                   >
+                                     {stateData.details.name|| "Shams Ali Mehdi"}
+                                   </Typography>
+                                 </div>
+                                <Typography variant="body1" className="!font-[Open_sans] !ml-2 !text-gray-600 !mt-3 flex items-center justify-center !gap-2">
+                                  <FaGraduationCap className="text-[#a78cdd]" />
+                                  {stateData.seekerInfo.headline}
+                                </Typography>
+                                <Typography variant="body1" className="!font-[Open_sans] !text-gray-600 !mt-3 flex items-center justify-center !gap-2">
+                                   <FaSchool className="text-[#a78cdd]" /> 
+                                  {stateData.seekerInfo.education?.[0]?.degree} -{" "}
+                                  {stateData.seekerInfo.education?.[0]?.year}
+                                </Typography>
+                                <Typography variant="body2" className="!font-[Open_sans] text-center text-gray-500 !mt-3">
+                                  {stateData.seekerInfo.education?.[0]?.description}
+                                </Typography>
+                              </>
+                            ) : (
+                              <>
+                                <Typography className="font-semibold text-gray-800 mb-2">
+                                  Headline
+                                </Typography>
+                                <Typography className="text-sm text-gray-600">
+                                  Currently studying
+                                </Typography>
+                              </>
+                            )}
+                          </CardContent>
+                          <CardActions className="justify-center !pb-4">
+                            <Button
+                              size="small"
+                              startIcon={<FaEdit />}
+                              onClick={handleEditBtn}
+                              className="!font-[Open_Sans] bg-indigo-600 hover:!bg-indigo text-white text-xs !rounded-full px-6 py-2 !transition-all hover:scale-105 !shadow-md"
+                            >
+                              Edit Profile
+                            </Button>
+                          </CardActions>
                         </Card>
                     </div>
                  </div>
