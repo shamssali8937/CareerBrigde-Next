@@ -1,7 +1,9 @@
 "use client"
 import Navbar from "@/components/Navbar";
 import { FaBriefcase, FaCalendarAlt, FaEdit, FaGraduationCap, FaLocationArrow, FaSchool, FaUserAlt } from "react-icons/fa";
-import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardMedia, InputAdornment, MenuItem, TextField, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import { useSelector } from "react-redux";
@@ -507,6 +509,47 @@ export default function Homepage(){
                             </Button>
                           </CardActions>
                         </Card>
+                    </div>
+                    <div className="lg:col-span-6 space-y-4">
+                        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-xl p-5 flex flex-col sm:flex-row justify-center items-center gap-4">
+                            <div className="flex flex-col sm:flex-row gap-3">
+                              <TextField
+                                placeholder="Search by job title, company or location"
+                                variant="outlined"
+                                size="small"
+                                value={searchWord}
+                                onChange={(e) => setSearchWord(e.target.value)}
+                                className="flex-1 bg-white/50 rounded-lg"
+                                InputProps={{
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <SearchIcon className="text-gray-400" />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                              <TextField
+                                select
+                                size="small"
+                                value={jobTypeFilter}
+                                onChange={(e) => setJobTypeFilter(e.target.value)}
+                                className="!bg-[#a78cdd] hover:!bg-[#8e6fc5] !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                 sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' },'& .MuiSelect-select': { 
+                                       color: 'white !important',
+                                       fontFamily: '"Open Sans" !important',
+                                       fontWeight: 600,
+                                       paddingLeft: '24px'
+                                     }, }}
+                              >
+                                <MenuItem value="all">All Types</MenuItem>
+                                <MenuItem value="Full-Time">Full-Time</MenuItem>
+                                <MenuItem value="On-site">On-Site</MenuItem>
+                                <MenuItem value="Contract">Contract</MenuItem>
+                                <MenuItem value="Remote">Remote</MenuItem>
+                                <MenuItem value="Hybrid">Hybrid</MenuItem>
+                              </TextField>
+                            </div>
+                        </div>
                     </div>
                  </div>
              </div>
