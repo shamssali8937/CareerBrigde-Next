@@ -1,6 +1,6 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { FaBriefcase, FaCalendarAlt, FaEdit, FaGraduationCap, FaInfoCircle, FaLocationArrow, FaSchool, FaUserAlt } from "react-icons/fa";
+import { FaBriefcase, FaBuilding, FaEdit, FaGraduationCap, FaInfoCircle, FaLocationArrow, FaSchool, FaUserAlt, FaUserTie } from "react-icons/fa";
 import { Accordion, AccordionDetails, AccordionSummary, Button, Card, CardActions, CardContent, CardMedia, InputAdornment, MenuItem, Skeleton, Stack, TextField, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
@@ -386,14 +386,14 @@ export default function Homepage(){
                   transition={{duration:0.5}}
                   className="flex justify-center mt-4 mb-8"
                  >
-                   <Typography variant="h4" className="!font-bold !font-[Open_sans] flex items-center gap-3 text-center !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-3 !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50">
+                   <Typography variant="h6" className="!font-bold !font-[Open_sans] flex items-center gap-3 text-center !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-3 !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50">
                      <FaBriefcase className="text-white" />
                      Find Your Dream Job
                    </Typography>
                  </motion.div>
                   <div className="grid grid-cols-1 lg:grid-cols-12 mt-2 gap-6">
                     <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
-                        <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                        <Card className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
                            <CardMedia
                              component="img"
                              image="/cardback.png" 
@@ -460,7 +460,7 @@ export default function Homepage(){
                              </Button>
                            </CardActions>
                         </Card>
-                        <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                        <Card className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
                           <CardContent className="p-5">
                             {stateData?.details?.name ? (
                               <>
@@ -594,12 +594,15 @@ export default function Homepage(){
                                                   <Accordion
                                                     expanded={expanded === job._id}
                                                     onChange={handleChange(job._id)}
-                                                    className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 hover:!bg-white/90"
-                                                    sx={{
-                                                      "&:before": { display: "none" },
-                                                      borderRadius: "24px !important",
-                                                      marginBottom: "12px",
-                                                    }}
+                                                    className={`!rounded-3xl !shadow-xl border-0 !overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 
+                                                    ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
+                                                     sx={{
+                                                       "&:before": { display: "none" },
+                                                       borderRadius: "24px !important",
+                                                       marginBottom: "12px",
+                                                       transition: "transform 0.3s ease-in-out", 
+                                                     }}
+
                                                   >
                                                     <AccordionSummary
                                                       expandIcon={
@@ -628,7 +631,7 @@ export default function Homepage(){
                                                       <Typography spacing={4} variant="body1" className="!font-[Open_sans] text-gray-700 !mb-4 leading-relaxed">
                                                         {job.description}
                                                       </Typography>
-                                                      <div className="flex gap-2 flex-wrap mt-10">
+                                                      <div className="flex gap-2 flex-wrap mt-4">
                                                         {isJobClosed(job.lastDate) ? (
                                                           <Button
                                                             variant="contained"
@@ -642,7 +645,7 @@ export default function Homepage(){
                                                             variant="contained"
                                                             startIcon={<FaInfoCircle />}
                                                             onClick={() => handleDetailBtn(job)}
-                                                            className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white text-xs rounded-full px-5 py-1.5 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                                            className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white text-xs !rounded-full px-5 py-1.5 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
                                                           >
                                                             Details
                                                           </Button>
@@ -653,7 +656,7 @@ export default function Homepage(){
                                                           <Button
                                                             variant="contained"
                                                             disabled
-                                                            className="!bg-emerald-600 text-white text-xs rounded-full px-5 py-1.5"
+                                                            className="!font-['Open_Sans'] !bg-emerald-600 hover:!bg-emerald-700 !text-white !rounded-full !px-6 !py-2 !text-sm !font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(5,150,105,0.39)] hover:!shadow-emerald-600/50 !normal-case !border-none"
                                                           >
                                                             Applied
                                                           </Button>
@@ -692,13 +695,13 @@ export default function Homepage(){
                                                   expanded={expanded === job._id}
                                                   onChange={handleChange(job._id)}
                                                   className={`!rounded-3xl !shadow-xl border-0 !overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 
-                                              ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
-                                            sx={{
-                                              "&:before": { display: "none" },
-                                              borderRadius: "24px !important",
-                                              marginBottom: "12px",
-                                              transition: "transform 0.3s ease-in-out", 
-                                            }}
+                                                  ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
+                                                   sx={{
+                                                     "&:before": { display: "none" },
+                                                     borderRadius: "24px !important",
+                                                     marginBottom: "12px",
+                                                     transition: "transform 0.3s ease-in-out", 
+                                                   }}
                                                 >
                                                   <AccordionSummary
                                                     expandIcon={
@@ -727,7 +730,7 @@ export default function Homepage(){
                                                     <Typography className="text-sm text-gray-700 mb-4 leading-relaxed">
                                                       {job.description}
                                                     </Typography>
-                                                    <div className="flex gap-2 flex-wrap">
+                                                    <div className="flex gap-2 flex-wrap mt-4">
                                                       {isJobClosed(job.lastDate) ? (
                                                         <Button
                                                           variant="contained"
@@ -752,7 +755,7 @@ export default function Homepage(){
                                                         <Button
                                                           variant="contained"
                                                           disabled
-                                                          className="!bg-emerald-600 text-white text-xs rounded-full px-5 py-1.5"
+                                                          className="!font-['Open_Sans'] !bg-emerald-600 hover:!bg-emerald-700 !text-white !rounded-full !px-6 !py-2 !text-sm !font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(5,150,105,0.39)] hover:!shadow-emerald-600/50 !normal-case !border-none"
                                                         >
                                                           Applied
                                                         </Button>
@@ -772,7 +775,57 @@ export default function Homepage(){
                                     )}
                                   </>
                                 )}
-                            </div>
+                        </div>
+                    </div>
+                    <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
+                        <Card className="!rounded-3xl !shadow-xl border-0 bg-white/70 backdrop-blur-md overflow-hidden p-5">
+                          <Typography variant="h5" className="text-gray-800 !font-[Open_sans] text-lg !mb-4 flex items-center gap-2">
+                            <FaBuilding className="text-[#a78cdd]" />
+                            Available Companies
+                          </Typography>
+                          <div className="space-y-3">
+                            {loading ? (
+                              <Stack spacing={2}>
+                                {[1, 2, 3].map((n) => (
+                                  <div key={n} className="flex items-center gap-2">
+                                      <Skeleton variant="circular" width={40} height={40} />
+                                    <div className="flex-1">
+                                      <Skeleton variant="text" width="80%" height={20} />
+                                      <Skeleton variant="text" width="60%" height={15} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </Stack>
+                            ) : (
+                              companies.map((company) => (
+                                <motion.div
+                                  key={company._id}
+                                  whileHover={{ scale: 1.02 }}
+                                  onClick={() => handleCompany(company)}
+                                  className="p-3 bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-[#a78cdd] flex items-center gap-3"
+                                >
+                                  <img
+                                    src={company.user.photo}
+                                    alt={company.companyname}
+                                    className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
+                                  />
+                                  <div>
+                                    <Typography variant="body1" className="!font-[Open_sans] text-gray-800 text-sm">
+                                      {company.companyname}
+                                    </Typography>
+                                    <Typography variant="body2" className="!font-[Open_sans] text-gray-500 flex items-center gap-1">
+                                      <FaUserTie className="text-[#a78cdd]" />
+                                      {company.user.name}
+                                    </Typography>
+                                    <Typography variant="body2" className="text-gray-500 flex items-center gap-1">
+                                      {company.positionInCompany}
+                                    </Typography>
+                                  </div>
+                                </motion.div>
+                              ))
+                            )}
+                          </div>
+                        </Card>
                     </div>
                  </div>
              </div>
