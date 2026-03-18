@@ -725,11 +725,18 @@ export default function jobApplications() {
                     className="bg-white/50 rounded-lg"
                   />
                   <FormControl size="small" sx={{ minWidth: 120 }} className="bg-white/50 rounded-lg">
-                    <InputLabel>Status</InputLabel>
+                    {/* <InputLabel>Status</InputLabel> */}
                     <Select
                       value={filterStatus}
-                      label="Status"
+                      // label="Status"
                       onChange={(e) => setFilterStatus(e.target.value)}
+                       className="!bg-[#a78cdd] hover:!bg-[#8e6fc5] !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                 sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' },'& .MuiSelect-select': { 
+                                       color: 'white !important',
+                                       fontFamily: '"Open Sans" !important',
+                                       fontWeight: 600,
+                                       paddingLeft: '24px'
+                                     }, }}
                     >
                       <MenuItem value="All">All</MenuItem>
                       {statuses.map((s) => (
@@ -740,11 +747,18 @@ export default function jobApplications() {
                     </Select>
                   </FormControl>
                   <FormControl size="small" sx={{ minWidth: 120 }} className="bg-white/50 rounded-lg">
-                    <InputLabel>Viewed</InputLabel>
+                    {/* <InputLabel>Viewed</InputLabel> */}
                     <Select
                       value={filterView}
-                      label="Viewed"
+                      // label="Viewed"
                       onChange={(e) => setFilterView(e.target.value)}
+                       className="!bg-[#a78cdd] hover:!bg-[#8e6fc5] !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                 sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' },'& .MuiSelect-select': { 
+                                       color: 'white !important',
+                                       fontFamily: '"Open Sans" !important',
+                                       fontWeight: 600,
+                                       paddingLeft: '24px'
+                                     }, }}
                     >
                       <MenuItem value="All">All</MenuItem>
                       <MenuItem value="Viewed">Viewed</MenuItem>

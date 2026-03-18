@@ -353,7 +353,210 @@ export default function AppliedJobs() {
           )}
         </div>
       </div>
+       
+      <SwipeableDrawer
+        anchor="right"
+        open={opendrawer}
+        onClose={() => setopendrawer(false)}
+        disableBackdropTransition={false}
+        disableDiscovery={false}
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 500 },
+            borderRadius: "24px 0 0 24px",
+            background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+            backdropFilter: "blur(16px)",
+            backgroundColor: "rgba(250, 248, 255, 0.8)",
+            borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
+            boxShadow: "-10px 0 30px rgba(0,0,0,0.05)",
+          },
+        }}
+      >
+        {selectedapplication && (
+          <div className="h-full flex flex-col">
+            {/* Drawer Header */}
+            <div className="p-6 border-b border-gray-200/50 flex justify-between items-center">
+              <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
+                Application Details
+              </Typography>
+              <IconButton onClick={() => setopendrawer(false)} className="text-gray-500">
+                <CloseIcon />
+              </IconButton>
+            </div>
 
+            {/* Job Info */}
+            <div className="p-6 border-b border-white/30">
+              <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
+                {selectedapplication.job.title}
+              </Typography>
+              <div className="flex items-center gap-3 mt-3">
+                <img
+                  src={selectedapplication.job.provider.user.photo}
+                  alt="company"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
+                />
+                <div>
+                  <Typography className="!font-medium !font-[Open_sans] text-gray-800">
+                    {selectedapplication.job.provider.user.name}
+                  </Typography>
+                  <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
+                    <FaUserTie className="!text-indigo-500" />
+                    at {selectedapplication.job.provider.companyname}
+                  </Typography>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 mt-3 text-sm text-gray-700">
+                <span className="font-[Open_sans] flex items-center gap-1">
+                  <FaMapMarkerAlt className="!text-indigo-500" />
+                  {selectedapplication.job.location}
+                </span>
+                <span className="font-[Open_sans] flex items-center gap-1">
+                  <FaClock className="!text-emerald-500" />
+                  {selectedapplication.job.jobType}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-5">
+              <div className="flex flex-col items-center text-center">
+                <img
+                  src={selectedapplication.seeker.user.photo}
+                  alt="applicant"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg mb-3"
+                />
+                <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
+                  {selectedapplication.seeker.user.name}
+                </Typography>
+                <Typography variant="body1" className="!font-[Open_sans] text-gray-600">
+                  {selectedapplication.seeker.headline}
+                </Typography>
+                <div className="font-[Open_sans] flex items-center gap-2 mt-2 text-xs text-gray-500">
+                  <FaCalendarAlt className="!text-amber-500" />
+                  Applied on {new Date(selectedapplication.applyDate).toLocaleDateString()}
+                </div>
+              </div>
+
+              {/* About */}
+              <div className="bg-white/60 p-4 rounded-2xl">
+                <Typography variant="body1" className="!font-[Open_sans] text-gray-700 !leading-relaxed">
+                  {selectedapplication.seeker.about}
+                </Typography>
+              </div>
+
+              {/* Education */}
+              {selectedapplication.seeker.education?.length > 0 && (
+                <div>
+                  <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                    <FaGraduationCap className="!text-indigo-500" /> Education
+                  </Typography>
+                  <div className="space-y-3">
+                    {selectedapplication.seeker.education.map((edu) => (
+                      <div key={edu._id} className="bg-white/40 p-3 rounded-xl text-sm">
+                        <Typography className="!font-medium !font-[Open_sans]">{edu.degree}</Typography>
+                        <Typography className="!text-gray-600 !font-[Open_sans]">
+                          {edu.institute} ({edu.year})
+                        </Typography>
+                        <Typography variant="body1" className="!font-[Open_sans] text-gray-500 mt-1">
+                          {edu.description}
+                        </Typography>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedapplication.seeker.experience?.length > 0 && (
+                <div>
+                  <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                    <FaTasks className="!text-emerald-500" /> Experience
+                  </Typography>
+                  <div className="space-y-3">
+                    {selectedapplication.seeker.experience.map((exp) => (
+                      <div key={exp._id} className="bg-white/40 p-3 rounded-xl text-sm">
+                        <Typography className="!font-medium !font-[Open_sans]">
+                          {exp.title} - {exp.company}
+                        </Typography>
+                        <Typography className="!text-gray-600 !font-[Open_sans]">{exp.duration}</Typography>
+                        <Typography variant="body1" className="!font-[Open_sans] text-gray-500 !mt-1">
+                          {exp.description}
+                        </Typography>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedapplication.seeker.skills?.length > 0 && (
+                <div>
+                  <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                    <FaTools className="!text-amber-500" /> Skills
+                  </Typography>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedapplication.seeker.skills.map((skill, idx) => (
+                      <Chip
+                        key={idx}
+                        label={skill}
+                        size="small"
+                        className="!bg-indigo-50 !text-indigo-700 rounded-full"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedapplication.job.screeningQuestions?.length > 0 &&
+                selectedapplication.screeningAnswers?.length > 0 && (
+                  <div>
+                    <Typography className="!font-semibold !font-[Open_sans] text-gray-800 !mb-2 flex items-center !gap-2">
+                      <FaQuestionCircle className="!text-purple-500" /> Screening Questions
+                    </Typography>
+                    <div className="space-y-3">
+                      {selectedapplication.job.screeningQuestions.map((q, idx) => (
+                        <div key={idx} className="bg-white/40 p-3 rounded-xl">
+                          <Typography variant="body1" className="!font-medium !font-[Open_sans] text-gray-800">
+                            Q: {q}
+                          </Typography>
+                          <Typography variant="body1" className="!font-[Open_sans] text-gray-600 !mt-1">
+                            A: {selectedapplication.screeningAnswers[idx] || "No answer"}
+                          </Typography>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              <div className="bg-white/60 p-4 rounded-2xl flex items-center gap-3">
+                <FaFileAlt className="!text-indigo-500" />
+                {selectedapplication.cv ? (
+                  <a
+                    href={selectedapplication.cv}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-[Open_sans] text-sm text-indigo-600 hover:underline"
+                  >
+                    CV: {getFileName(selectedapplication.cv)}
+                  </a>
+                ) : (
+                  <span className="text-sm text-gray-700">CV: No CV uploaded</span>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-white/30">
+              <Chip
+                label={selectedapplication.status || "Pending"}
+                className="!font-[Open_sans] w-full justify-center !rounded-full !py-5"
+                sx={{
+                  backgroundColor: getStatusColor(selectedapplication.status),
+                  color: "white",
+                  fontWeight: 500,
+                  fontSize: "1rem",
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </SwipeableDrawer>
     </>
   );
 }
