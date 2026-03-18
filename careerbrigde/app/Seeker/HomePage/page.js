@@ -1,9 +1,10 @@
 "use client"
 import Navbar from "@/components/Navbar";
-import { FaBriefcase, FaCalendarAlt, FaEdit, FaGraduationCap, FaLocationArrow, FaSchool, FaUserAlt } from "react-icons/fa";
-import { Button, Card, CardActions, CardContent, CardMedia, InputAdornment, MenuItem, TextField, Typography } from "@mui/material";
+import { FaBriefcase, FaCalendarAlt, FaEdit, FaGraduationCap, FaInfoCircle, FaLocationArrow, FaSchool, FaUserAlt } from "react-icons/fa";
+import { Accordion, AccordionDetails, AccordionSummary, Button, Card, CardActions, CardContent, CardMedia, InputAdornment, MenuItem, Skeleton, Stack, TextField, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import { useSelector } from "react-redux";
@@ -71,7 +72,7 @@ export default function Homepage(){
         _id: "job2",
         title: "Backend Engineer",
         location: "Remote",
-        lastDate: "2025-07-20T00:00:00.000Z",
+        lastDate: "2026-07-20T00:00:00.000Z",
         description:
           "Join our backend team to build scalable APIs and microservices. Experience with Node.js and databases is required.",
         requirements: ["Node.js", "Express", "MongoDB", "Python"],
@@ -85,7 +86,7 @@ export default function Homepage(){
         _id: "job3",
         title: "UI/UX Designer",
         location: "San Francisco, CA",
-        lastDate: "2025-07-10T00:00:00.000Z",
+        lastDate: "2026-07-10T00:00:00.000Z",
         description:
           "We need a creative UI/UX Designer to craft beautiful and intuitive interfaces. Must have a strong portfolio.",
         requirements: ["Figma", "Adobe XD", "Wireframing", "Prototyping"],
@@ -99,7 +100,7 @@ export default function Homepage(){
         _id: "job4",
         title: "Data Scientist",
         location: "Boston, MA",
-        lastDate: "2025-07-25T00:00:00.000Z",
+        lastDate: "2026-07-25T00:00:00.000Z",
         description:
           "Analyze large datasets and build predictive models. Proficiency in Python and machine learning libraries is essential.",
         requirements: ["Python", "Pandas", "Scikit-learn", "SQL"],
@@ -113,7 +114,7 @@ export default function Homepage(){
         _id: "job5",
         title: "DevOps Engineer",
         location: "Austin, TX",
-        lastDate: "2025-07-18T00:00:00.000Z",
+        lastDate: "2026-07-18T00:00:00.000Z",
         description:
           "Manage cloud infrastructure and CI/CD pipelines. Experience with AWS and Docker is required.",
         requirements: ["AWS", "Docker", "Kubernetes", "Terraform"],
@@ -550,6 +551,228 @@ export default function Homepage(){
                               </TextField>
                             </div>
                         </div>
+                        <div className="space-y-3">
+                               {loading ? (
+                                  <Stack spacing={2}>
+                                    {[1, 2, 3, 4, 5].map((n) => (
+                                      <Skeleton
+                                        key={n}
+                                        variant="rectangular"
+                                        height={80}
+                                        sx={{ borderRadius: "24px" }}
+                                      />
+                                    ))}
+                                  </Stack>
+                                ) : (
+                                  <>
+                                    {/* Search Results Section */}
+                                    {searchWord && (
+                                      <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="mb-8"
+                                      >
+                                        <Typography
+                                          variant="h6"
+                                          className="!font-bold !font-[Open_sans] text-gray-800 !mb-4 flex items-center gap-2"
+                                        >
+                                          <SearchIcon className="!text-[#a78cdd]" /> Search Results
+                                        </Typography>
+                                        <div className="space-y-3">
+                                          {jobsToDisplay.length > 0 ? (
+                                            jobsToDisplay.map((job, index) => {
+                                              const company = companies.find(
+                                                (c) => c._id === job.provider._id
+                                              );
+                                              return (
+                                                <motion.div
+                                                  key={job._id}
+                                                  initial={{ opacity: 0, y: 20 }}
+                                                  animate={{ opacity: 1, y: 0 }}
+                                                  transition={{ delay: index * 0.05 }}
+                                                >
+                                                  <Accordion
+                                                    expanded={expanded === job._id}
+                                                    onChange={handleChange(job._id)}
+                                                    className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 hover:!bg-white/90"
+                                                    sx={{
+                                                      "&:before": { display: "none" },
+                                                      borderRadius: "24px !important",
+                                                      marginBottom: "12px",
+                                                    }}
+                                                  >
+                                                    <AccordionSummary
+                                                      expandIcon={
+                                                        <ExpandMoreIcon className="!text-[#a78cdd]" />
+                                                      }
+                                                      className="bg-transparent hover:bg-white/30 transition-colors rounded-t-3xl"
+                                                    >
+                                                      <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-2 py-2">
+                                                        <Typography className="!font-[Open_sans] text-gray-800">
+                                                          {job.title}
+                                                        </Typography>
+                                                        <div className="flex flex-wrap gap-2 text-xs">
+                                                          <span className="font-[Open_sans] bg-[#a78cdd]/20 text-[#7b5fb0] px-3 py-1 rounded-full">
+                                                            {job.location}
+                                                          </span>
+                                                          <span className="font-[Open_sans] bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+                                                            {job.jobType}
+                                                          </span>
+                                                          <span className="font-[Open_sans] bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
+                                                            Apply by: {formatDate(job.lastDate)}
+                                                          </span>
+                                                        </div>
+                                                      </div>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails className="bg-white/40 backdrop-blur-sm p-5">
+                                                      <Typography spacing={4} variant="body1" className="!font-[Open_sans] text-gray-700 !mb-4 leading-relaxed">
+                                                        {job.description}
+                                                      </Typography>
+                                                      <div className="flex gap-2 flex-wrap mt-10">
+                                                        {isJobClosed(job.lastDate) ? (
+                                                          <Button
+                                                            variant="contained"
+                                                            disabled
+                                                            className="!font-['Open_Sans'] !bg-[#ff6b6b] hover:!bg-[#ee5253] !text-white !rounded-full !px-6 !py-2 !text-sm !font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(255,107,107,0.39)] hover:!shadow-[#ff6b6b]/50 !normal-case !border-none"
+                                                          >
+                                                            Closed
+                                                          </Button>
+                                                        ) : (
+                                                          <Button
+                                                            variant="contained"
+                                                            startIcon={<FaInfoCircle />}
+                                                            onClick={() => handleDetailBtn(job)}
+                                                            className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white text-xs rounded-full px-5 py-1.5 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                                          >
+                                                            Details
+                                                          </Button>
+                                                        )}
+                                                        {appliedJobs.some(
+                                                          (app) => app.job._id === job._id
+                                                        ) && (
+                                                          <Button
+                                                            variant="contained"
+                                                            disabled
+                                                            className="!bg-emerald-600 text-white text-xs rounded-full px-5 py-1.5"
+                                                          >
+                                                            Applied
+                                                          </Button>
+                                                        )}
+                                                      </div>
+                                                    </AccordionDetails>
+                                                  </Accordion>
+                                                </motion.div>
+                                              );
+                                            })
+                                          ) : (
+                                            <Typography className="!font-[Open_sans] text-sm text-gray-500 text-center py-8">
+                                              No jobs found
+                                            </Typography>
+                                          )}
+                                        </div>
+                                      </motion.div>
+                                    )}
+                  
+                                    {/* Regular Job Feed */}
+                                    {!searchWord && (
+                                      <div className="space-y-3">
+                                        {jobsToDisplay.length > 0 ? (
+                                          jobsToDisplay.map((job, index) => {
+                                            const company = companies.find(
+                                              (c) => c._id === job.provider._id
+                                            );
+                                            return (
+                                              <motion.div
+                                                key={job._id}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                              >
+                                                <Accordion
+                                                  expanded={expanded === job._id}
+                                                  onChange={handleChange(job._id)}
+                                                  className={`!rounded-3xl !shadow-xl border-0 !overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 
+                                              ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
+                                            sx={{
+                                              "&:before": { display: "none" },
+                                              borderRadius: "24px !important",
+                                              marginBottom: "12px",
+                                              transition: "transform 0.3s ease-in-out", 
+                                            }}
+                                                >
+                                                  <AccordionSummary
+                                                    expandIcon={
+                                                      <ExpandMoreIcon className="text-[#a78cdd]" />
+                                                    }
+                                                    className="bg-transparent hover:bg-white/30 transition-colors rounded-t-3xl"
+                                                  >
+                                                    <div className="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-2 py-2">
+                                                      <Typography className="font-semibold text-gray-800 text-base">
+                                                        {job.title}
+                                                      </Typography>
+                                                      <div className="flex flex-wrap gap-2 text-xs">
+                                                        <span className="bg-[#a78cdd]/20 text-[#7b5fb0] px-3 py-1 rounded-full">
+                                                          {job.location}
+                                                        </span>
+                                                        <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+                                                          {job.jobType}
+                                                        </span>
+                                                        <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
+                                                          Apply by: {formatDate(job.lastDate)}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                  </AccordionSummary>
+                                                  <AccordionDetails className="bg-white/40 backdrop-blur-sm p-5">
+                                                    <Typography className="text-sm text-gray-700 mb-4 leading-relaxed">
+                                                      {job.description}
+                                                    </Typography>
+                                                    <div className="flex gap-2 flex-wrap">
+                                                      {isJobClosed(job.lastDate) ? (
+                                                        <Button
+                                                          variant="contained"
+                                                          disabled
+                                                          className="!font-['Open_Sans'] !bg-[#ff6b6b] hover:!bg-[#ee5253] !text-white !rounded-full !px-6 !py-2 !text-sm !font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(255,107,107,0.39)] hover:!shadow-[#ff6b6b]/50 !normal-case !border-none"
+                                                        >
+                                                          Closed
+                                                        </Button>
+                                                      ) : (
+                                                        <Button
+                                                          variant="contained"
+                                                          startIcon={<FaInfoCircle />}
+                                                          onClick={() => handleDetailBtn(job)}
+                                                          className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                                        >
+                                                          Details
+                                                        </Button>
+                                                      )}
+                                                      {appliedJobs.some(
+                                                        (app) => app.job._id === job._id
+                                                      ) && (
+                                                        <Button
+                                                          variant="contained"
+                                                          disabled
+                                                          className="!bg-emerald-600 text-white text-xs rounded-full px-5 py-1.5"
+                                                        >
+                                                          Applied
+                                                        </Button>
+                                                      )}
+                                                    </div>
+                                                  </AccordionDetails>
+                                                </Accordion>
+                                              </motion.div>
+                                            );
+                                          })
+                                        ) : (
+                                          <Typography variant="body1" className="!font-[Open_sans] text-gray-500 text-center py-8">
+                                            No jobs available
+                                          </Typography>
+                                        )}
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                            </div>
                     </div>
                  </div>
              </div>
