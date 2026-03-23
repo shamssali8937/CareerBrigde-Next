@@ -1,6 +1,6 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Layout from "@/layouts/Layout";
 import TextInput from "@/components/TextInput";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import {useState, useEffect} from "react"
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setEmail } from "@/redux/slices/signupSlice";
+import { setEmail, setRole } from "@/redux/slices/signupSlice";
 
 export default function Signin(){
 
@@ -19,6 +19,7 @@ export default function Signin(){
     const [snackbarseverity, setsnackbarseverity] = useState("success");
 
     const dispatch=useDispatch();
+    const router=useRouter();
     const reduxSignupData=useSelector((state)=>state.signup)
     
     const [data, setData] = useState({
@@ -40,7 +41,7 @@ export default function Signin(){
       });
 
 
-    const handlesignin = (e) => {
+    const  handlesignin =async (e) => {
         e.preventDefault();
     
         
@@ -56,11 +57,49 @@ export default function Signin(){
           setopensackbar(true);
           return;
         }
-    
-        dispatch(setEmail(data.email));
-        setsnackbarmessage(`Welcome, ${data.email}!`);
-        setsnackbarseverity("success");
-        setopensackbar(true);
+
+        try{
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/Signin`,{
+               method: "POST",
+               headers: {
+                 "Content-Type": "application/json",
+               },
+               body: JSON.stringify({
+                 email: data.email,
+                 password: data.password,
+               }),
+             });
+             const result= await response.json();
+
+             if(!response.ok){
+              // throw new Error(result.message || "Login failed");
+              setsnackbarmessage("Login Failed");
+              setsnackbarseverity("error");
+             }
+
+             localStorage.setItem("token", result.User.token);
+
+             dispatch(setEmail(data.email));
+             dispatch(setRole(result.User.role));
+             console.log("SigINROle",result.User.role)
+             setsnackbarmessage(`Welcome, ${data.email}!`);
+             setsnackbarseverity("success");
+
+             if(result.User.role==="jobseeker"){
+                router.push("/Seeker/HomePage");
+             }else{
+                  router.push("/Provider/HomePage");
+             }
+          setopensackbar(true);     
+
+        }catch(err){
+          console.log(err);
+           setsnackbarmessage(err.message);
+           setsnackbarseverity("error");
+            setopensackbar(true);
+        }
+   
+        // setopensackbar(true);
      };
 
 
@@ -80,7 +119,7 @@ export default function Signin(){
       const handlegooglelogin = () => {
         document.cookie = `oauth_type=login; path=/; max-age=300`;
         signIn("google", {
-          callbackUrl: "/Home", // e.g., "/Protected", "/Dashboard", or "/"
+          callbackUrl: "/Auth/OAuthRedirectPage", // e.g., "/Protected", "/Dashboard", or "/"
         });
         // setsnackbarmessage("Google login clicked");
         // setsnackbarseverity("info");

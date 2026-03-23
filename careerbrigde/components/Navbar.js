@@ -10,6 +10,8 @@ function Navbar({ onProfileClick }) {
   const role = useSelector((state) => state.signup.role);
   const [isOpen,setIsOpen]=useState(false);
 
+  console.log("Role",role);
+
   return (
     <>
       <div className="fixed top-0 left-0 right-0 bg-white shadow-lg  z-100">
@@ -35,7 +37,7 @@ function Navbar({ onProfileClick }) {
           </Link>
 
           {/* Job Applicants / Applied Jobs */}
-          {role === "jobprovider" ? (
+          {role === "jobprovider" || "provider" ? (
             <Link
               href="/Provider/JobApplicants"
               className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
@@ -43,7 +45,7 @@ function Navbar({ onProfileClick }) {
               <FaBriefcase className="text-xl" />
               <span className="text-xs">Job Applicants</span>
             </Link>
-          ) : role === "jobseeker" ? (
+          ) : role === "jobseeker" || "seeker" ? (
             <Link
               href="/Seeker/AppliedJobs"
               className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
@@ -85,7 +87,7 @@ function Navbar({ onProfileClick }) {
                   Home
                 </Link>
 
-                {role === "jobprovider" ? (
+                {role === "jobprovider" || "provider" ? (
                   <Link
                     href="/Provider/JobApplicants"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"
@@ -94,7 +96,7 @@ function Navbar({ onProfileClick }) {
                     <FaBriefcase className="mr-2" />
                     Job Applicants
                   </Link>
-                ) : role === "jobseeker" ? (
+                ) : role === "jobseeker" || "seeker" ? (
                   <Link
                     href="/Seeker/AppliedJobs"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"
