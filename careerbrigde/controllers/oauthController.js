@@ -27,7 +27,7 @@ export const handleSignIn = async ({ user, account, profile }) => {
         return false; 
       }
       console.log("✅ LOGIN SUCCESS: User exists.");
-      return true; 
+      return existingUser;; 
     }
 
     // SIGNUP FLOW
@@ -43,7 +43,7 @@ export const handleSignIn = async ({ user, account, profile }) => {
       }
 
       console.log("4. Attempting to save new user to MongoDB...");
-      await createUser({
+      const newUser=await createUser({
         name: user.name,
         email: user.email,
         photo:{
@@ -55,13 +55,16 @@ export const handleSignIn = async ({ user, account, profile }) => {
       });
 
       console.log("✅ SIGNUP SUCCESS: User created in DB!");
-      return true; 
+      return newUser; 
     }
 
     console.log("❌ FALLBACK FAILED: Cookies were missing. Defaulting to block.");
     // Default Fallback
-    if (existingUser) return true;
-    return false;
+    // if (existingUser) return true;
+    // return false;
+    if (existingUser) {
+  return existingUser;
+}
 
   } catch (error) {
     console.error("🚨 CRITICAL ERROR DURING SIGN-IN:", error);

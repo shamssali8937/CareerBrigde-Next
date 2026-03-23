@@ -29,7 +29,7 @@ function Navbar({ onProfileClick }) {
         <div className="hidden md:flex items-center space-x-8">
           {/* Home */}
           <Link
-            href={role === "jobprovider" ? "/providerpage" : "/Provider/Homepage"}
+            href={role === "jobprovider" || role=== "provider" ? "/Provider/HomePage" : "/Provider/Homepage"}
             className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
           >
             <FaHome className="text-xl" />
@@ -37,7 +37,7 @@ function Navbar({ onProfileClick }) {
           </Link>
 
           {/* Job Applicants / Applied Jobs */}
-          {role === "jobprovider" || "provider" ? (
+          {role === "jobprovider" || role=== "provider" ? (
             <Link
               href="/Provider/JobApplicants"
               className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
@@ -79,7 +79,7 @@ function Navbar({ onProfileClick }) {
               {/* Left column: stacked links */}
               <div className="flex flex-col space-y-2">
                 <Link
-                  href={role === "jobprovider" ? "/providerpage" : "/Provider/Homepage"}
+                  href={role === "jobprovider" || role==="provider" ? "/Provider/HomePage" : "/Provider/Homepage"}
                   className="flex items-center text-gray-700 hover:text-blue-600"
                   onClick={() => setIsOpen(false)}
                 >
@@ -87,7 +87,7 @@ function Navbar({ onProfileClick }) {
                   Home
                 </Link>
 
-                {role === "jobprovider" || "provider" ? (
+                {role === "jobprovider" || role=== "provider" ? (
                   <Link
                     href="/Provider/JobApplicants"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"
@@ -96,7 +96,7 @@ function Navbar({ onProfileClick }) {
                     <FaBriefcase className="mr-2" />
                     Job Applicants
                   </Link>
-                ) : role === "jobseeker" || "seeker" ? (
+                ) : role === "jobseeker" || role=== "seeker" ? (
                   <Link
                     href="/Seeker/AppliedJobs"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"

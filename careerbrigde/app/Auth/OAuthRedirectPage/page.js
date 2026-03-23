@@ -4,10 +4,13 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { setRole } from "@/redux/slices/signupSlice";
 
 export default function OAuthRedirect() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const dispatch=useDispatch();
 
   useEffect(() => {
     if (status === "loading") return;
@@ -18,10 +21,12 @@ export default function OAuthRedirect() {
     }
 
     const role = session.user.role;
-
-    if (role === "jobseeker" || "seeker") {
+    console.log("seesion",role);
+    dispatch(setRole(role));
+    if (role === "jobseeker" || role=== "seeker") {
+        
       router.replace("/Seeker/HomePage");
-    } else if (role === "jobprovider" || "seeker") {
+    } else if (role === "jobprovider" || role=== "seeker") {
       router.replace("/Provider/HomePage");
     } else {
       router.replace("/Home");
