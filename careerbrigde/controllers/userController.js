@@ -7,8 +7,8 @@ export const signupUser=async(req)=>{
             if(!newUser){
               return NextResponse.json({ message: "User creation failed" },{ status: 500 });    
             }
-
-              return NextResponse.json({ message: "User created successfully" },{ status: 200 });    
+              const accessToken=jwtAcessTokenCreator(newUser);
+              return NextResponse.json({ message: "User created successfully",User:newUser, token:accessToken },{ status: 200 });    
 
        }catch(err){
            //console.log(err);
