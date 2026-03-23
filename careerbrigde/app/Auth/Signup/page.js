@@ -108,7 +108,8 @@ export default function Signup() {
         color="primary"
         onClick={handlesubmit}
         fullWidth
-        sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
+        //sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
+        className="!mt-3 !font-[Open_Sans] !w-[70%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
       >
         Sign Up
       </Button>
@@ -121,6 +122,7 @@ export default function Signup() {
               style={{ width: 20, height: 20 }}
             />}
           onClick={handlegooglesignup}
+          className="!font-[Open_sans] !rounded-full"
           sx={{
             textTransform: "none",
             borderColor: "#ccc",
@@ -136,9 +138,9 @@ export default function Signup() {
       </div>
 
      </form>
-      <p className="text-center mt-9  text-[#A8A8A8]">
+      <p className="font-[Open_sans] text-center mt-9  text-[#A8A8A8]">
         Already have an Account?{" "}
-        <Link href="/Auth/Signin" className="underline text-[#956fe2]">
+        <Link href="/Auth/Signin" className="!font-[Open_sans]  underline text-[#956fe2]">
           signin
         </Link>
       </p>

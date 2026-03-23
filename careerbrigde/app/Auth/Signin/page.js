@@ -153,7 +153,7 @@ export default function Signin(){
               <TextInput label="Password" type="password" name="password" value={data.password} required onChange={handleFieldDataChange} error={clicked.password&&!data.password} helperText={clicked.password&&!data.password?"Password is required":""}/>
                
                 <div className="flex justify-right mt-5">
-                <a onClick={sendOtpToEmail} className="text-[#956fe2] font-bold font-medium text-sm underline cursor-pointer">
+                <a onClick={sendOtpToEmail} className="text-[#956fe2] font-bold !font-[Open_Sans] text-sm underline cursor-pointer">
                   Forgot password ?
                 </a>
               </div>
@@ -166,7 +166,8 @@ export default function Signin(){
                 onClick={handlesignin}
                 // component={Link}
                 // to={canGo ? redirectPath : "#"}
-                sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
+                // sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
+                className="!mt-3 !font-[Open_Sans] !w-[70%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
               >
                 Sign In
               </Button>
@@ -182,6 +183,7 @@ export default function Signin(){
                       style={{ width: 20, height: 20 }}
                     />}
                   onClick={handlegooglelogin} 
+                  className="!font-[Open_Sans] !rounded-full"
                   sx={{
                     textTransform: "none",
                     borderColor: "#ccc",
@@ -196,9 +198,9 @@ export default function Signin(){
                 </Button>
               </div>
         
-              <p className="text-center mt-9 font-bold text-[#A8A8A8]">
+              <p className="font-[Open_Sans] text-center mt-9 font-bold text-[#A8A8A8]">
                 Dont have an Account?{" "}
-                <Link href="/Auth/Signup" className="underline text-[#956fe2]">
+                <Link href="/Auth/Signup" className="!font-[Open_Sans] underline text-[#956fe2]">
                   signup
                 </Link>
               </p>
