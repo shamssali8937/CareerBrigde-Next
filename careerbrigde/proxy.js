@@ -40,5 +40,5 @@ export async function proxy(req) {
 }
 
 export const config = {
-  matcher: '/Api/Protected/:path*',
+  matcher: '/api/Protected/:path*',
 };

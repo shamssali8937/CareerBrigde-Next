@@ -84,9 +84,10 @@ function SignUpDetail() {
                 throw new Error("error in posting user");
              }
              const result = await response.json();
-             localStorage.setItem("token",response.token);
-
-             console.log("ROLE:", role); 
+             localStorage.setItem("accessToken",result.token);
+            //  const token = localStorage.getItem("accessToken");
+             console.log("ROLE:", role);
+            //  console.log("Token:",result ); 
              dispatch(setDetails({name:result.User.name,img:result.User.photo.url}));
              setsnackbarmessage("succuss signedUp");
              setsnackbarseverity("success");
