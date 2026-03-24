@@ -23,7 +23,7 @@ export default function Layout({ children, rightImage }) {
         <Container
           maxWidth="lg"
         //   className="m-6 md:w-[70%] lg:w-[50%] h-auto p-4 bg-[#faf4ff] rounded-lg flex flex-col items-center justify-center"
-        className="bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] !rounded-3xl flex-grow flex flex-col justify-center items-center w-full px-4 py-6 md:px-6 overflow-y-auto"
+        className="!bg-gradient-to-b !from-[#faf8ff] !via-[#eee7ff] !to-[#dcd0ff] !rounded-3xl flex-grow flex flex-col justify-center items-center w-full px-4 py-6 md:px-6 overflow-y-auto"
          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {children}

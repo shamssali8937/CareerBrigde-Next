@@ -296,7 +296,7 @@ const handleBackClick = () => {
           className="!w-[80%]"
         />
         <div className="mt-4 md:col-span-2">
-          <Typography className="mb-2 font-medium">About</Typography>
+          <Typography className="mb-2 !text-black !font-[Open_sans]">About</Typography>
           <TextField
             name="about"
             multiline
@@ -620,7 +620,7 @@ const handleBackClick = () => {
             component={Link}
             href={backButtonPath}
             onClick={handleBackClick}
-            className="!mr-6 !bg-[#956fe2] normal-case text-white"
+            className="!mr-6 !mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {backButtonLabel}
           </Button>   
@@ -632,7 +632,7 @@ const handleBackClick = () => {
             component={Link}
             href={finishButtonPath}
             onClick={handleFinishClick}
-            className="!bg-[#956fe2] normal-case text-white"
+            className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {finishButtonLabel}
           </Button>
@@ -640,7 +640,7 @@ const handleBackClick = () => {
           <Button
             variant="contained"
             onClick={handleFinishClick}
-            className="!bg-[#956fe2] normal-case text-white"
+            className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {finishButtonLabel}
           </Button>

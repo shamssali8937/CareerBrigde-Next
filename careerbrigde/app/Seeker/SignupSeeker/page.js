@@ -77,7 +77,7 @@ function SignUpSeeker() {
 
   return (
     <Layout rightImage="/login.svg">
-      <div className="w-full h-screen flex flex-col bg-[#faf4ff] p-4 md:p-8 overflow-y-auto">
+      <div className="w-full h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] flex flex-col bg-[#faf4ff] p-4 md:p-8 overflow-y-auto">
         <SeekerForm
           initialData={{
             s: statedata.seekerInfo,
