@@ -15,6 +15,8 @@ import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import ProviderForm from "@/components/ProviderForm";
+import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
+import { setRole } from "@/redux/slices/signupSlice";
 
 export default function HomePage() {
 
@@ -23,7 +25,7 @@ export default function HomePage() {
   const stateProviderData = useSelector((state) => state.userDetail.provider);
   const dispatch = useDispatch();
   
-  const imagePath = stateData.photo?.url || stateUserdata.photo.url;
+  const imagePath = stateData.photo?.url || stateUserdata.photo?.url;
   const [ jobDetail, setJobDetail] = useState({
     title: "",
     jobType: "Remote",
@@ -197,136 +199,77 @@ export default function HomePage() {
 
 
   const fetchJobsFromDb=async(e)=>{  ///fetching the jobs of specific user and set jobs object
-     setLoading(true);
-      setTimeout(()=>{
-        setJobs([
+     try{
+
+          setLoading(true);
+ 
+          const token=localStorage.getItem("token");
+
+          const response=await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetJobsOfSpecificProvider`,{
+             method:"GET",
+             headers:{
+               Authorization: `Bearer ${token}`,
+             }
+            }
+          );
+          const result= await response.json();
+          if(response.ok)
           {
-        _id: "1",
-        title: "Senior Frontend Developer",
-        location: "San Francisco, CA",
-        jobType: "Remote",
-        salary: "$120k - $150k",
-        postDate: "2025-03-01",
-        lastDate: "2025-04-01",
-        description:
-          "We are looking for an experienced frontend developer proficient in React and TypeScript to lead our UI team.",
-        requirements: ["5+ years React", "TypeScript expertise", "Team leadership"],
-        screeningQuestions: ["Describe a challenging UI problem you solved."],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "2",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "3",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "4",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "5",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "6",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "7",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      }
-        ]);
+            //  console.log("job",response.data.jobsOfSpecificProvider)
+            setJobs(result.data.jobs);
+          }else{
+            console.log("error",response.status);
+          }
+
+      }catch(err){
+        console.log(err);
+      }finally{
         setLoading(false);
-      },500);
+      }
     };
 
+    const fetchProviderDetailFromDb=async()=>{
+      try{
+          const token=localStorage.getItem("token");
+
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetProviderProfile`,{
+             method:"GET",
+             headers:{
+               Authorization: `Bearer ${token}`,
+             }
+            }
+          );
+          const providerData= await providerRes.json();
+          if(response.ok)
+          {
+            //  console.log("job",response.data.provider);
+             dispatch(setProviderDetail(providerData.data.provider));
+             dispatch(setRole(providerData.data.provider.user.role))
+             dispatch(setUser(providerData.data.provider.user))
+          }else{
+            console.log("error",providerData.message);
+          }
+
+      }catch(err){
+        console.log(err);
+      }
+    }
+
     useEffect(()=>{
-      fetchJobsFromDb();
+      fetchProviderDetailFromDb();
+      if(!stateProviderData){
+          return;
+      }
+      else{
+           fetchJobsFromDb();
+      }
     },[])
+
+    // useEffect(()=>{
+    //    fetchProviderDetailFromDb();
+    // },[opendrawerleft])
 
   return (
     <>
@@ -759,7 +702,7 @@ export default function HomePage() {
                    className="w-16 h-16 rounded-full object-cover-border-2 border-white shadow-lg"
                    />
                    <div>
-                     <Typography className="!font-bold !font-[Open_sans]  !text-gray-800">{jobToEdit.provider?.companyname}</Typography>
+                     <Typography className="!font-bold !font-[Open_sans]  !text-gray-800">{jobToEdit.provider?.companyName}</Typography>
                      <Typography variant="body2" className="text-gray-600 flex items-center gap-1 !font-[Open_sans]">
                        <FaUserTie className="text-[#a78cdd]"/>
                        {jobToEdit.provider?.user.name}
