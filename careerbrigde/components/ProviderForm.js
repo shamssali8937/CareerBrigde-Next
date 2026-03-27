@@ -19,13 +19,13 @@ function ProviderForm({
 
   const [clicked, setClicked] = useState({});
   const [data, setData] = useState({
-    comapnyname: statedata.providerInfo.comapnyname||stateProviderData.companyname||"",
+    comapnyname: statedata.providerInfo.comapnyname||stateProviderData.companyName||"",
     companycontact: statedata.providerInfo.companycontact||stateProviderData.contact||"",
     goalofcompany: statedata.providerInfo.goalofcompany||stateProviderData.goalOfCompany||"",
     aboutcompany: statedata.providerInfo.aboutcompany||stateProviderData.aboutCompany||"",
     addressofcompany: statedata.providerInfo.addressofcompany||stateProviderData.address||"",
     position:statedata.providerInfo.position||stateProviderData.positionInCompany||"",
-    tenuretimeperiod:statedata.providerInfo.tenuretimeperiod||stateProviderData.tenureTimePeriod||""
+    tenuretimeperiod:statedata.providerInfo.tenuretimeperiod||stateProviderData.tenureInTimePeriod||""
   });
 // const [data, setData] = useState({
 //     comapnyname: statedata.providerInfo.comapnyname||"",

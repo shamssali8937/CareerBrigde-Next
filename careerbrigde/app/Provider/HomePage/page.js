@@ -23,7 +23,7 @@ export default function HomePage() {
   const stateProviderData = useSelector((state) => state.userDetail.provider);
   const dispatch = useDispatch();
   
-  const imagePath = stateData.photo?.url || "https://res.cloudinary.com/dj0mkrv8f/image/upload/v1770986917/user_uploads/nilvruogrdogvzk5zlof.jpg";
+  const imagePath = stateData.photo?.url || stateUserdata.photo.url;
   const [ jobDetail, setJobDetail] = useState({
     title: "",
     jobType: "Remote",
@@ -336,7 +336,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
            <div className="grid grid-cols-1 lg:grid-cols-12 mt-2 gap-6">
               <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
-                 <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                 <Card className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
                     <CardMedia component="img"
                       image="/cardback.png"
                       alt="cover"
@@ -377,7 +377,7 @@ export default function HomePage() {
                         </Button>
                     </CardActions> 
                  </Card> 
-                 <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                 <Card className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
                    <CardContent className="!p-4">
                      <div className="flex items-center gap-3 mb-4">
                        <div className="p-2 bg-indigo-100 rounded-xl">
@@ -515,7 +515,7 @@ export default function HomePage() {
                  </div>
               </div>
               <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
-                  <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md p-6 sticky top-24">
+                  <Card className="!rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md p-6 sticky top-24">
                     <Typography className="text-gray-800 !font-bold !text-lg !mb-4 flex items-center !gap-2">
                       <FaChevronRight className="text-[#a78cdd]" />
                       Hiring Tips
@@ -534,7 +534,7 @@ export default function HomePage() {
                     </div>
                   </Card>
 
-                  <Card variant="h6" className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md !p-6 sticky">
+                  <Card variant="h6" className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md !p-6 sticky">
                     <Typography className="!text-gray-800 !font-bold !font-[Open_sans] text-lg !mb-3 flex items-center !gap-2">
                       <FaUsers className="text-[#a78cdd]" />
                       Quick Stats

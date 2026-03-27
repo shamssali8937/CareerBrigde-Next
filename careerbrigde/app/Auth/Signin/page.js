@@ -10,6 +10,7 @@ import {useState, useEffect} from "react"
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setEmail, setRole } from "@/redux/slices/signupSlice";
+import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
 
 export default function Signin(){
 
@@ -77,10 +78,11 @@ export default function Signin(){
               setsnackbarseverity("error");
              }
 
-             localStorage.setItem("token", result.User.token);
-
+             localStorage.setItem("token", result.AccessToken);
+            //  console.log("Tokenbefre",result.User.AccessToken);
              dispatch(setEmail(data.email));
-             dispatch(setRole(result.User.role));
+             dispatch(setRole(result.User.role))
+             dispatch(setUser(result.User))
              console.log("SigINROle",result.User.role)
              setsnackbarmessage(`Welcome, ${data.email}!`);
              setsnackbarseverity("success");
@@ -88,6 +90,28 @@ export default function Signin(){
              if(result.User.role==="jobseeker"){
                 router.push("/Seeker/HomePage");
              }else{
+
+                 try {
+                  const token = localStorage.getItem("token");
+                  // console.log("Token",token);
+                   const providerRes = await fetch(
+                     `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetProviderProfile`,{
+                      method:"GET",
+                      headers:{
+                        Authorization: `Bearer ${token}`,
+                      }
+                     }
+                   );
+
+                   const providerData= await providerRes.json();
+         
+                   if (providerRes.ok) {
+                     dispatch(setProviderDetail(providerData.data.provider));
+                     console.log("Provider",providerData.data.provider);
+                   }
+                 } catch (err) {
+                   console.log("Provider fetch error:", err);
+                 }
                   router.push("/Provider/HomePage");
              }
           setopensackbar(true);     
