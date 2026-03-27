@@ -116,11 +116,30 @@ export default function HomePage() {
   };
   
   const handleUserInfoUpdate = async (formData) => {
-    console.log("Update user info:", formData);
-    setSnackbarMessage("User info updated (mock)");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-    setopendrawerleft(false);
+    try{
+       const token=localStorage.getItem("token");
+       const userUpdateResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,{
+       method:"PUT",
+       headers:{
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${token}`,
+       },
+       body:JSON.stringify(formData)
+      });
+        if(userUpdateResponse.ok){
+           console.log("photo is also updated");
+        }
+                
+      setSnackbarMessage("User info updated (mock)");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setOpenLeftDrawer(false);
+    }catch(err){
+      setSnackbarMessage(`${err}`);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      setOpenLeftDrawer(false);
+    }
   };
   
   const handleJobPostPopup = (job = null) => {
