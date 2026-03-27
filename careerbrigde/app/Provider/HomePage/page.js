@@ -127,9 +127,10 @@ export default function HomePage() {
        body:JSON.stringify(formData)
       });
         if(userUpdateResponse.ok){
-           console.log("photo is also updated");
-        }
-                
+          let result=userUpdateResponse.json()
+           console.log("user",result);
+              dispatch(setUser(result.data))  
+        }        
       setSnackbarMessage("User info updated (mock)");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -184,21 +185,12 @@ export default function HomePage() {
       requirements.length >= 3
     ) {
       if (jobToEdit) {
-        // editJobInDb(editingjob);
-        setJobs((prev) =>
-          prev.map((j) => (j._id === jobToEdit._id ? { ...j,...jobDetail, requirements, screeningQuestions } : j))
-        );
-        setSnackbarMessage("Job edited");
+        editJobInDb(jobToEdit);
+        
       } else {
-        const newJob = {
-          _id: Date.now().toString(),
-          ...jobDetail,
-          requirements,
-          screeningQuestions,
-          provider: { companyname: stateProviderData.companyname, user: { name: stateUserdata.name, photo: null } },
-        };
-        setJobs((prev) => [...prev, newJob]);
-        setSnackbarMessage("Job posted");
+
+        postJob(jobDetail);//save job in db and also in the local object jobs
+        setSnackbarMessage("Job Added successfully!");
       }
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -207,7 +199,83 @@ export default function HomePage() {
   };
   
 
-     const updateProviderProfile =async (data) => {
+  const editJobInDb=async(editingjobData)=>{
+      try{
+          const token=localStorage.getItem("token");
+
+
+          const payload={jobId: jobToEdit._id ,...jobDetail,requirements,screeningQuestions}
+
+          console.log("editingjobbefore",editingjobData);
+
+          const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/EditJob`,{
+           method:"PUt",
+           headers:{
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+           body:JSON.stringify(payload)
+          });
+
+          if(response.ok)
+          {
+             let result=await response.json();
+             console.log("job edited succesfull",result)
+             setJobs(jobs.map((j)=>j._id===jobToEdit._id?{...jobDetail,requirements,screeningQuestions}:j))
+             setSnackbarMessage("Job edited");
+             setSnackbarSeverity("success");
+             setSnackbarOpen(true);
+             setOpenPostJobPopUp(false)
+          }else{
+             console.log("error",response.status);
+             setSnackbarMessage("Failed To Edit");
+             setSnackbarSeverity("error");
+             setSnackbarOpen(true);
+             setOpenPostJobPopUp(false)
+          }     
+      }catch(err){
+         console.log(err);
+      }
+    }
+
+   const postJob=async()=>{
+      try{
+         
+          const  token=localStorage.getItem("token");
+          const  payload={...jobDetail,requirements,screeningQuestions};
+          
+          const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/PostJob`,{
+           method:"POSt",
+           headers:{
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+           body:JSON.stringify(payload)
+          });
+
+          if(response.ok)
+          {
+             console.log("job is posted",response.data.postedjob);
+             setJobs([...jobs,{...jobDetail,requirements,screeningQuestions}]);
+             await fetchJobsFromDb();
+             setSnackbarMessage("Job Added successfully!");
+             setSnackbarSeverity("success");
+             setSnackbarOpen(true);
+             setOpenPostJobPopUp(false)
+          }else{
+            console.log("error in posting job");
+            setSnackbarMessage("Failed To Add Job");
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+            setOpenPostJobPopUp(false)
+          }
+      }catch(err){
+         console.log(err);
+      }
+    }  
+
+
+  const updateProviderProfile =async (data) => {
          try {
              const provider={
              contact: data.companycontact,
@@ -267,7 +335,7 @@ export default function HomePage() {
            } catch (err) {
              console.log("error in fetching:", err);
            }
-      };
+    };
 
 
   const fetchJobsFromDb=async(e)=>{  ///fetching the jobs of specific user and set jobs object
@@ -301,7 +369,7 @@ export default function HomePage() {
       }
     };
 
-    const fetchProviderDetailFromDb=async()=>{
+  const fetchProviderDetailFromDb=async()=>{
       try{
           const token=localStorage.getItem("token");
 
@@ -343,6 +411,10 @@ export default function HomePage() {
     useEffect(()=>{
        fetchProviderDetailFromDb();
     },[openLeftDrawer])
+
+    useEffect(()=>{
+       fetchJobsFromDb();
+    },[openPostJobPopUp])
 
   return (
     <>

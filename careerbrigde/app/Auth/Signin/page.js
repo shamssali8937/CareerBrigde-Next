@@ -83,7 +83,7 @@ export default function Signin(){
              dispatch(setEmail(data.email));
              dispatch(setRole(result.User.role))
              dispatch(setUser(result.User))
-             console.log("SigINROle",result.User.role)
+            // console.log("SigINROle",result.User.role)
              setsnackbarmessage(`Welcome, ${data.email}!`);
              setsnackbarseverity("success");
 

@@ -10,7 +10,7 @@ function Navbar({ onProfileClick }) {
   const role = useSelector((state) => state.signup.role);
   const [isOpen,setIsOpen]=useState(false);
 
-  console.log("Role",role);
+  // console.log("Role",role);
 
   return (
     <>
