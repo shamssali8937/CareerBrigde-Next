@@ -39,7 +39,7 @@ function Navbar({ onProfileClick }) {
           {/* Job Applicants / Applied Jobs */}
           {role === "jobprovider" || role=== "provider" ? (
             <Link
-              href="/Provider/JobApplicants"
+              href="/Provider/JobApplications"
               className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
             >
               <FaBriefcase className="text-xl" />
@@ -89,7 +89,7 @@ function Navbar({ onProfileClick }) {
 
                 {role === "jobprovider" || role=== "provider" ? (
                   <Link
-                    href="/Provider/JobApplicants"
+                    href="/Provider/JobApplications"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"
                     onClick={() => setIsOpen(false)}
                   >

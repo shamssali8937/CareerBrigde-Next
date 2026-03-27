@@ -108,11 +108,38 @@ export default function HomePage() {
     return `${d.getFullYear()}-${month}-${day}`;
   };
 
-  const deleteJob = (job) => {
-    setJobs((prev) => prev.filter((j) => j._id !== job._id));
-    setSnackbarMessage("Job deleted");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
+  const deleteJob =async (job) => {
+    try{
+          console.log(job);
+
+          const  jobToDelete=job._id;
+   
+          const token=localStorage.getItem("token");
+
+          
+          const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/DeleteJob/${jobToDelete}`,{
+            method:"DELETE",
+            headers:{
+               Authorization: `Bearer ${token}`
+            }
+          });
+
+          if(response.ok)
+          {
+            //  console.log("job is deleted",response.data.Job);
+             setJobs(jobs.filter((j)=>j._id!==job._id))      
+             setSnackbarMessage("Job Deleted successfully!");
+             setSnackbarSeverity("error");
+             setSnackbarOpen(true);
+          }else{
+            console.log("error in deleting job");
+            setSnackbarMessage("Error In Deleting successfully!");
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+          }
+      }catch(err){
+         console.log(err);
+      }
   };
   
   const handleUserInfoUpdate = async (formData) => {
