@@ -16,7 +16,7 @@ import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import ProviderForm from "@/components/ProviderForm";
 import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
-import { setRole } from "@/redux/slices/signupSlice";
+import { setDetails, setProviderInfo, setRole } from "@/redux/slices/signupSlice";
 
 export default function HomePage() {
 
@@ -123,14 +123,6 @@ export default function HomePage() {
     setopendrawerleft(false);
   };
   
-  const updateProviderProfile = async (formData) => {
-    console.log("Update provider profile:", formData);
-    setSnackbarMessage("Profile updated (mock)");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-    setopendrawerleft(false);
-  };
-  
   const handleJobPostPopup = (job = null) => {
     if (job) {
       setJobToEdit(job);
@@ -196,6 +188,67 @@ export default function HomePage() {
   };
   
 
+     const updateProviderProfile =async (data) => {
+         try {
+             const provider={
+             contact: data.companycontact,
+             companyName:data.comapnyname,
+             goalOfCompany:data.goalofcompany,
+             address: data.addressofcompany,
+             positionInCompany: data.position,
+             tenureInTimePeriod:data.tenuretimeperiod,
+             aboutCompany:data.aboutcompany
+             }
+             console.log("before post",provider);
+             const token=localStorage.getItem("token");
+
+             const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateProvider`,{
+                 method:"POST",
+                 headers:{
+                  "Content-Type": "application/json",
+                   Authorization: `Bearer ${token}`,
+                 },
+                 body:JSON.stringify(provider)
+                }
+              );
+             if (response.ok) {
+               const result= await response.json();
+              //  console.log("Profile updated", response.data);
+               dispatch(setProviderInfo(data));
+              if(userimg!==null){
+                const User = new FormData();
+                User.append("photo", userimg.file);
+                const userUpdateResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,{
+                 method:"PUT",
+                 headers:{
+                   Authorization: `Bearer ${token}`,
+                 },
+                 body:User
+                });
+                  if(userUpdateResponse.ok){
+                     console.log("photo is also updated");
+                  }
+                }
+                 dispatch(setDetails({
+                    ...stateData.details,
+                    img: userimg.url || stateData.details.img,
+                  }));
+                setSnackbarMessage("Profile updated successfully!");
+                setSnackbarSeverity("success");
+                setSnackbarOpen(true);
+                setOpenLeftDrawer(false);
+             } else {
+               console.log("Error in profile updation");
+               setSnackbarMessage("Profile updation Unsuccessfull!");
+               setSnackbarSeverity("error");
+               setSnackbarOpen(true);
+               setOpenLeftDrawer(false);
+             }
+           } catch (err) {
+             console.log("error in fetching:", err);
+           }
+      };
 
 
   const fetchJobsFromDb=async(e)=>{  ///fetching the jobs of specific user and set jobs object
@@ -241,13 +294,14 @@ export default function HomePage() {
              }
             }
           );
-          const providerData= await providerRes.json();
+          const providerData= await response.json();
           if(response.ok)
           {
-            //  console.log("job",response.data.provider);
+            console.log("provider",providerData.data.provider);
              dispatch(setProviderDetail(providerData.data.provider));
              dispatch(setRole(providerData.data.provider.user.role))
              dispatch(setUser(providerData.data.provider.user))
+
           }else{
             console.log("error",providerData.message);
           }
@@ -267,9 +321,9 @@ export default function HomePage() {
       }
     },[])
 
-    // useEffect(()=>{
-    //    fetchProviderDetailFromDb();
-    // },[opendrawerleft])
+    useEffect(()=>{
+       fetchProviderDetailFromDb();
+    },[openLeftDrawer])
 
   return (
     <>
@@ -302,7 +356,7 @@ export default function HomePage() {
                       </Typography>
                        <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center justify-center gap-2 !mt-3 !mb-3">
                         <FaCalendarAlt className="text-indigo-400"/>
-                        {stateProviderData?.tenureTimePeriod || "2020 - Present"}
+                        {stateProviderData?.tenureInTimePeriod || "2020 - Present"}
                       </Typography>
                       <Typography variant="body3" className="!font-[Open_sans] text-gray-700 !mt-4 text-justify px-2 leading-relaxed">
                         {stateProviderData?.goalOfCompany ||
@@ -330,7 +384,7 @@ export default function HomePage() {
                          variant="h6"
                          className="!font-bold !font-[Open_sans] text-gray-800"
                        >
-                         {stateProviderData?.companyname || "TechCorp Solutions"}
+                         {stateProviderData?.companyName || "TechCorp Solutions"}
                        </Typography>
                      </div>
                      <div className="ml-2 space-y-3 text-sm text-gray-700">
@@ -853,7 +907,7 @@ export default function HomePage() {
             ) : (
               <ProviderForm
                 finishLabel="Update Profile"
-                finishPath="/providerpage"
+                finishPath="/Provider/HomePage"
                 onFinish={updateProviderProfile}
               />
             )}

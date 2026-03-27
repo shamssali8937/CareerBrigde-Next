@@ -54,7 +54,7 @@ export const updateUserController=async(req)=>{
               return NextResponse.json({ message: "User updated successfully" },{ status: 200 });    
 
        }catch(err){
-           //console.log(err);
+          console.log(err);
           return NextResponse.json({ message: "User updation failed" },{ status: 500 });
        }
 }
