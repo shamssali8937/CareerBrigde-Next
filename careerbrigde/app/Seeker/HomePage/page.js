@@ -15,6 +15,7 @@ import SeekerForm from "@/components/SeekerForm";
 import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
+import { addAppliedJobs } from "@/redux/slices/appliedJobSlice";
 
 export default function Homepage(){
 
@@ -268,7 +269,7 @@ export default function Homepage(){
         (application) => application.job._id === selectedjob?._id
       );
     
-      const profileImagePath = stateUserdata?.photo || stateData.details.img || dummySeeker.user.photo;
+      const profileImagePath = stateUserdata?.photo?.url || stateData.details.img ;
     
       const jobsToDisplay = searchWord || jobTypeFilter !== "all" ? allJobs : jobs;
     
@@ -295,31 +296,100 @@ export default function Homepage(){
       };
     
       const handleUpdateSeekerProfile = async (formdata) => {
-        dispatch(
-          setDetails({ ...stateData.details, name: formdata.name, img: img?.url || profileImagePath })
-        );
-        dispatch(
-          setSeekerInfo({
-            headline: formdata.headline,
-            city: formdata.city,
-            address: formdata.address,
-            phone: formdata.phone,
-            country: formdata.country,
-            about: formdata.about,
-            skills: formdata.skills,
-            education: formdata.education,
-            experience: formdata.experience,
-            socialLinks: formdata.socialLinks,
-            cv: formdata.cv,
-          })
-        );
-        dispatch(setUser({ ...stateUserdata, name: formdata.name, photo: img?.url || profileImagePath }));
-        setSnackbarMessage("Profile Updated Successfully");
-        setSnackbarSeverity("success");
-        setOpenSackbar(true);
-        setOpenLeftDrawer(false);
+        try {
+          // Optimistic update (optional)
+          dispatch(setSeekerInfo(formdata));
+      
+          const data = new FormData();
+          data.append("headline", formdata.headline);
+          data.append("about", formdata.about);
+          data.append("city", formdata.city);
+          data.append("phone", formdata.phone);
+          data.append("address", formdata.address);
+          data.append("country", formdata.country);
+          data.append("skills", JSON.stringify(formdata.skills));
+          data.append("education", JSON.stringify(formdata.education));
+          data.append("experience", JSON.stringify(formdata.experience));
+          data.append("socialLinks", JSON.stringify(formdata.socialLinks));
+      
+          // Append CV if it's a new file
+          if (formdata.cv && formdata.cv.file instanceof File) {
+            data.append("cv", formdata.cv.file);
+          }
+      
+          const token = localStorage.getItem("token");
+      
+          // Update seeker profile
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateSeeker`,
+            {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: data,
+            }
+          );
+          const seekerData = await response.json();
+      
+          if (response.ok) {
+            const updatedSeeker = seekerData.data.seeker;
+            console.log("Profile updated", updatedSeeker);
+      
+            // Update Redux with the fresh data from server
+            dispatch(setSeekerInfo(updatedSeeker));
+            dispatch(
+              setDetails({
+                ...stateData.details,
+                name: updatedSeeker.user.name,
+                img: updatedSeeker.user.photo?.url || stateData.details.img,
+              })
+            );
+            console.log("image",img);
+            // Upload profile picture if a new one was selected
+            if (img !== null && img.file) {
+              const userPhotoData = new FormData();
+              userPhotoData.append("photo", img.file);
+      
+              const photoResponse = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,
+                {
+                  method: "PUT",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: userPhotoData,
+                }
+              );
+      
+              if (photoResponse.ok) {
+                console.log("Profile picture updated");
+              } else {
+                console.error("Photo upload failed");
+              }
+            }
+            dispatch(
+                  setDetails({
+                    ...stateData.details,
+                    img: img?.url,
+                  })
+                );
+            setSnackbarMessage("Profile Updated Successfully");
+            setSnackbarSeverity("success");
+            setOpenSackbar(true);
+            setOpenLeftDrawer(false);
+            setImg(null);
+          } else {
+            console.error("Seeker update failed", seekerData);
+            setSnackbarMessage("Failed to update profile");
+            setSnackbarSeverity("error");
+            setOpenSackbar(true);
+            // Keep drawer open to allow retry
+          }
+        } catch (err) {
+          console.error("Error in updating:", err);
+          setSnackbarMessage("An error occurred while updating");
+          setSnackbarSeverity("error");
+          setOpenSackbar(true);
+          // Do not close drawer on error so user can retry
+        }
       };
-    
       // Dummy user info update – just updates Redux
       const handleUserInfoUpdate = async (formData) => {
         const updatedUser = { ...stateUserdata };
@@ -328,7 +398,7 @@ export default function Homepage(){
         dispatch(setUser(updatedUser));
         setSnackbarMessage("User info updated successfully");
         setSnackbarSeverity("success");
-        setOpenSnackbar(true);
+        setOpenSackbar(true);
         setShowUserUpdateFields(false);
         setOpenLeftDrawer(false);
       };
@@ -344,7 +414,7 @@ export default function Homepage(){
         setApply(false);
         setSnackbarMessage("Application Submitted Successfully");
         setSnackbarSeverity("success");
-        setOpenSnackbar(true);
+        setOpenSackbar(true);
         setOpenRightDrawer(false);
         setScreeningAnswers([]);
       };
@@ -414,12 +484,41 @@ export default function Homepage(){
         }
         setAllJobs(filtered);
       };
+
+      const fetchSeekerDetails=async()=>{
+          try{
+            const token=localStorage.getItem("token");
+            const response=await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetSeekerProfile`,{
+               method:"GET",
+               headers:{
+                 Authorization: `Bearer ${token}`,
+               }
+              }
+            );
+
+            if(response.ok){
+                let result=await response.json();
+                console.log("seeker",result.data.seeker);
+                dispatch(setRole(result.data.seeker.user.role))
+                dispatch(setUser(result.data.seeker.user));
+                dispatch(setDetails({...result.data.seeker.user,img:result.data.seeker.user.photo?.url}));
+                dispatch(setSeekerInfo(result.data.seeker))
+            }
+          }catch(err){
+            console.log("error in fectging seeker",err)
+          }
+        }
+
+      useEffect(()=>{
+            fetchSeekerDetails();
+      },[openLeftDrawer]) 
     
       useEffect(() => {
-        dispatch(setRole(dummySeeker.user.role));
-        dispatch(setUser(dummySeeker.user));
-        dispatch(setDetails({ ...dummySeeker.user, img: dummySeeker.user.photo }));
-        dispatch(setSeekerInfo(dummySeeker.seekerInfo));
+        // dispatch(setRole(dummySeeker.user.role));
+        // dispatch(setUser(dummySeeker.user));
+        // dispatch(setDetails({ ...dummySeeker.user, img: dummySeeker.user.photo }));
+        // dispatch(setSeekerInfo(dummySeeker.seekerInfo));
     
         setJobs(dummyJobs);
         setCompanies(dummyCompanies);

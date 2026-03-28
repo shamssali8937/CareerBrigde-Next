@@ -9,7 +9,7 @@ import Link from "next/link";
 import {useState, useEffect} from "react"
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setEmail, setRole } from "@/redux/slices/signupSlice";
+import { setDetails, setEmail, setRole, setSeekerInfo } from "@/redux/slices/signupSlice";
 import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
 
 export default function Signin(){
@@ -83,16 +83,37 @@ export default function Signin(){
              dispatch(setEmail(data.email));
              dispatch(setRole(result.User.role))
              dispatch(setUser(result.User))
+             dispatch(setDetails(result.User))
             // console.log("SigINROle",result.User.role)
              setsnackbarmessage(`Welcome, ${data.email}!`);
              setsnackbarseverity("success");
-
+             const token = localStorage.getItem("token");
              if(result.User.role==="jobseeker"){
+              try {   
+                  // console.log("Token",token);
+                   const providerRes = await fetch(
+                     `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetSeekerProfile`,{
+                      method:"GET",
+                      headers:{
+                        Authorization: `Bearer ${token}`,
+                      }
+                     }
+                   );
+
+                   const seekerData= await providerRes.json();
+         
+                   if (providerRes.ok) {
+                     dispatch(setSeekerInfo(seekerData.data.seeker));
+                     console.log("Provider",seekerData.data.seeker);
+                   }
+                 } catch (err) {
+                   console.log("Provider fetch error:", err);
+                 }
+
+
                 router.push("/Seeker/HomePage");
              }else{
-
-                 try {
-                  const token = localStorage.getItem("token");
+                 try {   
                   // console.log("Token",token);
                    const providerRes = await fetch(
                      `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetProviderProfile`,{

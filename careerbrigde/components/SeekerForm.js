@@ -119,6 +119,13 @@ function SeekerForm({
   const removeeducation = (id) =>
     seteducations((ed) => ed.filter((e) => e.id !== id));
 
+  const getCvUrl = () => {
+  if (!data.cv) return null;
+  if (typeof data.cv === 'string') return data.cv;
+  if (data.cv.url) return data.cv.url;
+  return null;
+};
+
 const handleFileChange = (e) => {
   const file = e.target.files[0];
   if (file) {
@@ -145,7 +152,7 @@ const handleFileChange = (e) => {
       about: s.about || "",
       phone : s.phone || " ",
       country: s.country || " ",
-      cv: s.cv || null,   // ✅ restore CV into state
+      cv: s.cv?.url || "",   // ✅ restore CV into state
     });
 
     setskills(s.skills || []);
@@ -159,7 +166,11 @@ const handleFileChange = (e) => {
       setFileName(s.cv.name);
     } else if (typeof s.cv === "string" && s.cv.length > 0) {
       setFileName(s.cv.split("/").pop());
-    } else {
+    } else if (s.cv?.url) {                            // ✅ handle backend CV object
+      const url = s.cv.url;
+      const parts = url.split("/");
+      setFileName(parts.pop() || "");
+    }else {
       setFileName("");
     }
   }
@@ -604,7 +615,15 @@ const handleBackClick = () => {
             color="text.secondary"
             className="mt-2 break-words !font-[Open_sans] !text-black"
           >
-            Selected file: {getFileName(fileName)}
+            {/* Selected file: {getFileName(fileName)} */}
+            <a
+              href={getCvUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 hover:underline break-all"
+            >
+              {getFileName(fileName)}
+            </a>
           </Typography>
         )}
         {clicked.cv && !data.cv && (
