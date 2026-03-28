@@ -19,224 +19,6 @@ import { addAppliedJobs } from "@/redux/slices/appliedJobSlice";
 
 export default function Homepage(){
 
-    const dummyCompanies = [
-      {
-        _id: "comp1",
-        companyname: "TechCorp",
-        user: {
-          _id: "user1",
-          name: "John Smith",
-          photo: "https://randomuser.me/api/portraits/men/1.jpg",
-          role: "company",
-        },
-        positionInCompany: "HR Manager",
-        jobs: ["job1", "job2"],
-      },
-      {
-        _id: "comp2",
-        companyname: "DesignStudio",
-        user: {
-          _id: "user2",
-          name: "Emily Davis",
-          photo: "https://randomuser.me/api/portraits/women/2.jpg",
-          role: "company",
-        },
-        positionInCompany: "Creative Director",
-        jobs: ["job3"],
-      },
-      {
-        _id: "comp3",
-        companyname: "DataWorks",
-        user: {
-          _id: "user3",
-          name: "Michael Brown",
-          photo: "https://randomuser.me/api/portraits/men/3.jpg",
-          role: "company",
-        },
-        positionInCompany: "Tech Lead",
-        jobs: ["job4", "job5"],
-      },
-    ];
-    
-    const dummyJobs = [
-      {
-        _id: "job1",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job2",
-        title: "Backend Engineer",
-        location: "Remote",
-        lastDate: "2026-07-20T00:00:00.000Z",
-        description:
-          "Join our backend team to build scalable APIs and microservices. Experience with Node.js and databases is required.",
-        requirements: ["Node.js", "Express", "MongoDB", "Python"],
-        screeningQuestions: ["How do you handle database transactions?", "Describe a RESTful API design."],
-        salary: "$90,000 - $110,000",
-        postDate: "2025-06-05T00:00:00.000Z",
-        jobType: "Remote",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job3",
-        title: "UI/UX Designer",
-        location: "San Francisco, CA",
-        lastDate: "2026-07-10T00:00:00.000Z",
-        description:
-          "We need a creative UI/UX Designer to craft beautiful and intuitive interfaces. Must have a strong portfolio.",
-        requirements: ["Figma", "Adobe XD", "Wireframing", "Prototyping"],
-        screeningQuestions: ["Walk us through your design process."],
-        salary: "$70,000 - $90,000",
-        postDate: "2025-06-10T00:00:00.000Z",
-        jobType: "On-site",
-        provider: { _id: "comp2" },
-      },
-      {
-        _id: "job4",
-        title: "Data Scientist",
-        location: "Boston, MA",
-        lastDate: "2026-07-25T00:00:00.000Z",
-        description:
-          "Analyze large datasets and build predictive models. Proficiency in Python and machine learning libraries is essential.",
-        requirements: ["Python", "Pandas", "Scikit-learn", "SQL"],
-        screeningQuestions: ["Explain a machine learning project you led."],
-        salary: "$100,000 - $130,000",
-        postDate: "2025-06-12T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp3" },
-      },
-      {
-        _id: "job5",
-        title: "DevOps Engineer",
-        location: "Austin, TX",
-        lastDate: "2026-07-18T00:00:00.000Z",
-        description:
-          "Manage cloud infrastructure and CI/CD pipelines. Experience with AWS and Docker is required.",
-        requirements: ["AWS", "Docker", "Kubernetes", "Terraform"],
-        screeningQuestions: ["How do you handle infrastructure as code?"],
-        salary: "$95,000 - $115,000",
-        postDate: "2025-06-15T00:00:00.000Z",
-        lastDate: "2026-06-15T00:00:00.000Z",
-        jobType: "Hybrid",
-        provider: { _id: "comp3" },
-      },
-      {
-        _id: "job6",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job7",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job8",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job9",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      }
-    ];
-    
-    // Link jobs to companies (populate company.jobs with full job objects)
-    dummyCompanies.forEach(company => {
-      company.jobs = dummyJobs.filter(job => job.provider._id === company._id);
-    });
-    
-    // Dummy seeker data (logged-in user)
-    const dummySeeker = {
-      user: {
-        _id: "seeker1",
-        name: "Alex Johnson",
-        email: "alex.johnson@example.com",
-        photo: "https://randomuser.me/api/portraits/men/4.jpg",
-        role: "seeker",
-      },
-      seekerInfo: {
-        headline: "Frontend Developer | React Enthusiast",
-        city: "New York",
-        address: "123 Main St",
-        phone: "+1 234 567 890",
-        country: "USA",
-        about: "Passionate frontend developer with 3 years of experience building responsive web apps.",
-        skills: ["React", "JavaScript", "Tailwind CSS", "Redux"],
-        education: [
-          {
-            degree: "B.Sc. in Computer Science",
-            year: "2022",
-            description: "University of Technology",
-          },
-        ],
-        experience: [
-          {
-            title: "Frontend Developer",
-            company: "WebSolutions",
-            description: "Built UI components and integrated APIs.",
-          },
-        ],
-        socialLinks: [
-          {
-            label: "linkedin",
-            url: "https://linkedin.com/in/alexj",
-          },
-          {
-            label: "github",
-            url: "https://github.com/alexj",
-          },
-        ],
-        cv: "https://example.com/cv.pdf",
-      },
-    };
 
 
       const dispatch = useDispatch();
@@ -254,9 +36,9 @@ export default function Homepage(){
       const [ showUserUpdateFields, setShowUserUpdateFields ] = useState(false);
       const [ Filename, setFilename ] = useState("");
     
-      const [ jobs, setJobs ] = useState(dummyJobs);
-      const [ companies, setCompanies ] = useState(dummyCompanies);
-      const [ allJobs, setAllJobs ] = useState(dummyJobs);
+      const [ jobs, setJobs ] = useState([]);
+      const [ companies, setCompanies ] = useState([]);
+      const [ allJobs, setAllJobs ] = useState([]);
       const [ selectedjob, setSelectedjob ] = useState(null);
       const [ selectedCompany, setSelectedCompany ] = useState(null);
       const [ screeningAnswers, setScreeningAnswers ] = useState([]);
@@ -482,7 +264,7 @@ export default function Homepage(){
       };
     
       const searchJobsThroughSearchBar = () => {
-        let filtered = dummyJobs;
+        let filtered = allJobs;
         if (searchWord.trim()) {
           const lowerSearch = searchWord.toLowerCase();
           filtered = filtered.filter(
@@ -526,21 +308,97 @@ export default function Homepage(){
           }
         }
 
+      const fetchJobsForSeeker=async()=>{
+          try{
+              const token = localStorage.getItem("token");
+               const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobsForSeekerProfile`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+               if(response.ok){
+                 let result=await response.json();
+                 console.log("jobs of seeker",result.data.jobs);
+                 setJobs(result.data.jobs);
+               }
+               const allJobsResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobs`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+                if(allJobsResponse.ok){
+                 let result=await allJobsResponse.json();
+                 console.log("jobs for seeker to search",result.data.jobs);
+                 setAllJobs(result.data.jobs);
+               }
+          }catch(err){
+            console.log(err);
+          }
+        }  
+
+      const fetchCompanies=async()=>{
+          try{
+               const token = localStorage.getItem("token");
+               const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllCompanies`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+               if(response.ok){
+                 let result=await response.json();
+                 console.log("jobs of seeker",result.data.companies);
+                 setCompanies(result.data.companies);
+               }
+          }catch(err){
+            console.log(err);
+          }
+        }
+
+      const fetchAlreadyAppliedJobs=async()=>{
+          try{
+             const token=localStorage.getItem("token");
+            
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobApplicationOfSeeker`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+             if(response.ok){
+              // console.log("applied jobs",response.data.applications);
+              dispatch(addAppliedJobs(response.data.applications))
+             }
+          }catch(error){
+            console.log("eror in fetching already applied jobs",error);
+          }
+        }  
+
       useEffect(()=>{
             fetchSeekerDetails();
-      },[openLeftDrawer]) 
-    
+      },[openLeftDrawer]) ;
+
       useEffect(() => {
-        // dispatch(setRole(dummySeeker.user.role));
-        // dispatch(setUser(dummySeeker.user));
-        // dispatch(setDetails({ ...dummySeeker.user, img: dummySeeker.user.photo }));
-        // dispatch(setSeekerInfo(dummySeeker.seekerInfo));
+             const loadData=async()=>{
+               try{
+                 setLoading(true);
+                 await Promise.all([
+                   fetchSeekerDetails(),
+                   fetchJobsForSeeker(),
+                   fetchCompanies(),
+                   fetchAlreadyAppliedJobs()
+                 ]);
+               }catch(err){
+                 console.log(err);
+               }finally {
+                 setLoading(false);
+               }
+             };
+             loadData();
+           }, []);
     
-        setJobs(dummyJobs);
-        setCompanies(dummyCompanies);
-        setAllJobs(dummyJobs);
-        setLoading(false);
-      }, [dispatch]);
     
       // Trigger search when filters change
       useEffect(() => {
@@ -980,13 +838,13 @@ export default function Homepage(){
                                   className="p-3 bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-[#a78cdd] flex items-center gap-3"
                                 >
                                   <img
-                                    src={company.user.photo}
-                                    alt={company.companyname}
+                                    src={company.user.photo?.url}
+                                    alt={company.companyName}
                                     className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                                   />
                                   <div>
                                     <Typography variant="body1" className="!font-[Open_sans] text-gray-800 text-sm">
-                                      {company.companyname}
+                                      {company.companyName}
                                     </Typography>
                                     <Typography variant="body2" className="!font-[Open_sans] text-gray-500 flex items-center gap-1">
                                       <FaUserTie className="text-[#a78cdd]" />
@@ -1037,13 +895,13 @@ export default function Homepage(){
                         return company ? (
                           <div className="flex items-center gap-3 mt-3">
                             <img
-                              src={company.user.photo}
-                              alt={company.companyname}
+                              src={company.user.photo?.url}
+                              alt={company.companyName}
                               className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                             />
                             <div>
                               <Typography variant="body1" className="!font-bold !font-[Open_sans] text-gray-800">
-                                {company.companyname}
+                                {company.companyName}
                               </Typography>
                               <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
                                 <FaUserTie className="text-[#a78cdd]" />
@@ -1144,7 +1002,7 @@ export default function Homepage(){
               </SwipeableDrawer>
                
 
-              <Modal open={apply} onClose={() => setapply(false)}>
+              <Modal open={apply} onClose={() => setApply(false)}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6">
                   <div className="flex justify-between items-center mb-4">
                     <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
@@ -1213,13 +1071,13 @@ export default function Homepage(){
                 </Box>
               </Modal>
 
-              <Modal open={!!selectedCompany} onClose={() => setselectedCompany(null)}>
+              <Modal open={!!selectedCompany} onClose={() => setSelectedCompany(null)}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 max-h-[60vh] flex flex-col">
                   {selectedCompany && (
                     <>
                       <div className="flex justify-between items-center mb-4">
                         <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
-                          {selectedCompany.companyname}
+                          {selectedCompany.companyName}
                         </Typography>
                         <IconButton
                           onClick={() => setSelectedCompany(null)}
@@ -1230,8 +1088,8 @@ export default function Homepage(){
                       </div>
                       <div className="flex font-[Open_sans] items-center gap-3 pb-4 border-b border-gray-200/50">
                         <img
-                          src={selectedCompany.user.photo}
-                          alt={selectedCompany.companyname}
+                          src={selectedCompany.user.photo?.url}
+                          alt={selectedCompany.companyName}
                           className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
                         />
                         <div>
@@ -1250,7 +1108,7 @@ export default function Homepage(){
                       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                          <div className="space-y-2">
 
-                        {selectedCompany.jobs.map((job) => (
+                        {selectedCompany.providerJobs.map((job) => (
                             <div
                             key={job._id}
                             onClick={() => handleToSelectJob(job)}
