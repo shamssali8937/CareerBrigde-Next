@@ -23,6 +23,7 @@ export default function jobApplications() {
     const [ searchTerm, setSearchTerm] = useState("");
     const [ filterStatus, setFilterStatus] = useState("All");
     const [ filterView, setFilterView] = useState("All");
+    const [ previousStatus, setPreviousStatus ] = useState(null);
     const [ filterdApplicants, setFilterApplicants] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const statuses = ["Pending", "Hired", "Shortlisted", "Rejected"];
@@ -415,7 +416,7 @@ export default function jobApplications() {
   
     const handleOpenApplicant = (applicant) => {
       if (!applicant.isViewed) {
-        // changeViewedAndStatusInDb(applicant);
+        changeViewedAndStatusInDb(applicant);
         const updatedjobs = jobs.map((job) =>
           job._id === selectedJob._id
             ? {
@@ -446,7 +447,8 @@ export default function jobApplications() {
   
     const handleStatusChange = (status) => {
       if (!selectedJob || !selectedApplicant) return;
-      // changeViewedAndStatusInDb(selectedapplicant, status);
+      setPreviousStatus(selectedApplicant.status);
+      changeViewedAndStatusInDb(selectedApplicant, status);
       const updatedjobs = jobs.map((job) =>
         job._id === selectedJob._id
           ? {
@@ -457,7 +459,7 @@ export default function jobApplications() {
             }
           : job
       );
-      setJobs(updatedjobs);
+      setjobs(updatedjobs);
       const updatedapplicant = { ...selectedApplicant, status };
       setSelectedApplicant(updatedapplicant);
       const updatedCurrentJob = updatedjobs.find(
@@ -476,7 +478,7 @@ export default function jobApplications() {
           `After careful consideration, we regret to inform you that we will not be moving forward with your application at this time.\n\n` +
           `We appreciate your interest in ${selectedJob.provider.companyname} and encourage you to apply for future opportunities. ` +
           `We wish you all the best in your career journey.\n\n` +
-          `Sincerely,\n${selectedJob.provider.user.name}\n${selectedJob.provider.positionInCompany}\n${selectedJob.provider.companyname}`;
+          `Sincerely,\n${selectedJob.provider.user.name}\n${selectedJob.provider.positionInCompany}\n${selectedJob.provider.companyName}`;
       } else if (status === "Hired") {
         mail = `Subject: Job Offer for ${selectedJob.title} at ${selectedJob.provider.companyname}\n\n` +
           `Dear ${selectedApplicant.seeker.user.name},\n\n` +
@@ -485,7 +487,7 @@ export default function jobApplications() {
           `Our HR team will reach out to you shortly with the onboarding process and further details.\n\n` +
           `For further procedure, you are contacted by ${selectedJob.provider.user.name}, ${selectedJob.provider.positionInCompany}, from ${selectedJob.provider.user.email}.\n\n` +
           `Welcome to ${selectedJob.provider.companyname}! We are excited to have you on board.\n\n` +
-          `Best regards,\n${selectedJob.provider.user.name}\n${selectedJob.provider.positionInCompany}\n${selectedJob.provider.companyname}`;
+          `Best regards,\n${selectedJob.provider.user.name}\n${selectedJob.provider.positionInCompany}\n${selectedJob.provider.companyName}`;
       } else if (status === "Shortlisted") {
         mail = `Subject: Interview Invitation for ${selectedJob.title} at ${selectedJob.provider.companyname}\n\n` +
           `Dear ${selectedApplicant.seeker.user.name},\n\n` +
@@ -497,12 +499,34 @@ export default function jobApplications() {
           `Venue: Google Meet (link will be shared) OR Head Office, ${selectedJob.location}\n\n` +
           `For further procedure, you are contacted by ${selectedJob.provider.user.name}, ${selectedJob.provider.positionInCompany}, from ${selectedJob.provider.user.email}.\n\n` +
           `We look forward to speaking with you.\n\n` +
-          `Sincerely,\n${selectedJob.provider.user.name}\n${selectedJob.provider.positionInCompany}\n${selectedJob.provider.companyname}`;
+          `Sincerely,\n${selectedJob.provider.user.name}\n${selectedJob.provider.positionInCompany}\n${selectedJob.provider.companyName}`;
       } else if (status === "Pending") {
         return;
       }
       setMailMessage(mail);
       setMailPopup(true);
+    };
+
+    const handleMailClose = () => {
+      // Revert status back to previous
+      if (previousStatus !== null) {
+        const revertedJobs = jobs.map((job) =>
+          job._id === selectedJob._id
+            ? {
+                ...job,
+                applications: job.applications.map((a) =>
+                  a._id === selectedApplicant._id ? { ...a, status: previousStatus } : a
+                ),
+              }
+            : job
+        );
+        setjobs(revertedJobs);
+        setSelectedApplicant((prev) => ({ ...prev, status: previousStatus }));
+        setSelectedJob(revertedJobs.find((j) => j._id === selectedJob._id));
+        changeViewedAndStatusInDb(selectedApplicant, previousStatus); // revert in DB too
+        setPreviousStatus(null);
+      }
+      setMailPopup(false);
     };
   
     const getStatusColor = (status) => {
@@ -519,8 +543,32 @@ export default function jobApplications() {
     };
   
     const handleMailSend = async () => {
-    //   console.log("Mail sent (mock):", mailMessage);
-      setMailPopup(false);
+    try{
+
+              let mailmessage={
+              to:selectedApplicant.seeker.user.email,
+              subject:`Update of your Job Application for ${selectedJob.title}`,
+              message:mailMessage
+             }
+             const token=localStorage.getItem("token");
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendMail`,{
+                  method:"POST",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify(mailmessage)
+                 });
+             if(!response.ok){
+                 console.log("failed to send mail");
+             }
+                console.log("succesfully send mail");
+                setPreviousStatus(null);
+                setMailPopup(false);
+
+          }catch(err){
+            console.log("error",err)
+          }
     };
   
     const serachApplicantsForJob = async () => {
@@ -583,19 +631,43 @@ export default function jobApplications() {
     };
   
     const changeViewedAndStatusInDb = async (applicant, newStatus) => {
-      console.log("Mock update:", applicant, newStatus);
+      try{
+                 const status=newStatus !== null ? newStatus : applicant.status;
+                 const apId=applicant._id;
+                 const token=localStorage.getItem("token");
+                 console.log("status before",JSON.stringify(status));
+                 console.log("Id before",apId);
+                 const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/ChangeApplicationStatus/${apId}`,{
+                  method:"PUT",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify({status})
+                 });
+                 if(response.ok){
+                   console.log("succesfully updated view")
+                 }
+             }catch(err){
+              console.log(err);
+             }
     };
   
-    useEffect(() => {
-      fetchJobsFromDB();
-    }, []);
+     useEffect(()=>{
+        if (!stateJobs || stateJobs.length === 0){
+          fetchJobsFromDB();
+        }else {
+         setJobs(stateJobs);
+         setLoading(false);
+        }
+        },[stateJobs]);
   
      useEffect(()=>{
          const timeout = setTimeout(() => {
             serachApplicantsForJob()
-          }, 300); // 300ms debounce
+          }, 30); // 300ms debounce
           return () => clearTimeout(timeout);
-    },[filterStatus,searchTerm,filterView,selectedJob])
+    },[filterStatus,searchTerm,filterView,selectedJob]);
 
 
     return(
@@ -1104,13 +1176,13 @@ export default function jobApplications() {
                      </div>
                    )}
                </Drawer>
-              <Modal open={mailPopup} onClose={() => setMailPopup(false)}>
+              <Modal open={mailPopup} onClose={handleMailClose}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg bg-white/90 !backdrop-blur-xl !rounded-3xl !shadow-2xl !p-6 flex flex-col max-h-[90vh]">
                   <div className="flex justify-between items-center mb-4 shrink-0">
                     <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
                       Email Preview
                     </Typography>
-                    <IconButton onClick={() => setMailPopup(false)} className="text-gray-500">
+                    <IconButton onClick={handleMailClose} className="text-gray-500">
                       <CloseIcon />
                     </IconButton>
                   </div>

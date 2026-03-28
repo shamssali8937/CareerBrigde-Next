@@ -445,7 +445,7 @@ export default function HomePage() {
 
   return (
     <>
-    <Navbar/>
+    <Navbar onProfileClick={()=>setOpenLeftDrawer(true)}/>
 
     <div className="min-h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] backdrop-blur-sm pt-20 pb-10 px-4 sm:px-6 lg:px-8 font-[Open_sans]">
         <div className="max-w-7xl mx-auto">
