@@ -263,24 +263,34 @@ export default function Homepage(){
         return today > jobLastDate;
       };
     
-      const searchJobsThroughSearchBar = () => {
-        let filtered = allJobs;
-        if (searchWord.trim()) {
-          const lowerSearch = searchWord.toLowerCase();
-          filtered = filtered.filter(
-            (job) =>
-              job.title.toLowerCase().includes(lowerSearch) ||
-              job.location.toLowerCase().includes(lowerSearch) ||
-              (job.provider._id &&
-                companies.find((c) => c._id === job.provider._id)?.companyname
-                  .toLowerCase()
-                  .includes(lowerSearch))
-          );
-        }
-        if (jobTypeFilter !== "all") {
-          filtered = filtered.filter((job) => job.jobType === jobTypeFilter);
-        }
-        setAllJobs(filtered);
+      const searchJobsThroughSearchBar =async () => {
+        try{
+                let jobTypeToSend = jobTypeFilter === "all" ? "" : jobTypeFilter;
+                if (!searchWord.trim() && jobTypeFilter === "all") {
+                     setAllJobs(jobs); 
+                     return;
+                 }            
+               const token=localStorage.getItem("token");
+               const response=await fetch(
+                 `${process.env.NEXT_PUBLIC_API_URL}/Protected/SearchJobs`,{
+                  method:"POST",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify({searchword:searchWord,jobType:jobTypeToSend}),
+                 }
+               );
+               if(!response.ok){
+                  console.log("unable to get jobs");
+                  return;
+               }
+               let result=await response.json();
+               setAllJobs(result.data.jobs);
+              
+          }catch(err){
+            console.log("error",err)
+          }
       };
 
       const fetchSeekerDetails=async()=>{
@@ -374,7 +384,9 @@ export default function Homepage(){
           }catch(error){
             console.log("eror in fetching already applied jobs",error);
           }
-        }  
+        }
+        
+        
 
       useEffect(()=>{
             fetchSeekerDetails();
