@@ -390,17 +390,33 @@ export default function Homepage(){
           // Do not close drawer on error so user can retry
         }
       };
-      // Dummy user info update – just updates Redux
+      
       const handleUserInfoUpdate = async (formData) => {
-        const updatedUser = { ...stateUserdata };
-        if (formData.name) updatedUser.name = formData.name;
-        if (formData.email) updatedUser.email = formData.email;
-        dispatch(setUser(updatedUser));
-        setSnackbarMessage("User info updated successfully");
-        setSnackbarSeverity("success");
-        setOpenSackbar(true);
-        setShowUserUpdateFields(false);
-        setOpenLeftDrawer(false);
+        try{
+           const token=localStorage.getItem("token");
+           const userUpdateResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,{
+           method:"PUT",
+           headers:{
+             "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+           body:JSON.stringify(formData)
+          });
+            if(userUpdateResponse.ok){
+              let result=userUpdateResponse.json()
+               console.log("user",result);
+                  dispatch(setUser(result.data))  
+            }        
+          setSnackbarMessage("User info updated");
+          setSnackbarSeverity("success");
+          setOpenSackbar(true);
+          setOpenLeftDrawer(false);
+        }catch(err){
+          setSnackbarMessage(`${err}`);
+          setSnackbarSeverity("error");
+          setOpenSackbar(true);
+          setOpenLeftDrawer(false);
+        }
       };
     
       const handleApplySubmit = () => {
