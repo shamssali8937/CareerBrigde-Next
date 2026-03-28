@@ -50,8 +50,8 @@ export default function AccountMenu({ onProfileClick }) {
           });
 
           if (response.ok) {
-            let result=await response.json()
-            dispatch(setUser(result.data.user));
+            const result=await response.json()
+            dispatch(setUser(result.user.users));
           }
         } catch (err) {
           console.log("Provider fetch error:", err);

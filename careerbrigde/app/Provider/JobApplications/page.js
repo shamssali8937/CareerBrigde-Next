@@ -435,6 +435,7 @@ export default function jobApplications() {
       } else {
         setSelectedApplicant(applicant);
       }
+      console.log(selectedJob);
       setOpenApplicantPopup(false);
       setOpenRightDrawer(true);
     };
@@ -523,26 +524,36 @@ export default function jobApplications() {
     };
   
     const serachApplicantsForJob = async () => {
-      if (!selectedJob) return;
-      let filtered = selectedJob.applications.filter((applicant) => {
-        const term = searchTerm.toLowerCase();
-        const matchesSearch =
-          applicant.seeker.user.name.toLowerCase().includes(term) ||
-          applicant.seeker.headline.toLowerCase().includes(term) ||
-          applicant.seeker.skills?.some((skill) =>
-            skill.toLowerCase().includes(term)
-          );
-        const matchesStatus =
-          filterStatus === "All" || applicant.status === filterStatus;
-        const matchesView =
-          filterView === "All"
-            ? true
-            : filterView === "Viewed"
-            ? applicant.isViewed
-            : !applicant.isViewed;
-        return matchesSearch && matchesStatus && matchesView;
-      });
-      setFilterApplicants(filtered);
+       try{
+               if (!selectedJob) return;
+               console.log(selectedJob)
+               const filter={
+                 status: filterStatus === "All" ? "" : filterStatus,
+                 searchWord:searchTerm.toLowerCase()
+               }
+                 if (filterView !== "All") {
+                  filter.viewed = filterView;
+                }
+                
+               console.log(filter);
+               const token=localStorage.getItem("token");
+               const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/SearchApplicants/${selectedJob._id}`,{
+                  method:"POST",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify(filter)
+                 });
+                const result=await response.json();
+               if(response.ok){
+                 setFilterApplicants(result.data.applicatnts);
+               } 
+              
+           }catch(err){
+            console.log(err);
+            console.log("error in filtering applicants");
+           }
     };
   
     const fetchJobsFromDB = async () => {
@@ -579,12 +590,12 @@ export default function jobApplications() {
       fetchJobsFromDB();
     }, []);
   
-    useEffect(() => {
-      const timeout = setTimeout(() => {
-        serachApplicantsForJob();
-      }, 300);
-      return () => clearTimeout(timeout);
-    }, [filterStatus, searchTerm, filterView, selectedJob]);
+     useEffect(()=>{
+         const timeout = setTimeout(() => {
+            serachApplicantsForJob()
+          }, 300); // 300ms debounce
+          return () => clearTimeout(timeout);
+    },[filterStatus,searchTerm,filterView,selectedJob])
 
 
     return(
@@ -783,8 +794,8 @@ export default function jobApplications() {
                                      }, }}
                     >
                       <MenuItem value="All">All</MenuItem>
-                      <MenuItem value="Viewed">Viewed</MenuItem>
-                      <MenuItem value="Not Viewed">Not Viewed</MenuItem>
+                      <MenuItem value={true}>Viewed</MenuItem>
+                      <MenuItem value={false}>Not Viewed</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
