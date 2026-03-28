@@ -6,6 +6,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState, useEffect } from "react"
 import { FaBuilding, FaCalendarAlt, FaClock, FaEnvelope, FaFileAlt, FaGraduationCap, FaMapMarkedAlt, FaMoneyBillWave, FaQuestionCircle, FaTasks, FaTools, FaUserTie } from "react-icons/fa";
+import { setRole } from "@/redux/slices/signupSlice";
+import { setJobs } from "@/redux/slices/appliedJobSlice";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function jobApplications() {
 
@@ -23,374 +27,374 @@ export default function jobApplications() {
     const [ loading, setLoading ] = useState(true);
     const statuses = ["Pending", "Hired", "Shortlisted", "Rejected"];
   
-    // const stateJobs = useSelector((state) => state.appliedJobs.jobs);
-    // const dispatch = useDispatch();
+     const stateJobs = useSelector((state) => state.appliedJobs.jobs);
+     const dispatch = useDispatch();
   
-    const Jobs = [
-      {
-        _id: "1",
-        jobId: "job1",
-        title: "Senior Frontend Developer",
-        description:
-          "We are looking for an experienced frontend developer proficient in React and TypeScript to lead our UI team.",
-        location: "San Francisco, CA",
-        jobType: "Remote",
-        salary: "$120k - $150k",
-        provider: {
-          user: {
-            name: "Alex Morgan",
-            email: "alex@techcorp.com",
-            photo: null,
-          },
-          companyname: "TechCorp Solutions",
-          positionInCompany: "Senior HR Manager",
-          logo: "https://via.placeholder.com/100", // placeholder for company logo
-        },
-        screeningQuestions: ["Describe a challenging UI problem you solved."],
-        applications: [
-          {
-            _id: "app1",
-            apId: "ap1",
-            seeker: {
-              user: {
-                name: "John Doe",
-                email: "john.doe@example.com",
-                photo: null,
-              },
-              headline: "Senior React Developer | 8+ years experience",
-              about:
-                "Passionate about building scalable web applications with React and Node.js.",
-              education: [
-                {
-                  _id: "edu1",
-                  degree: "B.Sc. Computer Science",
-                  institute: "University of Technology",
-                  year: "2015-2019",
-                  description: "Graduated with honors.",
-                },
-              ],
-              experience: [
-                {
-                  _id: "exp1",
-                  title: "Frontend Developer",
-                  company: "WebSolutions Inc.",
-                  duration: "2020-2023",
-                  description:
-                    "Developed and maintained React-based applications.",
-                },
-              ],
-              skills: ["React", "TypeScript", "Node.js", "Tailwind CSS"],
-              cv: "/uploads/cv-johndoe.pdf",
-            },
-            applyDate: "2025-03-10T10:00:00Z",
-            status: "Pending",
-            isViewed: false,
-            screeningAnswers: [
-              "I once optimized a component that reduced render time by 40%.",
-            ],
-          },
-          {
-            _id: "app2",
-            apId: "ap2",
-            seeker: {
-              user: {
-                name: "Jane Smith",
-                email: "jane.smith@example.com",
-                photo: null,
-              },
-              headline: "Full Stack Developer | MERN Stack",
-              about:
-                "Experienced in building full-stack applications with MERN.",
-              education: [
-                {
-                  _id: "edu2",
-                  degree: "M.Sc. Software Engineering",
-                  institute: "State University",
-                  year: "2018-2020",
-                  description: "Focus on web technologies.",
-                },
-              ],
-              experience: [
-                {
-                  _id: "exp2",
-                  title: "Software Engineer",
-                  company: "Innovatech",
-                  duration: "2021-present",
-                  description:
-                    "Worked on both frontend and backend using React, Node.js, and MongoDB.",
-                },
-              ],
-              skills: ["React", "Node.js", "MongoDB", "Express"],
-              cv: "/uploads/cv-janesmith.pdf",
-            },
-            applyDate: "2025-03-12T14:30:00Z",
-            status: "Shortlisted",
-            isViewed: true,
-            screeningAnswers: [
-              "I led a migration from class components to functional components with hooks.",
-            ],
-          },
-        ],
-      },
-      {
-        _id: "2",
-        jobId: "job2",
-        title: "Product Manager",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap.",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        provider: {
-          user: {
-            name: "Alex Morgan",
-            email: "alex@techcorp.com",
-            photo: null,
-          },
-          companyname: "TechCorp Solutions",
-          positionInCompany: "Senior HR Manager",
-          logo: "https://via.placeholder.com/100",
-        },
-        screeningQuestions: ["How do you prioritize features?"],
-        applications: [
-          {
-            _id: "app3",
-            apId: "ap3",
-            seeker: {
-              user: {
-                name: "Michael Brown",
-                email: "michael.brown@example.com",
-                photo: null,
-              },
-              headline: "Product Manager | 5+ years in SaaS",
-              about:
-                "Experienced in leading cross-functional teams and launching successful products.",
-              education: [
-                {
-                  _id: "edu3",
-                  degree: "MBA",
-                  institute: "Business School",
-                  year: "2016-2018",
-                  description: "Marketing and strategy.",
-                },
-              ],
-              experience: [
-                {
-                  _id: "exp3",
-                  title: "Product Manager",
-                  company: "SaaS Corp",
-                  duration: "2019-2024",
-                  description:
-                    "Managed product roadmap and collaborated with engineering.",
-                },
-              ],
-              skills: ["Product Strategy", "Agile", "User Research"],
-              cv: "/uploads/cv-michael.pdf",
-            },
-            applyDate: "2025-03-11T09:15:00Z",
-            status: "Pending",
-            isViewed: false,
-            screeningAnswers: [
-              "I use a combination of user feedback and business goals to prioritize.",
-            ],
-          },
-        ],
-      },
-      {
-        _id: "3",
-        jobId: "job2",
-        title: "Product Manager",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap.",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        provider: {
-          user: {
-            name: "Alex Morgan",
-            email: "alex@techcorp.com",
-            photo: null,
-          },
-          companyname: "TechCorp Solutions",
-          positionInCompany: "Senior HR Manager",
-          logo: "https://via.placeholder.com/100",
-        },
-        screeningQuestions: ["How do you prioritize features?"],
-        applications: [
-          {
-            _id: "app3",
-            apId: "ap3",
-            seeker: {
-              user: {
-                name: "Michael Brown",
-                email: "michael.brown@example.com",
-                photo: null,
-              },
-              headline: "Product Manager | 5+ years in SaaS",
-              about:
-                "Experienced in leading cross-functional teams and launching successful products.",
-              education: [
-                {
-                  _id: "edu3",
-                  degree: "MBA",
-                  institute: "Business School",
-                  year: "2016-2018",
-                  description: "Marketing and strategy.",
-                },
-              ],
-              experience: [
-                {
-                  _id: "exp3",
-                  title: "Product Manager",
-                  company: "SaaS Corp",
-                  duration: "2019-2024",
-                  description:
-                    "Managed product roadmap and collaborated with engineering.",
-                },
-              ],
-              skills: ["Product Strategy", "Agile", "User Research"],
-              cv: "/uploads/cv-michael.pdf",
-            },
-            applyDate: "2025-03-11T09:15:00Z",
-            status: "Pending",
-            isViewed: false,
-            screeningAnswers: [
-              "I use a combination of user feedback and business goals to prioritize.",
-            ],
-          },
-        ],
-      },
-      {
-        _id: "4",
-        jobId: "job2",
-        title: "Product Manager",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap.",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        provider: {
-          user: {
-            name: "Alex Morgan",
-            email: "alex@techcorp.com",
-            photo: null,
-          },
-          companyname: "TechCorp Solutions",
-          positionInCompany: "Senior HR Manager",
-          logo: "https://via.placeholder.com/100",
-        },
-        screeningQuestions: ["How do you prioritize features?"],
-        applications: [
-          {
-            _id: "app3",
-            apId: "ap3",
-            seeker: {
-              user: {
-                name: "Michael Brown",
-                email: "michael.brown@example.com",
-                photo: null,
-              },
-              headline: "Product Manager | 5+ years in SaaS",
-              about:
-                "Experienced in leading cross-functional teams and launching successful products.",
-              education: [
-                {
-                  _id: "edu3",
-                  degree: "MBA",
-                  institute: "Business School",
-                  year: "2016-2018",
-                  description: "Marketing and strategy.",
-                },
-              ],
-              experience: [
-                {
-                  _id: "exp3",
-                  title: "Product Manager",
-                  company: "SaaS Corp",
-                  duration: "2019-2024",
-                  description:
-                    "Managed product roadmap and collaborated with engineering.",
-                },
-              ],
-              skills: ["Product Strategy", "Agile", "User Research"],
-              cv: "/uploads/cv-michael.pdf",
-            },
-            applyDate: "2025-03-11T09:15:00Z",
-            status: "Pending",
-            isViewed: false,
-            screeningAnswers: [
-              "I use a combination of user feedback and business goals to prioritize.",
-            ],
-          },
-        ],
-      },
-      {
-        _id: "5",
-        jobId: "job2",
-        title: "Product Manager",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap.",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        provider: {
-          user: {
-            name: "Alex Morgan",
-            email: "alex@techcorp.com",
-            photo: null,
-          },
-          companyname: "TechCorp Solutions",
-          positionInCompany: "Senior HR Manager",
-          logo: "https://via.placeholder.com/100",
-        },
-        screeningQuestions: ["How do you prioritize features?"],
-        applications: [
-          {
-            _id: "app3",
-            apId: "ap3",
-            seeker: {
-              user: {
-                name: "Michael Brown",
-                email: "michael.brown@example.com",
-                photo: null,
-              },
-              headline: "Product Manager | 5+ years in SaaS",
-              about:
-                "Experienced in leading cross-functional teams and launching successful products.",
-              education: [
-                {
-                  _id: "edu3",
-                  degree: "MBA",
-                  institute: "Business School",
-                  year: "2016-2018",
-                  description: "Marketing and strategy.",
-                },
-              ],
-              experience: [
-                {
-                  _id: "exp3",
-                  title: "Product Manager",
-                  company: "SaaS Corp",
-                  duration: "2019-2024",
-                  description:
-                    "Managed product roadmap and collaborated with engineering.",
-                },
-              ],
-              skills: ["Product Strategy", "Agile", "User Research"],
-              cv: "/uploads/cv-michael.pdf",
-            },
-            applyDate: "2025-03-11T09:15:00Z",
-            status: "Pending",
-            isViewed: false,
-            screeningAnswers: [
-              "I use a combination of user feedback and business goals to prioritize.",
-            ],
-          },
-        ],
-      }
-    ];
+    // const Jobs = [
+    //   {
+    //     _id: "1",
+    //     jobId: "job1",
+    //     title: "Senior Frontend Developer",
+    //     description:
+    //       "We are looking for an experienced frontend developer proficient in React and TypeScript to lead our UI team.",
+    //     location: "San Francisco, CA",
+    //     jobType: "Remote",
+    //     salary: "$120k - $150k",
+    //     provider: {
+    //       user: {
+    //         name: "Alex Morgan",
+    //         email: "alex@techcorp.com",
+    //         photo: null,
+    //       },
+    //       companyname: "TechCorp Solutions",
+    //       positionInCompany: "Senior HR Manager",
+    //       logo: "https://via.placeholder.com/100", // placeholder for company logo
+    //     },
+    //     screeningQuestions: ["Describe a challenging UI problem you solved."],
+    //     applications: [
+    //       {
+    //         _id: "app1",
+    //         apId: "ap1",
+    //         seeker: {
+    //           user: {
+    //             name: "John Doe",
+    //             email: "john.doe@example.com",
+    //             photo: null,
+    //           },
+    //           headline: "Senior React Developer | 8+ years experience",
+    //           about:
+    //             "Passionate about building scalable web applications with React and Node.js.",
+    //           education: [
+    //             {
+    //               _id: "edu1",
+    //               degree: "B.Sc. Computer Science",
+    //               institute: "University of Technology",
+    //               year: "2015-2019",
+    //               description: "Graduated with honors.",
+    //             },
+    //           ],
+    //           experience: [
+    //             {
+    //               _id: "exp1",
+    //               title: "Frontend Developer",
+    //               company: "WebSolutions Inc.",
+    //               duration: "2020-2023",
+    //               description:
+    //                 "Developed and maintained React-based applications.",
+    //             },
+    //           ],
+    //           skills: ["React", "TypeScript", "Node.js", "Tailwind CSS"],
+    //           cv: "/uploads/cv-johndoe.pdf",
+    //         },
+    //         applyDate: "2025-03-10T10:00:00Z",
+    //         status: "Pending",
+    //         isViewed: false,
+    //         screeningAnswers: [
+    //           "I once optimized a component that reduced render time by 40%.",
+    //         ],
+    //       },
+    //       {
+    //         _id: "app2",
+    //         apId: "ap2",
+    //         seeker: {
+    //           user: {
+    //             name: "Jane Smith",
+    //             email: "jane.smith@example.com",
+    //             photo: null,
+    //           },
+    //           headline: "Full Stack Developer | MERN Stack",
+    //           about:
+    //             "Experienced in building full-stack applications with MERN.",
+    //           education: [
+    //             {
+    //               _id: "edu2",
+    //               degree: "M.Sc. Software Engineering",
+    //               institute: "State University",
+    //               year: "2018-2020",
+    //               description: "Focus on web technologies.",
+    //             },
+    //           ],
+    //           experience: [
+    //             {
+    //               _id: "exp2",
+    //               title: "Software Engineer",
+    //               company: "Innovatech",
+    //               duration: "2021-present",
+    //               description:
+    //                 "Worked on both frontend and backend using React, Node.js, and MongoDB.",
+    //             },
+    //           ],
+    //           skills: ["React", "Node.js", "MongoDB", "Express"],
+    //           cv: "/uploads/cv-janesmith.pdf",
+    //         },
+    //         applyDate: "2025-03-12T14:30:00Z",
+    //         status: "Shortlisted",
+    //         isViewed: true,
+    //         screeningAnswers: [
+    //           "I led a migration from class components to functional components with hooks.",
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     _id: "2",
+    //     jobId: "job2",
+    //     title: "Product Manager",
+    //     description:
+    //       "Seeking a product manager to drive our flagship product roadmap.",
+    //     location: "New York, NY",
+    //     jobType: "Hybrid",
+    //     salary: "$130k - $160k",
+    //     provider: {
+    //       user: {
+    //         name: "Alex Morgan",
+    //         email: "alex@techcorp.com",
+    //         photo: null,
+    //       },
+    //       companyname: "TechCorp Solutions",
+    //       positionInCompany: "Senior HR Manager",
+    //       logo: "https://via.placeholder.com/100",
+    //     },
+    //     screeningQuestions: ["How do you prioritize features?"],
+    //     applications: [
+    //       {
+    //         _id: "app3",
+    //         apId: "ap3",
+    //         seeker: {
+    //           user: {
+    //             name: "Michael Brown",
+    //             email: "michael.brown@example.com",
+    //             photo: null,
+    //           },
+    //           headline: "Product Manager | 5+ years in SaaS",
+    //           about:
+    //             "Experienced in leading cross-functional teams and launching successful products.",
+    //           education: [
+    //             {
+    //               _id: "edu3",
+    //               degree: "MBA",
+    //               institute: "Business School",
+    //               year: "2016-2018",
+    //               description: "Marketing and strategy.",
+    //             },
+    //           ],
+    //           experience: [
+    //             {
+    //               _id: "exp3",
+    //               title: "Product Manager",
+    //               company: "SaaS Corp",
+    //               duration: "2019-2024",
+    //               description:
+    //                 "Managed product roadmap and collaborated with engineering.",
+    //             },
+    //           ],
+    //           skills: ["Product Strategy", "Agile", "User Research"],
+    //           cv: "/uploads/cv-michael.pdf",
+    //         },
+    //         applyDate: "2025-03-11T09:15:00Z",
+    //         status: "Pending",
+    //         isViewed: false,
+    //         screeningAnswers: [
+    //           "I use a combination of user feedback and business goals to prioritize.",
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     _id: "3",
+    //     jobId: "job2",
+    //     title: "Product Manager",
+    //     description:
+    //       "Seeking a product manager to drive our flagship product roadmap.",
+    //     location: "New York, NY",
+    //     jobType: "Hybrid",
+    //     salary: "$130k - $160k",
+    //     provider: {
+    //       user: {
+    //         name: "Alex Morgan",
+    //         email: "alex@techcorp.com",
+    //         photo: null,
+    //       },
+    //       companyname: "TechCorp Solutions",
+    //       positionInCompany: "Senior HR Manager",
+    //       logo: "https://via.placeholder.com/100",
+    //     },
+    //     screeningQuestions: ["How do you prioritize features?"],
+    //     applications: [
+    //       {
+    //         _id: "app3",
+    //         apId: "ap3",
+    //         seeker: {
+    //           user: {
+    //             name: "Michael Brown",
+    //             email: "michael.brown@example.com",
+    //             photo: null,
+    //           },
+    //           headline: "Product Manager | 5+ years in SaaS",
+    //           about:
+    //             "Experienced in leading cross-functional teams and launching successful products.",
+    //           education: [
+    //             {
+    //               _id: "edu3",
+    //               degree: "MBA",
+    //               institute: "Business School",
+    //               year: "2016-2018",
+    //               description: "Marketing and strategy.",
+    //             },
+    //           ],
+    //           experience: [
+    //             {
+    //               _id: "exp3",
+    //               title: "Product Manager",
+    //               company: "SaaS Corp",
+    //               duration: "2019-2024",
+    //               description:
+    //                 "Managed product roadmap and collaborated with engineering.",
+    //             },
+    //           ],
+    //           skills: ["Product Strategy", "Agile", "User Research"],
+    //           cv: "/uploads/cv-michael.pdf",
+    //         },
+    //         applyDate: "2025-03-11T09:15:00Z",
+    //         status: "Pending",
+    //         isViewed: false,
+    //         screeningAnswers: [
+    //           "I use a combination of user feedback and business goals to prioritize.",
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     _id: "4",
+    //     jobId: "job2",
+    //     title: "Product Manager",
+    //     description:
+    //       "Seeking a product manager to drive our flagship product roadmap.",
+    //     location: "New York, NY",
+    //     jobType: "Hybrid",
+    //     salary: "$130k - $160k",
+    //     provider: {
+    //       user: {
+    //         name: "Alex Morgan",
+    //         email: "alex@techcorp.com",
+    //         photo: null,
+    //       },
+    //       companyname: "TechCorp Solutions",
+    //       positionInCompany: "Senior HR Manager",
+    //       logo: "https://via.placeholder.com/100",
+    //     },
+    //     screeningQuestions: ["How do you prioritize features?"],
+    //     applications: [
+    //       {
+    //         _id: "app3",
+    //         apId: "ap3",
+    //         seeker: {
+    //           user: {
+    //             name: "Michael Brown",
+    //             email: "michael.brown@example.com",
+    //             photo: null,
+    //           },
+    //           headline: "Product Manager | 5+ years in SaaS",
+    //           about:
+    //             "Experienced in leading cross-functional teams and launching successful products.",
+    //           education: [
+    //             {
+    //               _id: "edu3",
+    //               degree: "MBA",
+    //               institute: "Business School",
+    //               year: "2016-2018",
+    //               description: "Marketing and strategy.",
+    //             },
+    //           ],
+    //           experience: [
+    //             {
+    //               _id: "exp3",
+    //               title: "Product Manager",
+    //               company: "SaaS Corp",
+    //               duration: "2019-2024",
+    //               description:
+    //                 "Managed product roadmap and collaborated with engineering.",
+    //             },
+    //           ],
+    //           skills: ["Product Strategy", "Agile", "User Research"],
+    //           cv: "/uploads/cv-michael.pdf",
+    //         },
+    //         applyDate: "2025-03-11T09:15:00Z",
+    //         status: "Pending",
+    //         isViewed: false,
+    //         screeningAnswers: [
+    //           "I use a combination of user feedback and business goals to prioritize.",
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     _id: "5",
+    //     jobId: "job2",
+    //     title: "Product Manager",
+    //     description:
+    //       "Seeking a product manager to drive our flagship product roadmap.",
+    //     location: "New York, NY",
+    //     jobType: "Hybrid",
+    //     salary: "$130k - $160k",
+    //     provider: {
+    //       user: {
+    //         name: "Alex Morgan",
+    //         email: "alex@techcorp.com",
+    //         photo: null,
+    //       },
+    //       companyname: "TechCorp Solutions",
+    //       positionInCompany: "Senior HR Manager",
+    //       logo: "https://via.placeholder.com/100",
+    //     },
+    //     screeningQuestions: ["How do you prioritize features?"],
+    //     applications: [
+    //       {
+    //         _id: "app3",
+    //         apId: "ap3",
+    //         seeker: {
+    //           user: {
+    //             name: "Michael Brown",
+    //             email: "michael.brown@example.com",
+    //             photo: null,
+    //           },
+    //           headline: "Product Manager | 5+ years in SaaS",
+    //           about:
+    //             "Experienced in leading cross-functional teams and launching successful products.",
+    //           education: [
+    //             {
+    //               _id: "edu3",
+    //               degree: "MBA",
+    //               institute: "Business School",
+    //               year: "2016-2018",
+    //               description: "Marketing and strategy.",
+    //             },
+    //           ],
+    //           experience: [
+    //             {
+    //               _id: "exp3",
+    //               title: "Product Manager",
+    //               company: "SaaS Corp",
+    //               duration: "2019-2024",
+    //               description:
+    //                 "Managed product roadmap and collaborated with engineering.",
+    //             },
+    //           ],
+    //           skills: ["Product Strategy", "Agile", "User Research"],
+    //           cv: "/uploads/cv-michael.pdf",
+    //         },
+    //         applyDate: "2025-03-11T09:15:00Z",
+    //         status: "Pending",
+    //         isViewed: false,
+    //         screeningAnswers: [
+    //           "I use a combination of user feedback and business goals to prioritize.",
+    //         ],
+    //       },
+    //     ],
+    //   }
+    // ];
   
-    const [ jobs, setJobs ] = useState(Jobs);
+    const [ jobs, setjobs ] = useState(stateJobs);
   
     // console.log(jobs);
   
@@ -542,11 +546,29 @@ export default function jobApplications() {
     };
   
     const fetchJobsFromDB = async () => {
-      setLoading(true);
-      setTimeout(() => {
-        setJobs(Jobs);
-        setLoading(false);
-      }, 1000);
+       try{
+                  setLoading(true);
+                 const token=localStorage.getItem("token");
+                 const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/AppForJobOfSpecificProvider`,{
+                  method:"GET",
+                  headers:{
+                    Authorization: `Bearer ${token}`,
+                  }
+                 });
+
+                 if(response.ok){
+                    let result=await response.json();
+                    // console.log(response.data.jobsWithApplication);
+                    dispatch(setRole(result.data.jobApplication[0].provider.user.role));
+                  
+                    dispatch(setJobs(result.data.jobApplication))
+                    setjobs(result.data.jobApplication);
+                 }
+             }catch(err){
+              console.log(err);
+             }finally{
+              setLoading(false);
+             }
     };
   
     const changeViewedAndStatusInDb = async (applicant, newStatus) => {
@@ -616,7 +638,7 @@ export default function jobApplications() {
                                         <Avatar
                                         //  src={job.provider.Photo?.url || "/iconbridge.jpg"}
                                         //  src="/iconbridge.jpg"
-                                         alt={job.provider.companyname}
+                                         alt={job.provider.companyName}
                                          className="w-12 h-12 !rounded-xl border-2 !border-white !shadow-md"
                                          variant="rounded"
                                         >
@@ -628,7 +650,7 @@ export default function jobApplications() {
                                            </Typography>
                                            <Typography variant="body2" className="text-gray-500 flex items-center gap-1 !mt-1">
                                              <FaBuilding className="text-[#a78cdd]" size={12} />
-                                             {job.provider.companyname}
+                                             {job.provider.companyName}
                                            </Typography>
                                         </div>
                                      </div>
@@ -663,8 +685,8 @@ export default function jobApplications() {
                                             {job.applications.slice(0, 3).map((app, idx) => (
                                               <Avatar
                                                 key={idx}
-                                                // src={app.seeker.user.photo || "https://via.placeholder.com/30"}
-                                                src="https://via.placeholder.com/30"
+                                                 src={app.seeker.user.photo?.url || "https://via.placeholder.com/30"}
+                                                // src="https://via.placeholder.com/30"
                                                 sx={{ width: 24, height: 24 }}
                                                 className="border-2 border-white"
                                               />
@@ -812,12 +834,12 @@ export default function jobApplications() {
                           </div>
                         </div>
                         <img
-                        //   src={
-                        //     applicant.seeker.user.photo
-                        //       ? `${backendUrl}${applicant.seeker.user.photo}`
-                        //       : "https://via.placeholder.com/50"
-                        //   }
-                          src="https://via.placeholder.com/50"
+                          src={
+                            applicant.seeker.user.photo
+                              ? applicant.seeker.user.photo?.url
+                              : "https://via.placeholder.com/50"
+                          }
+                          // src="https://via.placeholder.com/50"
                           alt={applicant.seeker.user.name}
                           className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
                         />
@@ -864,12 +886,12 @@ export default function jobApplications() {
                          </Typography>
                          <div className="flex items-center gap-3 mt-3">
                            <img
-                            //  src={
-                            //    selectedjob.provider.user.photo
-                            //      ? `${backendUrl}${selectedjob.provider.user.photo}`
-                            //      : "https://via.placeholder.com/40"
-                            //  }
-                             src="/iconbridge.jpg"
+                             src={
+                               selectedJob.provider.user.photo
+                                 ? selectedJob.provider.user.photo?.url
+                                 : "https://via.placeholder.com/40"
+                             }
+                            //  src="/iconbridge.jpg"
                              alt="company"
                              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                            />
@@ -880,7 +902,7 @@ export default function jobApplications() {
                              <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
                                <FaUserTie className="!text-indigo-500" />
                                {selectedJob.provider.positionInCompany} at{" "}
-                               {selectedJob.provider.companyname}
+                               {selectedJob.provider.companyName}
                              </Typography>
                            </div>
                          </div>
@@ -899,12 +921,12 @@ export default function jobApplications() {
                        <div className="flex-1 overflow-y-auto p-6 space-y-5">
                          <div className="flex flex-col items-center text-center">
                            <img
-                            //  src={
-                            //    selectedApplicant.seeker.user.photo
-                            //      ? `${backendUrl}${selectedapplicant.seeker.user.photo}`
-                            //      : "https://via.placeholder.com/80"
-                            //  }
-                             src="/iconbridge.jpg"
+                             src={
+                               selectedApplicant.seeker.user.photo
+                                 ? selectedApplicant.seeker.user.photo?.url
+                                 : "https://via.placeholder.com/80"
+                             }
+                            //  src="/iconbridge.jpg"
                              alt="applicant"
                              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg mb-3"
                            />
@@ -1017,13 +1039,14 @@ export default function jobApplications() {
                            <FaFileAlt className="!text-indigo-500" />
                            {selectedApplicant.cv ? (
                              <a
-                            //    href={`${backendUrl}${selectedapplicant.cv}`}
-                               href="#"
+                               href={selectedApplicant.cv?.url}
+                              //  href="#"
                                target="_blank"
                                rel="noopener noreferrer"
                                className="font-[Open_sans] text-sm text-indigo-600 hover:underline"
                              >
-                               CV: {getFileName(selectedApplicant.cv)}
+                               {/* CV: {getFileName(selectedApplicant.cv)} */}
+                               CV: {selectedApplicant.cv?.publicId}
                              </a>
                            ) : (
                              <span className="text-sm text-gray-700">
