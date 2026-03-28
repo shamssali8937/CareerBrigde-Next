@@ -29,7 +29,7 @@ function Navbar({ onProfileClick }) {
         <div className="hidden md:flex items-center space-x-8">
           {/* Home */}
           <Link
-            href={role === "jobprovider" || role=== "provider" ? "/Provider/HomePage" : "/Provider/Homepage"}
+            href={role === "jobprovider" || role=== "provider" ? "/Provider/HomePage" : "/Seeker/HomePage"}
             className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
           >
             <FaHome className="text-xl" />
@@ -79,7 +79,7 @@ function Navbar({ onProfileClick }) {
               {/* Left column: stacked links */}
               <div className="flex flex-col space-y-2">
                 <Link
-                  href={role === "jobprovider" || role==="provider" ? "/Provider/HomePage" : "/Provider/Homepage"}
+                  href={role === "jobprovider" || role==="provider" ? "/Provider/HomePage" : "/Seeker/HomePage"}
                   className="flex items-center text-gray-700 hover:text-blue-600"
                   onClick={() => setIsOpen(false)}
                 >

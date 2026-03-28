@@ -15,7 +15,7 @@ import SeekerForm from "@/components/SeekerForm";
 import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
-import { addAppliedJobs } from "@/redux/slices/appliedJobSlice";
+import { addAppliedJobs, resetJobs } from "@/redux/slices/appliedJobSlice";
 
 export default function Homepage(){
 
@@ -203,18 +203,7 @@ export default function Homepage(){
     
       const handleApplySubmit = () => {
         if (!selectedjob) return;
-        const application = {
-          job: selectedjob,
-          appliedDate: new Date().toISOString(),
-          screeningAnswers: screeningAnswers,
-        };
-        dispatch(addAppliedJobs([application]));
-        setApply(false);
-        setSnackbarMessage("Application Submitted Successfully");
-        setSnackbarSeverity("success");
-        setOpenSackbar(true);
-        setOpenRightDrawer(false);
-        setScreeningAnswers([]);
+          postApplicationForJob(selectedjob);
       };
     
       const handleChange = (panel) => (event, isExpanded) => {
@@ -378,13 +367,55 @@ export default function Homepage(){
                  }
                );
              if(response.ok){
-              // console.log("applied jobs",response.data.applications);
-              dispatch(addAppliedJobs(response.data.applications))
+              let result=await response.json();
+              console.log("applied jobs",result.data.applications);
+              dispatch(addAppliedJobs(result.data.applications))
              }
           }catch(error){
             console.log("eror in fetching already applied jobs",error);
           }
         }
+
+      const postApplicationForJob=async(jobApplication)=>{
+          try{
+            console.log("job application",jobApplication)
+            console.log("answers",{screeningAnswers:screeningAnswers});
+            let answersToSend = [];
+            if (jobApplication.screeningQuestions && jobApplication.screeningQuestions.length > 0) {
+              answersToSend = jobApplication.screeningQuestions.map((_, index) => {
+                return screeningAnswers[index] || ""; 
+              });
+            }
+            const token = localStorage.getItem("token");
+            const response=await fetch(
+                 `${process.env.NEXT_PUBLIC_API_URL}/Protected/ApplyJob`,{
+                  method:"POST",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify({ jobId:jobApplication._id , screeningAnswers:answersToSend }),
+                 }
+               );
+            if(response.ok)
+            {
+              // console.log("job appliction is posted",response.data.jobApplication);
+              // dispatch(resetJobs());
+              setApply(false);
+              setSnackbarMessage("Application Submitted Successfully");
+              setSnackbarSeverity("success");
+              setOpenSackbar(true);
+              setOpenRightDrawer(false);
+              setScreeningAnswers([]);
+            }
+          }catch(error){
+            console.log(error)
+            setSnackbarMessage("Application Submission Error");
+            setSnackbarSeverity("error");
+            setOpenSackbar(true);
+            setOpenRightDrawer(false);
+          }
+        }  
         
         
 
@@ -995,7 +1026,7 @@ export default function Homepage(){
                         <Button
                           variant="contained"
                           disabled
-                          className="!bg-emerald-600 text-white rounded-full py-3 w-full"
+                          className="!bg-emerald-600 !pointer-cursor !font-[Open_Sans] !text-white !rounded-full py-3 w-full !transition-all hover:scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
                         >
                           Applied
                         </Button>
@@ -1065,12 +1096,12 @@ export default function Homepage(){
                   <div className="flex items-center gap-2 border p-3 rounded-xl mt-4 mb-4 cursor-pointer hover:bg-gray-50">
                     <FaFileUpload className="text-[#a78cdd]" />
                     <a
-                      href={stateData.seekerInfo?.cv || "#"}
+                      href={stateData.seekerInfo?.cv?.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-gray-800 font-[Open_sans] hover:underline truncate"
                     >
-                      CV: {getFileName(stateData.seekerInfo?.cv) || "No CV uploaded"}
+                      CV: {getFileName(stateData.seekerInfo?.cv?.url) || "No CV uploaded"}
                     </a>
                   </div>
                   <Button
