@@ -7,6 +7,8 @@ import { Typography } from "@mui/material";
 import NewPasswordBox from "@/components/NewPasswordBox";
 import { useSelector } from "react-redux";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
+import { setEmail } from "@/redux/slices/signupSlice";
+import { useDispatch } from "react-redux";
 
 export default function Otp() {
   const [opensnackbar, setOpensnackbar] = useState(false);
@@ -16,7 +18,7 @@ export default function Otp() {
   const [isVerified, setIsVerified] = useState(false);
   const [resendEnabled, setResendEnabled] = useState(false);
   const [timer, setTimer] = useState(60);
-
+  const dispatch=useDispatch();
   const Email = useSelector((state) => state.signup.email);
 
   // Handle OTP input change
@@ -32,39 +34,106 @@ export default function Otp() {
   };
 
   // Mock verify OTP
-  const verifyOtp = () => {
+  const verifyOtp =async () => {
     if (otp.length !== 4) return;
-
-    // For demo, assume OTP '1234' is correct
-    if (otp === "1234") {
-      setIsVerified(true);
-      setSnackbarmessage("OTP verified successfully");
-      setSnackbarseverity("success");
-      setOpensnackbar(true);
-    } else {
-      setSnackbarmessage("Invalid OTP");
-      setSnackbarseverity("error");
-      setOpensnackbar(true);
-    }
+        const forgetToken=localStorage.getItem("forgetToken")
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/VerifyOtp`, {
+                  method:"POST",
+                  headers:{
+                         "Content-Type":"application/json",
+                         Authorization: `Bearer ${forgetToken}`,
+                    },
+                  body:JSON.stringify({otp:otp})
+                });
+            const result=await response.json();    
+          if(result.data.success === false){
+            setIsVerified(false);
+            setSnackbarmessage("OTP verification Failed");
+            setSnackbarseverity("error");
+            setOpensnackbar(true);
+            return;
+          }
+          setIsVerified(true);
+          setSnackbarmessage("OTP verified successfully");
+          setSnackbarseverity("success");
+          setOpensnackbar(true);
+        } catch (err) {
+          if(err.response?.status===401){
+          setSnackbarmessage("OTP Expired");
+          setSnackbarseverity("error");
+          setOpensnackbar(true);
+          return;
+          }
+          setSnackbarmessage(err.response?.data?.message || "Verification failed");
+          setSnackbarseverity("error");
+          setOpensnackbar(true);
+        }
   };
 
   // Mock send OTP
-  const sendOtpToEmail = () => {
-    if (!Email) {
-      setSnackbarmessage("Please enter your email first");
-      setSnackbarseverity("error");
-      setOpensnackbar(true);
-      return;
-    }
-
-    // Simulate sending OTP
-    setSnackbarmessage(`OTP sent to ${Email} (use 1234 to verify)`);
-    setSnackbarseverity("success");
-    setOpensnackbar(true);
-
-    // Reset timer
-    setTimer(60);
-    setResendEnabled(false);
+  const sendOtpToEmail =async () => {
+    try {
+          const email = Email;
+          if (!email) {
+            setSnackbarmessage("Please enter your email first");
+            setSnackbarmessage("error");
+            setOpensnackbar(true);
+            return;
+          }
+      
+          dispatch(setEmail(email));
+          
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendOtp`, {
+            method:"POST",
+            headers:{
+                   "Content-Type":"application/json",
+              },
+            body:JSON.stringify({email:email})
+          });
+      
+          if (response.ok) {
+            let result=await response.json();
+            const { forgotToken, message } = result; // message contains OTP
+            const otp = message;
+      
+            localStorage.setItem("forgetToken", forgotToken);
+      
+              const mailMessage = {
+                        to: email,
+                        subject: "Password Reset OTP – Action Required",
+                        message: `Dear User,\n\nWe received a request to reset the password for your account.\n\nPlease use the following One-Time Password (OTP) to proceed with resetting your password:\n\nOTP: ${otp}\n\nThis OTP is valid for the next 5 minutes.\nDo not share this code with anyone for security reasons.\n\nIf you did not request a password reset, please ignore this email.\n\nBest regards,\nSupport Team`
+                      };
+            console.log(mailMessage)
+            const mailResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendMail`,{
+              method:"POST",
+              headers:{
+                   "Content-Type":"application/json",
+              },
+              body:JSON.stringify(mailMessage)
+            });
+      
+            if (mailResponse.ok) {
+              setSnackbarmessage("OTP sent to your email");
+              setSnackbarseverity("success");
+              setOpensnackbar(true);
+              setTimer(60);
+              setResendEnabled(false);
+            } else {
+              setSnackbarmessage("Error In OTP sent to your email");
+              setSnackbarseverity("error");
+              setOpensnackbar(true);
+            }
+          } else {
+            throw new Error("Failed to generate OTP");
+          }
+        } catch (err) {
+          console.log("OTP mail error:", err);
+          // setSnackbarmessage(err.response?.data?.message || "Failed to send OTP. Try again.");
+          // setSnackbarseverity("error");
+          // setOpensnackbar(true);
+        }
   };
 
   // Timer countdown

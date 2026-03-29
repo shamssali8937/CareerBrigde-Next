@@ -8,11 +8,14 @@ import { addAppliedJobs, hideJob } from "@/redux/slices/appliedJobSlice";
 import { setRole } from "@/redux/slices/signupSlice";
 import { useDispatch } from "react-redux";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
+import { useSelector } from "react-redux";
 
 
 
 export default function AppliedJobs() {
-  const [applications, setApplications] = useState([]);
+   const stateapplications=useSelector((state)=>state.appliedJobs);
+  //  console.log(stateapplications);
+  const [applications, setApplications] = useState(stateapplications.applications||[]);
   const [ishide,setIsHide]=useState(false);
   const [selectedapplication, setseleectedapplication] = useState(null);
   const [opendrawer, setopendrawer] = useState(false);

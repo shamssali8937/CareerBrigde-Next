@@ -38,7 +38,7 @@ export const verifyOtpController=async(req)=>{
 
           const result = await verifyOtp(tokenDetail.email, otp);
 
-          return NextResponse.json({message:result},{status:200});
+          return NextResponse.json({message:"success",data:result},{status:200});
 
     }catch(err){
        //console.log(err)

@@ -4,14 +4,16 @@ import React, { useState } from "react";
 import { Typography } from "@mui/material";
 import TextInput from "../components/TextInput";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function NewPasswordBox() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const router=useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit =async () => {
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       return;
@@ -23,9 +25,38 @@ export default function NewPasswordBox() {
     }
 
     setError("");
-    // Mock success since we are not using backend
-    setSuccess(true);
-    localStorage.removeItem("forgetToken");
+    try {
+      const forgetToken = localStorage.getItem("forgetToken");
+      if (!forgetToken) {
+        // setsnackbarmessage("Token missing. Please try OTP verification again.");
+        // setsnackbarseverity("error");
+        // setopensnackbar(true);
+        return;
+      }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/Protected/ResetPassword`,{
+       method:"POST",
+       headers:{
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${forgetToken}`,
+       },
+       body:JSON.stringify({password:password})
+      });
+
+      // setsnackbarmessage(response.data.message || "Password reset successfully");
+      // setsnackbarseverity("success");
+      // setopensnackbar(true);
+      setSuccess(true);
+      localStorage.removeItem("forgetToken");
+
+      router.push("/Auth/Signin")
+
+    } catch (err) {
+      // setsnackbarmessage(err.response?.data?.message || "Password reset failed");
+      // setsnackbarseverity("error");
+      // setopensnackbar(true);
+      console.log(err)
+    }
   };
 
   return (

@@ -148,16 +148,67 @@ export default function Signin(){
      };
 
 
-     const sendOtpToEmail = () => {
-        if (!data.email) {
-          setsnackbarmessage("Please enter your email first");
-          setsnackbarseverity("error");
-          setopensackbar(true);
-          return;
-        }
-        setsnackbarmessage(`OTP sent to ${data.email}`);
-        setsnackbarseverity("success");
-        setopensackbar(true);
+     const sendOtpToEmail = async() => {
+         try {
+                const email = data.email;
+                if (!email) {
+                  setsnackbarmessage("Please enter your email first");
+                  setsnackbarseverity("error");
+                  setopensackbar(true);
+                  return;
+                }
+            
+                dispatch(setEmail(email));
+                
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendOtp`, {
+                  method:"POST",
+                  headers:{
+                         "Content-Type":"application/json",
+                    },
+                  body:JSON.stringify({email:email})
+                });
+            
+                if (response.ok) {
+                  let result=await response.json();
+                  const { forgotToken, message } = result; // message contains OTP
+                  const otp = message;
+            
+                  localStorage.setItem("forgetToken", forgotToken);
+            
+                    const mailMessage = {
+                              to: email,
+                              subject: "Password Reset OTP – Action Required",
+                              message: `Dear User,\n\nWe received a request to reset the password for your account.\n\nPlease use the following One-Time Password (OTP) to proceed with resetting your password:\n\nOTP: ${otp}\n\nThis OTP is valid for the next 5 minutes.\nDo not share this code with anyone for security reasons.\n\nIf you did not request a password reset, please ignore this email.\n\nBest regards,\nSupport Team`
+                            };
+                  console.log(mailMessage)
+                  const mailResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendMail`,{
+                    method:"POST",
+                    headers:{
+                         "Content-Type":"application/json",
+                    },
+                    body:JSON.stringify(mailMessage)
+                  });
+            
+                  if (mailResponse.ok) {
+                    let token=localStorage.getItem("forgetToken");
+                    setsnackbarmessage("OTP sent to your email");
+                    setsnackbarseverity("success");
+                    setopensackbar(true);
+                    router.push(`/Auth/ForgotPassword?${token}`); // go to OTP page
+                  } else {
+                    setsnackbarmessage("Error In OTP sent to your email");
+                    setsnackbarseverity("error");
+                    setopensackbar(true);
+                  }
+                } else {
+                  throw new Error("Failed to generate OTP");
+                }
+              } catch (err) {
+                console.log("OTP mail error:", err);
+                // setsnackbarmessage(err.response?.data?.message || "Failed to send OTP. Try again.");
+                // setsnackbarseverity("error");
+                // setopensackbar(true);
+              }
       };
     
       
