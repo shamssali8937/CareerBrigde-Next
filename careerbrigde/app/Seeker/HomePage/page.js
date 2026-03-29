@@ -224,8 +224,7 @@ export default function Homepage(){
       };
     
       const handleToSelectJob = (job) => {
-        const fullJob = jobs.find((j) => j.id === job.id);
-        setSelectedjob(fullJob);
+        setSelectedjob(job);  
         setOpenRightDrawer(true);
         setSelectedCompany(null);
       };
@@ -450,6 +449,12 @@ export default function Homepage(){
         }, 300);
         return () => clearTimeout(timeout);
       }, [jobTypeFilter, searchWord]);
+
+
+        useEffect(() => {
+          fetchJobsForSeeker();
+          fetchAlreadyAppliedJobs();
+      }, [openRightDrawer]);
 
     return(
         <>
