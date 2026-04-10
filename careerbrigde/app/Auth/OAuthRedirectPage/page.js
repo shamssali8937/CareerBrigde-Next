@@ -13,6 +13,9 @@ export default function OAuthRedirect() {
   const dispatch=useDispatch();
 
   useEffect(() => {
+     console.log("Status:", status);
+  console.log("Session:", session);
+  console.log("Role:", session?.user?.role);
     if (status === "loading") return;
 
     if (!session) {
@@ -26,7 +29,7 @@ export default function OAuthRedirect() {
     if (role === "jobseeker" || role=== "seeker") {
         
       router.replace("/Seeker/HomePage");
-    } else if (role === "jobprovider" || role=== "seeker") {
+    } else if (role === "jobprovider" || role=== "provider") {
       router.replace("/Provider/HomePage");
     } else {
       router.replace("/Home");
