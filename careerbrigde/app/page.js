@@ -9,15 +9,15 @@ export default function Home() {
        <div className="w-full flex flex-col items-start">
         {/* Left side content */}
         <div className="mb-2">
-             <Typography variant="h3" fontWeight="bold" className="text-[#020202] text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-2">Discover Your</Typography>
+             <Typography variant="h3" fontWeight="bold" className="!font-[Open_sans] text-[#020202] text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-2">Discover Your</Typography>
         </div>
          
          <div className="mb-2">
-            <Typography variant="h3" fontWeight="bold" className="text-[#956fe2] animate-bounce text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-4">Dream Career.</Typography>
+            <Typography variant="h3" fontWeight="bold" className="!font-[Open_sans] text-[#956fe2] animate-bounce text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-4">Dream Career.</Typography>
          </div>
         
          <div className="mb-2">
-        <Typography variant="h5" className="text-black text-center text-sm sm:text-base md:text-lg lg:text-xl mb-6">
+        <Typography variant="h5" className="!font-[Open_sans] text-black text-sm sm:text-base md:text-lg lg:text-xl mb-6">
           Get started on your path to ensure success. To get your dream job
           on our platform, this is where dreams come true.
         </Typography>
@@ -33,7 +33,7 @@ export default function Home() {
               fontSize: "14px",
               width: "100%",
             }}
-            className="animate-bounce"
+            className="animate-bounce !mt-3 !font-[Open_Sans]  !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full  !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             Get Started
           </Button>

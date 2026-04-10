@@ -10,6 +10,8 @@ function Navbar({ onProfileClick }) {
   const role = useSelector((state) => state.signup.role);
   const [isOpen,setIsOpen]=useState(false);
 
+  // console.log("Role",role);
+
   return (
     <>
       <div className="fixed top-0 left-0 right-0 bg-white shadow-lg  z-100">
@@ -27,7 +29,7 @@ function Navbar({ onProfileClick }) {
         <div className="hidden md:flex items-center space-x-8">
           {/* Home */}
           <Link
-            href={role === "jobprovider" ? "/providerpage" : "/Provider/Homepage"}
+            href={role === "jobprovider" || role=== "provider" ? "/Provider/HomePage" : "/Seeker/HomePage"}
             className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
           >
             <FaHome className="text-xl" />
@@ -35,15 +37,15 @@ function Navbar({ onProfileClick }) {
           </Link>
 
           {/* Job Applicants / Applied Jobs */}
-          {role === "jobprovider" ? (
+          {role === "jobprovider" || role=== "provider" ? (
             <Link
-              href="/Provider/JobApplicants"
+              href="/Provider/JobApplications"
               className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
             >
               <FaBriefcase className="text-xl" />
               <span className="text-xs">Job Applicants</span>
             </Link>
-          ) : role === "jobseeker" ? (
+          ) : role === "jobseeker" || "seeker" ? (
             <Link
               href="/Seeker/AppliedJobs"
               className="flex flex-col items-center text-gray-700 cursor-pointer hover:text-blue-600"
@@ -77,7 +79,7 @@ function Navbar({ onProfileClick }) {
               {/* Left column: stacked links */}
               <div className="flex flex-col space-y-2">
                 <Link
-                  href={role === "jobprovider" ? "/providerpage" : "/Provider/Homepage"}
+                  href={role === "jobprovider" || role==="provider" ? "/Provider/HomePage" : "/Seeker/HomePage"}
                   className="flex items-center text-gray-700 hover:text-blue-600"
                   onClick={() => setIsOpen(false)}
                 >
@@ -85,16 +87,16 @@ function Navbar({ onProfileClick }) {
                   Home
                 </Link>
 
-                {role === "jobprovider" ? (
+                {role === "jobprovider" || role=== "provider" ? (
                   <Link
-                    href="/Provider/JobApplicants"
+                    href="/Provider/JobApplications"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"
                     onClick={() => setIsOpen(false)}
                   >
                     <FaBriefcase className="mr-2" />
                     Job Applicants
                   </Link>
-                ) : role === "jobseeker" ? (
+                ) : role === "jobseeker" || role=== "seeker" ? (
                   <Link
                     href="/Seeker/AppliedJobs"
                     className="flex items-center text-gray-700 cursor-pointer hover:text-blue-600"

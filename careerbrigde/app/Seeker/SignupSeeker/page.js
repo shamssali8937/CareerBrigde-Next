@@ -6,6 +6,7 @@ import { setDetails,setSeekerInfo } from "@/redux/slices/signupSlice";
 import SeekerForm from "@/components/SeekerForm";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setSeekerDetail } from "@/redux/slices/userDetailSlice";
 // import { setSeekerDetail } from "../../../Redux/Slice/userDetailSlice";
 // import axios from "axios";
 
@@ -16,45 +17,45 @@ function SignUpSeeker() {
   const router = useRouter();
 
   const handleFinish = async (formData) => {
-    // try {
-    //   const token = localStorage.getItem("accessToken");
+    try {
+      const token = localStorage.getItem("accessToken");
+      console.log("token",token)
+      const formPayload = new FormData();
 
-    //   axios.defaults.headers.common[
-    //     "Authorization"
-    //   ] = `Bearer ${token}`;
+      formPayload.append("headline", formData.headline);
+      formPayload.append("about", formData.about);
+      formPayload.append("address", formData.address);
+      formPayload.append("city", formData.city);
+      formPayload.append("phone", formData.phone);
+      formPayload.append("country", formData.country);
+      formPayload.append("skills", JSON.stringify(formData.skills));
+      formPayload.append("education", JSON.stringify(formData.education));
+      formPayload.append("experience", JSON.stringify(formData.experience));
+      formPayload.append("SocialLinks", JSON.stringify(formData.socialLinks));
+      formPayload.append("cv", formData.cv.file);
 
-    //   const formPayload = new FormData();
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateSeeker`,{
+        method:"POST",
+        headers:{
+          Authorization: `Bearer ${token}`,
+        },
+        body:formPayload
+      });
 
-    //   formPayload.append("headline", formData.headline);
-    //   formPayload.append("about", formData.about);
-    //   formPayload.append("address", formData.address);
-    //   formPayload.append("city", formData.city);
-    //   formPayload.append("phone", formData.phone);
-    //   formPayload.append("country", formData.country);
-    //   formPayload.append("skills", JSON.stringify(formData.skills));
-    //   formPayload.append("education", JSON.stringify(formData.education));
-    //   formPayload.append("experience", JSON.stringify(formData.experience));
-    //   formPayload.append("SocialLinks", JSON.stringify(formData.socialLinks));
-    //   formPayload.append("cv", formData.cv.file);
+      const result = await response.json();
 
-    //   const response = await axios.post(
-    //     "http://localhost:4321/api/auth/seekerUpdate",
-    //     formPayload
-    //   );
-
-    //   if (response.status === 200) {
-    //     dispatch(setSeekerDetail(response.data.seeker));
-    //     setData(response.data.seeker);
-
-    //     console.log("Seeker Updated", response.data.seeker);
-
-    //     router.push("/signin"); // ✅ Next.js navigation
-    //   } else {
-    //     console.log("error", response.status);
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
+        if (!response.ok) {
+          throw new Error(result.message || "Update failed");
+        }
+    
+        console.log("✅ Seeker Updated:", result.data);
+        dispatch(setSeekerDetail(result.data));
+        dispatch(setSeekerInfo(result.data));
+    
+        router.push("/Auth/Signin");
+    } catch (err) {
+      console.log(err);
+    }
 
     dispatch(setDetails({ ...statedata.details }));
 
@@ -70,14 +71,14 @@ function SignUpSeeker() {
         education: formData.education,
         experience: formData.experience,
         socialLinks: formData.socialLinks,
-        cv: formData.cv.name,
+        cv: formData.cv.url,
       })
     );
   };
 
   return (
     <Layout rightImage="/login.svg">
-      <div className="w-full h-screen flex flex-col bg-[#faf4ff] p-4 md:p-8 overflow-y-auto">
+      <div className="w-full h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] flex flex-col bg-[#faf4ff] p-4 md:p-8 overflow-y-auto">
         <SeekerForm
           initialData={{
             s: statedata.seekerInfo,

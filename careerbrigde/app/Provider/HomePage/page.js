@@ -15,6 +15,8 @@ import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import ProviderForm from "@/components/ProviderForm";
+import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
+import { setDetails, setProviderInfo, setRole } from "@/redux/slices/signupSlice";
 
 export default function HomePage() {
 
@@ -23,7 +25,7 @@ export default function HomePage() {
   const stateProviderData = useSelector((state) => state.userDetail.provider);
   const dispatch = useDispatch();
   
-  const imagePath = stateData.photo?.url || "https://res.cloudinary.com/dj0mkrv8f/image/upload/v1770986917/user_uploads/nilvruogrdogvzk5zlof.jpg";
+  const imagePath = stateData.photo?.url || stateUserdata.photo?.url;
   const [ jobDetail, setJobDetail] = useState({
     title: "",
     jobType: "Remote",
@@ -106,27 +108,66 @@ export default function HomePage() {
     return `${d.getFullYear()}-${month}-${day}`;
   };
 
-  const deleteJob = (job) => {
-    setJobs((prev) => prev.filter((j) => j._id !== job._id));
-    setSnackbarMessage("Job deleted");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
+  const deleteJob =async (job) => {
+    try{
+          console.log(job);
+
+          const  jobToDelete=job._id;
+   
+          const token=localStorage.getItem("token");
+
+          
+          const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/DeleteJob/${jobToDelete}`,{
+            method:"DELETE",
+            headers:{
+               Authorization: `Bearer ${token}`
+            }
+          });
+
+          if(response.ok)
+          {
+            //  console.log("job is deleted",response.data.Job);
+             setJobs(jobs.filter((j)=>j._id!==job._id))      
+             setSnackbarMessage("Job Deleted successfully!");
+             setSnackbarSeverity("error");
+             setSnackbarOpen(true);
+          }else{
+            console.log("error in deleting job");
+            setSnackbarMessage("Error In Deleting successfully!");
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+          }
+      }catch(err){
+         console.log(err);
+      }
   };
   
   const handleUserInfoUpdate = async (formData) => {
-    console.log("Update user info:", formData);
-    setSnackbarMessage("User info updated (mock)");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-    setopendrawerleft(false);
-  };
-  
-  const updateProviderProfile = async (formData) => {
-    console.log("Update provider profile:", formData);
-    setSnackbarMessage("Profile updated (mock)");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-    setopendrawerleft(false);
+    try{
+       const token=localStorage.getItem("token");
+       const userUpdateResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,{
+       method:"PUT",
+       headers:{
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${token}`,
+       },
+       body:JSON.stringify(formData)
+      });
+        if(userUpdateResponse.ok){
+          let result=userUpdateResponse.json()
+           console.log("user",result);
+              dispatch(setUser(result.data))  
+        }        
+      setSnackbarMessage("User info updated (mock)");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setOpenLeftDrawer(false);
+    }catch(err){
+      setSnackbarMessage(`${err}`);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      setOpenLeftDrawer(false);
+    }
   };
   
   const handleJobPostPopup = (job = null) => {
@@ -171,21 +212,12 @@ export default function HomePage() {
       requirements.length >= 3
     ) {
       if (jobToEdit) {
-        // editJobInDb(editingjob);
-        setJobs((prev) =>
-          prev.map((j) => (j._id === jobToEdit._id ? { ...j,...jobDetail, requirements, screeningQuestions } : j))
-        );
-        setSnackbarMessage("Job edited");
+        editJobInDb(jobToEdit);
+        
       } else {
-        const newJob = {
-          _id: Date.now().toString(),
-          ...jobDetail,
-          requirements,
-          screeningQuestions,
-          provider: { companyname: stateProviderData.companyname, user: { name: stateUserdata.name, photo: null } },
-        };
-        setJobs((prev) => [...prev, newJob]);
-        setSnackbarMessage("Job posted");
+
+        postJob(jobDetail);//save job in db and also in the local object jobs
+        setSnackbarMessage("Job Added successfully!");
       }
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -194,149 +226,232 @@ export default function HomePage() {
   };
   
 
+  const editJobInDb=async(editingjobData)=>{
+      try{
+          const token=localStorage.getItem("token");
+
+
+          const payload={jobId: jobToEdit._id ,...jobDetail,requirements,screeningQuestions}
+
+          console.log("editingjobbefore",editingjobData);
+
+          const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/EditJob`,{
+           method:"PUt",
+           headers:{
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+           body:JSON.stringify(payload)
+          });
+
+          if(response.ok)
+          {
+             let result=await response.json();
+             console.log("job edited succesfull",result)
+             setJobs(jobs.map((j)=>j._id===jobToEdit._id?{...jobDetail,requirements,screeningQuestions}:j))
+             setSnackbarMessage("Job edited");
+             setSnackbarSeverity("success");
+             setSnackbarOpen(true);
+             setOpenPostJobPopUp(false)
+          }else{
+             console.log("error",response.status);
+             setSnackbarMessage("Failed To Edit");
+             setSnackbarSeverity("error");
+             setSnackbarOpen(true);
+             setOpenPostJobPopUp(false)
+          }     
+      }catch(err){
+         console.log(err);
+      }
+    }
+
+   const postJob=async()=>{
+      try{
+         
+          const  token=localStorage.getItem("token");
+          const  payload={...jobDetail,requirements,screeningQuestions};
+          
+          const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/PostJob`,{
+           method:"POSt",
+           headers:{
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+           body:JSON.stringify(payload)
+          });
+
+          if(response.ok)
+          {
+             console.log("job is posted",response.data.postedjob);
+             setJobs([...jobs,{...jobDetail,requirements,screeningQuestions}]);
+             await fetchJobsFromDb();
+             setSnackbarMessage("Job Added successfully!");
+             setSnackbarSeverity("success");
+             setSnackbarOpen(true);
+             setOpenPostJobPopUp(false)
+          }else{
+            console.log("error in posting job");
+            setSnackbarMessage("Failed To Add Job");
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+            setOpenPostJobPopUp(false)
+          }
+      }catch(err){
+         console.log(err);
+      }
+    }  
+
+
+  const updateProviderProfile =async (data) => {
+         try {
+             const provider={
+             contact: data.companycontact,
+             companyName:data.comapnyname,
+             goalOfCompany:data.goalofcompany,
+             address: data.addressofcompany,
+             positionInCompany: data.position,
+             tenureInTimePeriod:data.tenuretimeperiod,
+             aboutCompany:data.aboutcompany
+             }
+             console.log("before post",provider);
+             const token=localStorage.getItem("token");
+
+             const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateProvider`,{
+                 method:"POST",
+                 headers:{
+                  "Content-Type": "application/json",
+                   Authorization: `Bearer ${token}`,
+                 },
+                 body:JSON.stringify(provider)
+                }
+              );
+             if (response.ok) {
+               const result= await response.json();
+              //  console.log("Profile updated", response.data);
+               dispatch(setProviderInfo(data));
+              if(userimg!==null){
+                const User = new FormData();
+                User.append("photo", userimg.file);
+                const userUpdateResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,{
+                 method:"PUT",
+                 headers:{
+                   Authorization: `Bearer ${token}`,
+                 },
+                 body:User
+                });
+                  if(userUpdateResponse.ok){
+                     console.log("photo is also updated");
+                  }
+                }
+                 dispatch(setDetails({
+                    ...stateData.details,
+                    img: userimg.url || stateData.details.img,
+                  }));
+                setSnackbarMessage("Profile updated successfully!");
+                setSnackbarSeverity("success");
+                setSnackbarOpen(true);
+                setOpenLeftDrawer(false);
+             } else {
+               console.log("Error in profile updation");
+               setSnackbarMessage("Profile updation Unsuccessfull!");
+               setSnackbarSeverity("error");
+               setSnackbarOpen(true);
+               setOpenLeftDrawer(false);
+             }
+           } catch (err) {
+             console.log("error in fetching:", err);
+           }
+    };
 
 
   const fetchJobsFromDb=async(e)=>{  ///fetching the jobs of specific user and set jobs object
-     setLoading(true);
-      setTimeout(()=>{
-        setJobs([
+     try{
+
+          setLoading(true);
+ 
+          const token=localStorage.getItem("token");
+
+          const response=await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetJobsOfSpecificProvider`,{
+             method:"GET",
+             headers:{
+               Authorization: `Bearer ${token}`,
+             }
+            }
+          );
+          const result= await response.json();
+          if(response.ok)
           {
-        _id: "1",
-        title: "Senior Frontend Developer",
-        location: "San Francisco, CA",
-        jobType: "Remote",
-        salary: "$120k - $150k",
-        postDate: "2025-03-01",
-        lastDate: "2025-04-01",
-        description:
-          "We are looking for an experienced frontend developer proficient in React and TypeScript to lead our UI team.",
-        requirements: ["5+ years React", "TypeScript expertise", "Team leadership"],
-        screeningQuestions: ["Describe a challenging UI problem you solved."],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "2",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "3",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "4",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "5",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "6",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      },
-      {
-        _id: "7",
-        title: "Product Manager",
-        location: "New York, NY",
-        jobType: "Hybrid",
-        salary: "$130k - $160k",
-        postDate: "2025-02-15",
-        lastDate: "2025-03-30",
-        description:
-          "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-        requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-        screeningQuestions: ["How do you prioritize features?"],
-        provider: {
-          companyname: "TechCorp Solutions",
-          user: { name: "Alex Morgan", photo: null },
-        },
-      }
-        ]);
+            //  console.log("job",response.data.jobsOfSpecificProvider)
+            setJobs(result.data.jobs);
+          }else{
+            console.log("error",response.status);
+          }
+
+      }catch(err){
+        console.log(err);
+      }finally{
         setLoading(false);
-      },500);
+      }
     };
 
+  const fetchProviderDetailFromDb=async()=>{
+      try{
+          const token=localStorage.getItem("token");
+
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetProviderProfile`,{
+             method:"GET",
+             headers:{
+               Authorization: `Bearer ${token}`,
+             }
+            }
+          );
+          const providerData= await response.json();
+          if(response.ok)
+          {
+            console.log("provider",providerData.data.provider);
+             dispatch(setProviderDetail(providerData.data.provider));
+             dispatch(setRole(providerData.data.provider.user.role))
+             dispatch(setUser(providerData.data.provider.user))
+
+          }else{
+            console.log("error",providerData.message);
+          }
+
+      }catch(err){
+        console.log(err);
+      }
+    }
+
     useEffect(()=>{
-      fetchJobsFromDb();
+      fetchProviderDetailFromDb();
+      if(!stateProviderData){
+          return;
+      }
+      else{
+           fetchJobsFromDb();
+      }
     },[])
+
+    useEffect(()=>{
+       fetchProviderDetailFromDb();
+    },[openLeftDrawer])
+
+    useEffect(()=>{
+       fetchJobsFromDb();
+    },[openPostJobPopUp])
 
   return (
     <>
-    <Navbar/>
+    <Navbar onProfileClick={()=>setOpenLeftDrawer(true)}/>
 
     <div className="min-h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] backdrop-blur-sm pt-20 pb-10 px-4 sm:px-6 lg:px-8 font-[Open_sans]">
         <div className="max-w-7xl mx-auto">
            <div className="grid grid-cols-1 lg:grid-cols-12 mt-2 gap-6">
               <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
-                 <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                 <Card className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
                     <CardMedia component="img"
                       image="/cardback.png"
                       alt="cover"
@@ -359,7 +474,7 @@ export default function HomePage() {
                       </Typography>
                        <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center justify-center gap-2 !mt-3 !mb-3">
                         <FaCalendarAlt className="text-indigo-400"/>
-                        {stateProviderData?.tenureTimePeriod || "2020 - Present"}
+                        {stateProviderData?.tenureInTimePeriod || "2020 - Present"}
                       </Typography>
                       <Typography variant="body3" className="!font-[Open_sans] text-gray-700 !mt-4 text-justify px-2 leading-relaxed">
                         {stateProviderData?.goalOfCompany ||
@@ -377,7 +492,7 @@ export default function HomePage() {
                         </Button>
                     </CardActions> 
                  </Card> 
-                 <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
+                 <Card className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md">
                    <CardContent className="!p-4">
                      <div className="flex items-center gap-3 mb-4">
                        <div className="p-2 bg-indigo-100 rounded-xl">
@@ -387,7 +502,7 @@ export default function HomePage() {
                          variant="h6"
                          className="!font-bold !font-[Open_sans] text-gray-800"
                        >
-                         {stateProviderData?.companyname || "TechCorp Solutions"}
+                         {stateProviderData?.companyName || "TechCorp Solutions"}
                        </Typography>
                      </div>
                      <div className="ml-2 space-y-3 text-sm text-gray-700">
@@ -515,7 +630,7 @@ export default function HomePage() {
                  </div>
               </div>
               <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
-                  <Card className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md p-6 sticky top-24">
+                  <Card className="!rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md p-6 sticky top-24">
                     <Typography className="text-gray-800 !font-bold !text-lg !mb-4 flex items-center !gap-2">
                       <FaChevronRight className="text-[#a78cdd]" />
                       Hiring Tips
@@ -534,7 +649,7 @@ export default function HomePage() {
                     </div>
                   </Card>
 
-                  <Card variant="h6" className="rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md !p-6 sticky">
+                  <Card variant="h6" className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md !p-6 sticky">
                     <Typography className="!text-gray-800 !font-bold !font-[Open_sans] text-lg !mb-3 flex items-center !gap-2">
                       <FaUsers className="text-[#a78cdd]" />
                       Quick Stats
@@ -759,7 +874,7 @@ export default function HomePage() {
                    className="w-16 h-16 rounded-full object-cover-border-2 border-white shadow-lg"
                    />
                    <div>
-                     <Typography className="!font-bold !font-[Open_sans]  !text-gray-800">{jobToEdit.provider?.companyname}</Typography>
+                     <Typography className="!font-bold !font-[Open_sans]  !text-gray-800">{jobToEdit.provider?.companyName}</Typography>
                      <Typography variant="body2" className="text-gray-600 flex items-center gap-1 !font-[Open_sans]">
                        <FaUserTie className="text-[#a78cdd]"/>
                        {jobToEdit.provider?.user.name}
@@ -910,7 +1025,7 @@ export default function HomePage() {
             ) : (
               <ProviderForm
                 finishLabel="Update Profile"
-                finishPath="/providerpage"
+                finishPath="/Provider/HomePage"
                 onFinish={updateProviderProfile}
               />
             )}

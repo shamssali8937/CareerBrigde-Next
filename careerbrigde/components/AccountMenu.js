@@ -11,20 +11,18 @@ import {
 import Logout from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useDispatch, useSelector } from "react-redux";
-// import { setUser } from "../Redux/Slice/userDetailSlice";
-// import { useEffect } from "react";
-// import axios from "axios";
-// import { resetSignup } from "../Redux/Slice/signupSlice";
-// import { Link, useNavigate } from "react-router-dom";
-// import { resetUserDetail } from "../Redux/Slice/userDetailSlice";
+import { resetUserDetail, setUser } from "@/redux/slices/userDetailSlice";
+import { useRouter } from "next/navigation";
+import {useState, useEffect} from "react"
+import { resetSignup } from "@/redux/slices/signupSlice";
+
 
 export default function AccountMenu({ onProfileClick }) {
   
+  const router=useRouter();
   const dispatch=useDispatch();
-//   const navigate=useNavigate();
   const statedata=useSelector((state)=>state.signup);
-//   const stateUserdata=useSelector((state)=>state.userDetail.user);
-//   const backendUrl = "http://localhost:4321/";
+  const stateUserdata=useSelector((state)=>state.userDetail.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -40,31 +38,35 @@ export default function AccountMenu({ onProfileClick }) {
     if (onProfileClick) onProfileClick(); // trigger drawer open
   };
 
-//  const fetchUserForPhoto=async()=>{   /// fetching use and disapcting data in redux store so on every reload using useEffect to load image or profile photo
-//      try {
-//           const token=localStorage.getItem("token");
+ const fetchUserForPhoto=async()=>{   /// fetching use and disapcting data in redux store so on every reload using useEffect to load image or profile photo
+     try {
+          const token=localStorage.getItem("token");
 
-//           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetSpecificUser`,{
+           method:"GET",
+           headers:{
+             Authorization: `Bearer ${token}`,
+           }
+          });
 
-//           const response = await axios.get("http://localhost:4321/api/auth/specificUser");
-
-//           if (response.status === 200) {
-//             dispatch(setUser(response.data.user));
-//           }
-//         } catch (err) {
-//           console.log("Provider fetch error:", err);
-//         }
-//   }
+          if (response.ok) {
+            const result=await response.json()
+            dispatch(setUser(result.user.users));
+          }
+        } catch (err) {
+          console.log("Provider fetch error:", err);
+        }
+  }
   const handleLogout = () => {
-    // localStorage.removeItem("token"); 
-    // dispatch(resetSignup()); 
-    // dispatch(resetUserDetail()); 
-    // navigate("/signin"); 
+    localStorage.removeItem("token"); 
+    dispatch(resetSignup()); 
+    dispatch(resetUserDetail()); 
+    router.push("/Auth/Signin") 
   };
 
-//   useEffect(()=>{
-//    fetchUserForPhoto();
-//   },[])
+  useEffect(()=>{
+   fetchUserForPhoto();
+  },[])
 
   return (
     <React.Fragment>
@@ -81,7 +83,7 @@ export default function AccountMenu({ onProfileClick }) {
             <Avatar
             //  src={URL.createObjectURL(statedata.details.img)||`${backendUrl}${stateUserdata.photo}`||""} 
             //  src={statedata.details.img||`${backendUrl}${stateUserdata.photo}`||""}
-            //src={stateUserdata?.photo ? `${backendUrl}${stateUserdata.photo}` : (statedata.details?.img || "")}
+            src={stateUserdata?.photo ? stateUserdata.photo?.url : (statedata.details?.img || "")}
              alt="Profile" 
             sx={{ width: 32, height: 32 }}>M</Avatar>
           </IconButton>

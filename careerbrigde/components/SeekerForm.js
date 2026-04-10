@@ -119,6 +119,13 @@ function SeekerForm({
   const removeeducation = (id) =>
     seteducations((ed) => ed.filter((e) => e.id !== id));
 
+  const getCvUrl = () => {
+  if (!data.cv) return null;
+  if (typeof data.cv === 'string') return data.cv;
+  if (data.cv.url) return data.cv.url;
+  return null;
+};
+
 const handleFileChange = (e) => {
   const file = e.target.files[0];
   if (file) {
@@ -145,7 +152,7 @@ const handleFileChange = (e) => {
       about: s.about || "",
       phone : s.phone || " ",
       country: s.country || " ",
-      cv: s.cv || null,   // ✅ restore CV into state
+      cv: s.cv?.url || "",   // ✅ restore CV into state
     });
 
     setskills(s.skills || []);
@@ -159,7 +166,11 @@ const handleFileChange = (e) => {
       setFileName(s.cv.name);
     } else if (typeof s.cv === "string" && s.cv.length > 0) {
       setFileName(s.cv.split("/").pop());
-    } else {
+    } else if (s.cv?.url) {                            // ✅ handle backend CV object
+      const url = s.cv.url;
+      const parts = url.split("/");
+      setFileName(parts.pop() || "");
+    }else {
       setFileName("");
     }
   }
@@ -296,7 +307,7 @@ const handleBackClick = () => {
           className="!w-[80%]"
         />
         <div className="mt-4 md:col-span-2">
-          <Typography className="mb-2 font-medium">About</Typography>
+          <Typography className="mb-2 !text-black !font-[Open_sans]">About</Typography>
           <TextField
             name="about"
             multiline
@@ -604,7 +615,15 @@ const handleBackClick = () => {
             color="text.secondary"
             className="mt-2 break-words !font-[Open_sans] !text-black"
           >
-            Selected file: {getFileName(fileName)}
+            {/* Selected file: {getFileName(fileName)} */}
+            <a
+              href={getCvUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 hover:underline break-all"
+            >
+              {getFileName(fileName)}
+            </a>
           </Typography>
         )}
         {clicked.cv && !data.cv && (
@@ -620,7 +639,7 @@ const handleBackClick = () => {
             component={Link}
             href={backButtonPath}
             onClick={handleBackClick}
-            className="!mr-6 !bg-[#956fe2] normal-case text-white"
+            className="!mr-6 !mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {backButtonLabel}
           </Button>   
@@ -632,7 +651,7 @@ const handleBackClick = () => {
             component={Link}
             href={finishButtonPath}
             onClick={handleFinishClick}
-            className="!bg-[#956fe2] normal-case text-white"
+            className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {finishButtonLabel}
           </Button>
@@ -640,7 +659,7 @@ const handleBackClick = () => {
           <Button
             variant="contained"
             onClick={handleFinishClick}
-            className="!bg-[#956fe2] normal-case text-white"
+            className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {finishButtonLabel}
           </Button>

@@ -15,227 +15,10 @@ import SeekerForm from "@/components/SeekerForm";
 import UpdateUserInfoForm from "@/components/UpdateUserInfoForm";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
+import { addAppliedJobs, resetJobs } from "@/redux/slices/appliedJobSlice";
 
 export default function Homepage(){
 
-    const dummyCompanies = [
-      {
-        _id: "comp1",
-        companyname: "TechCorp",
-        user: {
-          _id: "user1",
-          name: "John Smith",
-          photo: "https://randomuser.me/api/portraits/men/1.jpg",
-          role: "company",
-        },
-        positionInCompany: "HR Manager",
-        jobs: ["job1", "job2"],
-      },
-      {
-        _id: "comp2",
-        companyname: "DesignStudio",
-        user: {
-          _id: "user2",
-          name: "Emily Davis",
-          photo: "https://randomuser.me/api/portraits/women/2.jpg",
-          role: "company",
-        },
-        positionInCompany: "Creative Director",
-        jobs: ["job3"],
-      },
-      {
-        _id: "comp3",
-        companyname: "DataWorks",
-        user: {
-          _id: "user3",
-          name: "Michael Brown",
-          photo: "https://randomuser.me/api/portraits/men/3.jpg",
-          role: "company",
-        },
-        positionInCompany: "Tech Lead",
-        jobs: ["job4", "job5"],
-      },
-    ];
-    
-    const dummyJobs = [
-      {
-        _id: "job1",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job2",
-        title: "Backend Engineer",
-        location: "Remote",
-        lastDate: "2026-07-20T00:00:00.000Z",
-        description:
-          "Join our backend team to build scalable APIs and microservices. Experience with Node.js and databases is required.",
-        requirements: ["Node.js", "Express", "MongoDB", "Python"],
-        screeningQuestions: ["How do you handle database transactions?", "Describe a RESTful API design."],
-        salary: "$90,000 - $110,000",
-        postDate: "2025-06-05T00:00:00.000Z",
-        jobType: "Remote",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job3",
-        title: "UI/UX Designer",
-        location: "San Francisco, CA",
-        lastDate: "2026-07-10T00:00:00.000Z",
-        description:
-          "We need a creative UI/UX Designer to craft beautiful and intuitive interfaces. Must have a strong portfolio.",
-        requirements: ["Figma", "Adobe XD", "Wireframing", "Prototyping"],
-        screeningQuestions: ["Walk us through your design process."],
-        salary: "$70,000 - $90,000",
-        postDate: "2025-06-10T00:00:00.000Z",
-        jobType: "On-site",
-        provider: { _id: "comp2" },
-      },
-      {
-        _id: "job4",
-        title: "Data Scientist",
-        location: "Boston, MA",
-        lastDate: "2026-07-25T00:00:00.000Z",
-        description:
-          "Analyze large datasets and build predictive models. Proficiency in Python and machine learning libraries is essential.",
-        requirements: ["Python", "Pandas", "Scikit-learn", "SQL"],
-        screeningQuestions: ["Explain a machine learning project you led."],
-        salary: "$100,000 - $130,000",
-        postDate: "2025-06-12T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp3" },
-      },
-      {
-        _id: "job5",
-        title: "DevOps Engineer",
-        location: "Austin, TX",
-        lastDate: "2026-07-18T00:00:00.000Z",
-        description:
-          "Manage cloud infrastructure and CI/CD pipelines. Experience with AWS and Docker is required.",
-        requirements: ["AWS", "Docker", "Kubernetes", "Terraform"],
-        screeningQuestions: ["How do you handle infrastructure as code?"],
-        salary: "$95,000 - $115,000",
-        postDate: "2025-06-15T00:00:00.000Z",
-        lastDate: "2026-06-15T00:00:00.000Z",
-        jobType: "Hybrid",
-        provider: { _id: "comp3" },
-      },
-      {
-        _id: "job6",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job7",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job8",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      },
-      {
-        _id: "job9",
-        title: "Frontend Developer",
-        location: "New York, NY",
-        lastDate: "2025-07-15T00:00:00.000Z",
-        description:
-          "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building user interfaces and implementing designs.",
-        requirements: ["React", "JavaScript", "CSS", "HTML"],
-        screeningQuestions: ["Describe a challenging UI you built.", "How do you ensure accessibility?"],
-        salary: "$80,000 - $100,000",
-        postDate: "2025-06-01T00:00:00.000Z",
-        jobType: "Full-Time",
-        provider: { _id: "comp1" },
-      }
-    ];
-    
-    // Link jobs to companies (populate company.jobs with full job objects)
-    dummyCompanies.forEach(company => {
-      company.jobs = dummyJobs.filter(job => job.provider._id === company._id);
-    });
-    
-    // Dummy seeker data (logged-in user)
-    const dummySeeker = {
-      user: {
-        _id: "seeker1",
-        name: "Alex Johnson",
-        email: "alex.johnson@example.com",
-        photo: "https://randomuser.me/api/portraits/men/4.jpg",
-        role: "seeker",
-      },
-      seekerInfo: {
-        headline: "Frontend Developer | React Enthusiast",
-        city: "New York",
-        address: "123 Main St",
-        phone: "+1 234 567 890",
-        country: "USA",
-        about: "Passionate frontend developer with 3 years of experience building responsive web apps.",
-        skills: ["React", "JavaScript", "Tailwind CSS", "Redux"],
-        education: [
-          {
-            degree: "B.Sc. in Computer Science",
-            year: "2022",
-            description: "University of Technology",
-          },
-        ],
-        experience: [
-          {
-            title: "Frontend Developer",
-            company: "WebSolutions",
-            description: "Built UI components and integrated APIs.",
-          },
-        ],
-        socialLinks: [
-          {
-            label: "linkedin",
-            url: "https://linkedin.com/in/alexj",
-          },
-          {
-            label: "github",
-            url: "https://github.com/alexj",
-          },
-        ],
-        cv: "https://example.com/cv.pdf",
-      },
-    };
 
 
       const dispatch = useDispatch();
@@ -253,9 +36,9 @@ export default function Homepage(){
       const [ showUserUpdateFields, setShowUserUpdateFields ] = useState(false);
       const [ Filename, setFilename ] = useState("");
     
-      const [ jobs, setJobs ] = useState(dummyJobs);
-      const [ companies, setCompanies ] = useState(dummyCompanies);
-      const [ allJobs, setAllJobs ] = useState(dummyJobs);
+      const [ jobs, setJobs ] = useState([]);
+      const [ companies, setCompanies ] = useState([]);
+      const [ allJobs, setAllJobs ] = useState([]);
       const [ selectedjob, setSelectedjob ] = useState(null);
       const [ selectedCompany, setSelectedCompany ] = useState(null);
       const [ screeningAnswers, setScreeningAnswers ] = useState([]);
@@ -268,7 +51,7 @@ export default function Homepage(){
         (application) => application.job._id === selectedjob?._id
       );
     
-      const profileImagePath = stateUserdata?.photo || stateData.details.img || dummySeeker.user.photo;
+      const profileImagePath = stateUserdata?.photo?.url || stateData.details.img ;
     
       const jobsToDisplay = searchWord || jobTypeFilter !== "all" ? allJobs : jobs;
     
@@ -295,58 +78,132 @@ export default function Homepage(){
       };
     
       const handleUpdateSeekerProfile = async (formdata) => {
-        dispatch(
-          setDetails({ ...stateData.details, name: formdata.name, img: img?.url || profileImagePath })
-        );
-        dispatch(
-          setSeekerInfo({
-            headline: formdata.headline,
-            city: formdata.city,
-            address: formdata.address,
-            phone: formdata.phone,
-            country: formdata.country,
-            about: formdata.about,
-            skills: formdata.skills,
-            education: formdata.education,
-            experience: formdata.experience,
-            socialLinks: formdata.socialLinks,
-            cv: formdata.cv,
-          })
-        );
-        dispatch(setUser({ ...stateUserdata, name: formdata.name, photo: img?.url || profileImagePath }));
-        setSnackbarMessage("Profile Updated Successfully");
-        setSnackbarSeverity("success");
-        setOpenSackbar(true);
-        setOpenLeftDrawer(false);
+        try {
+          // Optimistic update (optional)
+          dispatch(setSeekerInfo(formdata));
+      
+          const data = new FormData();
+          data.append("headline", formdata.headline);
+          data.append("about", formdata.about);
+          data.append("city", formdata.city);
+          data.append("phone", formdata.phone);
+          data.append("address", formdata.address);
+          data.append("country", formdata.country);
+          data.append("skills", JSON.stringify(formdata.skills));
+          data.append("education", JSON.stringify(formdata.education));
+          data.append("experience", JSON.stringify(formdata.experience));
+          data.append("socialLinks", JSON.stringify(formdata.socialLinks));
+      
+          // Append CV if it's a new file
+          if (formdata.cv && formdata.cv.file instanceof File) {
+            data.append("cv", formdata.cv.file);
+          }
+      
+          const token = localStorage.getItem("token");
+      
+          // Update seeker profile
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateSeeker`,
+            {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: data,
+            }
+          );
+          const seekerData = await response.json();
+      
+          if (response.ok) {
+            const updatedSeeker = seekerData.data.seeker;
+            console.log("Profile updated", updatedSeeker);
+      
+            // Update Redux with the fresh data from server
+            dispatch(setSeekerInfo(updatedSeeker));
+            dispatch(
+              setDetails({
+                ...stateData.details,
+                name: updatedSeeker.user.name,
+                img: updatedSeeker.user.photo?.url || stateData.details.img,
+              })
+            );
+            console.log("image",img);
+            // Upload profile picture if a new one was selected
+            if (img !== null && img.file) {
+              const userPhotoData = new FormData();
+              userPhotoData.append("photo", img.file);
+      
+              const photoResponse = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,
+                {
+                  method: "PUT",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: userPhotoData,
+                }
+              );
+      
+              if (photoResponse.ok) {
+                console.log("Profile picture updated");
+              } else {
+                console.error("Photo upload failed");
+              }
+            }
+            dispatch(
+                  setDetails({
+                    ...stateData.details,
+                    img: img?.url,
+                  })
+                );
+            setSnackbarMessage("Profile Updated Successfully");
+            setSnackbarSeverity("success");
+            setOpenSackbar(true);
+            setOpenLeftDrawer(false);
+            setImg(null);
+          } else {
+            console.error("Seeker update failed", seekerData);
+            setSnackbarMessage("Failed to update profile");
+            setSnackbarSeverity("error");
+            setOpenSackbar(true);
+            // Keep drawer open to allow retry
+          }
+        } catch (err) {
+          console.error("Error in updating:", err);
+          setSnackbarMessage("An error occurred while updating");
+          setSnackbarSeverity("error");
+          setOpenSackbar(true);
+          // Do not close drawer on error so user can retry
+        }
       };
-    
-      // Dummy user info update – just updates Redux
+      
       const handleUserInfoUpdate = async (formData) => {
-        const updatedUser = { ...stateUserdata };
-        if (formData.name) updatedUser.name = formData.name;
-        if (formData.email) updatedUser.email = formData.email;
-        dispatch(setUser(updatedUser));
-        setSnackbarMessage("User info updated successfully");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        setShowUserUpdateFields(false);
-        setOpenLeftDrawer(false);
+        try{
+           const token=localStorage.getItem("token");
+           const userUpdateResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateUser`,{
+           method:"PUT",
+           headers:{
+             "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+           body:JSON.stringify(formData)
+          });
+            if(userUpdateResponse.ok){
+              let result=userUpdateResponse.json()
+               console.log("user",result);
+                  dispatch(setUser(result.data))  
+            }        
+          setSnackbarMessage("User info updated");
+          setSnackbarSeverity("success");
+          setOpenSackbar(true);
+          setOpenLeftDrawer(false);
+        }catch(err){
+          setSnackbarMessage(`${err}`);
+          setSnackbarSeverity("error");
+          setOpenSackbar(true);
+          setOpenLeftDrawer(false);
+        }
       };
     
       const handleApplySubmit = () => {
         if (!selectedjob) return;
-        const application = {
-          job: selectedjob,
-          appliedDate: new Date().toISOString(),
-          screeningAnswers: screeningAnswers,
-        };
-        dispatch(addAppliedJobs([application]));
-        setApply(false);
-        setSnackbarMessage("Application Submitted Successfully");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        setOpenRightDrawer(false);
-        setScreeningAnswers([]);
+          postApplicationForJob(selectedjob);
       };
     
       const handleChange = (panel) => (event, isExpanded) => {
@@ -367,8 +224,7 @@ export default function Homepage(){
       };
     
       const handleToSelectJob = (job) => {
-        const fullJob = jobs.find((j) => j.id === job.id);
-        setSelectedjob(fullJob);
+        setSelectedjob(job);  
         setOpenRightDrawer(true);
         setSelectedCompany(null);
       };
@@ -395,37 +251,196 @@ export default function Homepage(){
         return today > jobLastDate;
       };
     
-      const searchJobsThroughSearchBar = () => {
-        let filtered = dummyJobs;
-        if (searchWord.trim()) {
-          const lowerSearch = searchWord.toLowerCase();
-          filtered = filtered.filter(
-            (job) =>
-              job.title.toLowerCase().includes(lowerSearch) ||
-              job.location.toLowerCase().includes(lowerSearch) ||
-              (job.provider._id &&
-                companies.find((c) => c._id === job.provider._id)?.companyname
-                  .toLowerCase()
-                  .includes(lowerSearch))
-          );
-        }
-        if (jobTypeFilter !== "all") {
-          filtered = filtered.filter((job) => job.jobType === jobTypeFilter);
-        }
-        setAllJobs(filtered);
+      const searchJobsThroughSearchBar =async () => {
+        try{
+                let jobTypeToSend = jobTypeFilter === "all" ? "" : jobTypeFilter;
+                if (!searchWord.trim() && jobTypeFilter === "all") {
+                     setAllJobs(jobs); 
+                     return;
+                 }            
+               const token=localStorage.getItem("token");
+               const response=await fetch(
+                 `${process.env.NEXT_PUBLIC_API_URL}/Protected/SearchJobs`,{
+                  method:"POST",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify({searchword:searchWord,jobType:jobTypeToSend}),
+                 }
+               );
+               if(!response.ok){
+                  console.log("unable to get jobs");
+                  return;
+               }
+               let result=await response.json();
+               setAllJobs(result.data.jobs);
+              
+          }catch(err){
+            console.log("error",err)
+          }
       };
-    
+
+      const fetchSeekerDetails=async()=>{
+          try{
+            const token=localStorage.getItem("token");
+            const response=await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetSeekerProfile`,{
+               method:"GET",
+               headers:{
+                 Authorization: `Bearer ${token}`,
+               }
+              }
+            );
+
+            if(response.ok){
+                let result=await response.json();
+                console.log("seeker",result.data.seeker);
+                dispatch(setRole(result.data.seeker.user.role))
+                dispatch(setUser(result.data.seeker.user));
+                dispatch(setDetails({...result.data.seeker.user,img:result.data.seeker.user.photo?.url}));
+                dispatch(setSeekerInfo(result.data.seeker))
+            }
+          }catch(err){
+            console.log("error in fectging seeker",err)
+          }
+        }
+
+      const fetchJobsForSeeker=async()=>{
+          try{
+              const token = localStorage.getItem("token");
+               const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobsForSeekerProfile`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+               if(response.ok){
+                 let result=await response.json();
+                 console.log("jobs of seeker",result.data.jobs);
+                 setJobs(result.data.jobs);
+               }
+               const allJobsResponse=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobs`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+                if(allJobsResponse.ok){
+                 let result=await allJobsResponse.json();
+                 console.log("jobs for seeker to search",result.data.jobs);
+                 setAllJobs(result.data.jobs);
+               }
+          }catch(err){
+            console.log(err);
+          }
+        }  
+
+      const fetchCompanies=async()=>{
+          try{
+               const token = localStorage.getItem("token");
+               const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllCompanies`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+               if(response.ok){
+                 let result=await response.json();
+                 console.log("jobs of seeker",result.data.companies);
+                 setCompanies(result.data.companies);
+               }
+          }catch(err){
+            console.log(err);
+          }
+        }
+
+      const fetchAlreadyAppliedJobs=async()=>{
+          try{
+             const token=localStorage.getItem("token");
+            
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobApplicationOfSeeker`,
+                 {
+                   method: "GET",
+                   headers: { Authorization: `Bearer ${token}` },
+                 }
+               );
+             if(response.ok){
+              let result=await response.json();
+              console.log("applied jobs",result.data.applications);
+              dispatch(addAppliedJobs(result.data.applications))
+             }
+          }catch(error){
+            console.log("eror in fetching already applied jobs",error);
+          }
+        }
+
+      const postApplicationForJob=async(jobApplication)=>{
+          try{
+            console.log("job application",jobApplication)
+            console.log("answers",{screeningAnswers:screeningAnswers});
+            let answersToSend = [];
+            if (jobApplication.screeningQuestions && jobApplication.screeningQuestions.length > 0) {
+              answersToSend = jobApplication.screeningQuestions.map((_, index) => {
+                return screeningAnswers[index] || ""; 
+              });
+            }
+            const token = localStorage.getItem("token");
+            const response=await fetch(
+                 `${process.env.NEXT_PUBLIC_API_URL}/Protected/ApplyJob`,{
+                  method:"POST",
+                  headers:{
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body:JSON.stringify({ jobId:jobApplication._id , screeningAnswers:answersToSend }),
+                 }
+               );
+            if(response.ok)
+            {
+              // console.log("job appliction is posted",response.data.jobApplication);
+              // dispatch(resetJobs());
+              setApply(false);
+              setSnackbarMessage("Application Submitted Successfully");
+              setSnackbarSeverity("success");
+              setOpenSackbar(true);
+              setOpenRightDrawer(false);
+              setScreeningAnswers([]);
+            }
+          }catch(error){
+            console.log(error)
+            setSnackbarMessage("Application Submission Error");
+            setSnackbarSeverity("error");
+            setOpenSackbar(true);
+            setOpenRightDrawer(false);
+          }
+        }  
+        
+        
+
+      useEffect(()=>{
+            fetchSeekerDetails();
+      },[openLeftDrawer]) ;
+
       useEffect(() => {
-        dispatch(setRole(dummySeeker.user.role));
-        dispatch(setUser(dummySeeker.user));
-        dispatch(setDetails({ ...dummySeeker.user, img: dummySeeker.user.photo }));
-        dispatch(setSeekerInfo(dummySeeker.seekerInfo));
+             const loadData=async()=>{
+               try{
+                 setLoading(true);
+                 await Promise.all([
+                   fetchSeekerDetails(),
+                   fetchJobsForSeeker(),
+                   fetchCompanies(),
+                   fetchAlreadyAppliedJobs()
+                 ]);
+               }catch(err){
+                 console.log(err);
+               }finally {
+                 setLoading(false);
+               }
+             };
+             loadData();
+           }, []);
     
-        setJobs(dummyJobs);
-        setCompanies(dummyCompanies);
-        setAllJobs(dummyJobs);
-        setLoading(false);
-      }, [dispatch]);
     
       // Trigger search when filters change
       useEffect(() => {
@@ -434,6 +449,12 @@ export default function Homepage(){
         }, 300);
         return () => clearTimeout(timeout);
       }, [jobTypeFilter, searchWord]);
+
+
+        useEffect(() => {
+          fetchJobsForSeeker();
+          fetchAlreadyAppliedJobs();
+      }, [openRightDrawer]);
 
     return(
         <>
@@ -865,13 +886,13 @@ export default function Homepage(){
                                   className="p-3 bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-[#a78cdd] flex items-center gap-3"
                                 >
                                   <img
-                                    src={company.user.photo}
-                                    alt={company.companyname}
+                                    src={company.user.photo?.url}
+                                    alt={company.companyName}
                                     className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                                   />
                                   <div>
                                     <Typography variant="body1" className="!font-[Open_sans] text-gray-800 text-sm">
-                                      {company.companyname}
+                                      {company.companyName}
                                     </Typography>
                                     <Typography variant="body2" className="!font-[Open_sans] text-gray-500 flex items-center gap-1">
                                       <FaUserTie className="text-[#a78cdd]" />
@@ -922,13 +943,13 @@ export default function Homepage(){
                         return company ? (
                           <div className="flex items-center gap-3 mt-3">
                             <img
-                              src={company.user.photo}
-                              alt={company.companyname}
+                              src={company.user.photo?.url}
+                              alt={company.companyName}
                               className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                             />
                             <div>
                               <Typography variant="body1" className="!font-bold !font-[Open_sans] text-gray-800">
-                                {company.companyname}
+                                {company.companyName}
                               </Typography>
                               <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
                                 <FaUserTie className="text-[#a78cdd]" />
@@ -1010,7 +1031,7 @@ export default function Homepage(){
                         <Button
                           variant="contained"
                           disabled
-                          className="!bg-emerald-600 text-white rounded-full py-3 w-full"
+                          className="!bg-emerald-600 !pointer-cursor !font-[Open_Sans] !text-white !rounded-full py-3 w-full !transition-all hover:scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
                         >
                           Applied
                         </Button>
@@ -1029,7 +1050,7 @@ export default function Homepage(){
               </SwipeableDrawer>
                
 
-              <Modal open={apply} onClose={() => setapply(false)}>
+              <Modal open={apply} onClose={() => setApply(false)}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6">
                   <div className="flex justify-between items-center mb-4">
                     <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
@@ -1080,12 +1101,12 @@ export default function Homepage(){
                   <div className="flex items-center gap-2 border p-3 rounded-xl mt-4 mb-4 cursor-pointer hover:bg-gray-50">
                     <FaFileUpload className="text-[#a78cdd]" />
                     <a
-                      href={stateData.seekerInfo?.cv || "#"}
+                      href={stateData.seekerInfo?.cv?.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-gray-800 font-[Open_sans] hover:underline truncate"
                     >
-                      CV: {getFileName(stateData.seekerInfo?.cv) || "No CV uploaded"}
+                      CV: {getFileName(stateData.seekerInfo?.cv?.url) || "No CV uploaded"}
                     </a>
                   </div>
                   <Button
@@ -1098,13 +1119,13 @@ export default function Homepage(){
                 </Box>
               </Modal>
 
-              <Modal open={!!selectedCompany} onClose={() => setselectedCompany(null)}>
+              <Modal open={!!selectedCompany} onClose={() => setSelectedCompany(null)}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 max-h-[60vh] flex flex-col">
                   {selectedCompany && (
                     <>
                       <div className="flex justify-between items-center mb-4">
                         <Typography variant="h6" className="!font-bold !font-[Open_sans] text-gray-800">
-                          {selectedCompany.companyname}
+                          {selectedCompany.companyName}
                         </Typography>
                         <IconButton
                           onClick={() => setSelectedCompany(null)}
@@ -1115,8 +1136,8 @@ export default function Homepage(){
                       </div>
                       <div className="flex font-[Open_sans] items-center gap-3 pb-4 border-b border-gray-200/50">
                         <img
-                          src={selectedCompany.user.photo}
-                          alt={selectedCompany.companyname}
+                          src={selectedCompany.user.photo?.url}
+                          alt={selectedCompany.companyName}
                           className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
                         />
                         <div>
@@ -1135,7 +1156,7 @@ export default function Homepage(){
                       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                          <div className="space-y-2">
 
-                        {selectedCompany.jobs.map((job) => (
+                        {selectedCompany.providerJobs.map((job) => (
                             <div
                             key={job._id}
                             onClick={() => handleToSelectJob(job)}

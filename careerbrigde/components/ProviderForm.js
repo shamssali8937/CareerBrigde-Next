@@ -15,27 +15,27 @@ function ProviderForm({
 }) {
   const dispatch = useDispatch();
   const statedata = useSelector((state) => state.signup);
-//    const stateProviderData=useSelector((state)=>state.userDetail.provider);
+    const stateProviderData=useSelector((state)=>state.userDetail.provider);
 
   const [clicked, setClicked] = useState({});
-//   const [data, setData] = useState({
-//     comapnyname: statedata.providerInfo.comapnyname||stateProviderData.companyname||"",
-//     companycontact: statedata.providerInfo.companycontact||stateProviderData.contact||"",
-//     goalofcompany: statedata.providerInfo.goalofcompany||stateProviderData.goalOfCompany||"",
-//     aboutcompany: statedata.providerInfo.aboutcompany||stateProviderData.aboutCompany||"",
-//     addressofcompany: statedata.providerInfo.addressofcompany||stateProviderData.address||"",
-//     position:statedata.providerInfo.position||stateProviderData.positionInCompany||"",
-//     tenuretimeperiod:statedata.providerInfo.tenuretimeperiod||stateProviderData.tenureTimePeriod||""
-//   });
-const [data, setData] = useState({
-    comapnyname: statedata.providerInfo.comapnyname||"",
-    companycontact: statedata.providerInfo.companycontact||"",
-    goalofcompany: statedata.providerInfo.goalofcompany||"",
-    aboutcompany: statedata.providerInfo.aboutcompany||"",
-    addressofcompany: statedata.providerInfo.addressofcompany||"",
-    position:statedata.providerInfo.position||"",
-    tenuretimeperiod:statedata.providerInfo.tenuretimeperiod||""
+  const [data, setData] = useState({
+    comapnyname: statedata.providerInfo.comapnyname||stateProviderData.companyName||"",
+    companycontact: statedata.providerInfo.companycontact||stateProviderData.contact||"",
+    goalofcompany: statedata.providerInfo.goalofcompany||stateProviderData.goalOfCompany||"",
+    aboutcompany: statedata.providerInfo.aboutcompany||stateProviderData.aboutCompany||"",
+    addressofcompany: statedata.providerInfo.addressofcompany||stateProviderData.address||"",
+    position:statedata.providerInfo.position||stateProviderData.positionInCompany||"",
+    tenuretimeperiod:statedata.providerInfo.tenuretimeperiod||stateProviderData.tenureInTimePeriod||""
   });
+// const [data, setData] = useState({
+//     comapnyname: statedata.providerInfo.comapnyname||"",
+//     companycontact: statedata.providerInfo.companycontact||"",
+//     goalofcompany: statedata.providerInfo.goalofcompany||"",
+//     aboutcompany: statedata.providerInfo.aboutcompany||"",
+//     addressofcompany: statedata.providerInfo.addressofcompany||"",
+//     position:statedata.providerInfo.position||"",
+//     tenuretimeperiod:statedata.providerInfo.tenuretimeperiod||""
+//   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -175,7 +175,7 @@ const [data, setData] = useState({
             component={Link}
             href={backPath}
             onClick={handleBack}
-            className="!mr-6 !bg-[#956fe2] !rounded-xl normal-case text-white w-80 !font-[Open_sans]"
+            className="!mr-6 !mt-3 !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {backLabel}
           </Button>
@@ -188,7 +188,7 @@ const [data, setData] = useState({
             href={finishPath}
             variant="contained"
             onClick={handleFinish}
-            className="!bg-[#956fe2] !rounded-xl normal-case text-white !w-80 !font-[Open_sans]"
+            className="!mt-3 !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
           >
             {finishLabel}
           </Button>

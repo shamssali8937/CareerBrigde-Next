@@ -56,7 +56,7 @@ function SignUpDetail() {
       router.push("/Auth/Signup");
      }
      
-     const handlesubmit=(e)=>{
+     const handlesubmit=async(e)=>{
       e.preventDefault();
       setclicked({
           name:true,
@@ -66,38 +66,46 @@ function SignUpDetail() {
         })
        if(data.name&&data.password&&data.password2&&data.img&&data.password===data.password2)
     {
-        //    const User = new FormData();
-        //    User.append("name", data.name);
-        //    User.append("email", statedata.email);
-        //    User.append("role", statedata.role);
-        //    User.append("password", data.password);
-        //    User.append("photo", data.file);
-        //    axios.post("http://localhost:4321/api/users/createUser",User).then((response)=>{
-        //     if(response.status===200)
-        //     {
-        //       console.log("user created",response.data.user)
-        //       localStorage.setItem("accessToken",response.data.accessToken);
-        //     }
-        //     else
-        //     {
-        //       console.log("Erorr in creating user")
-        //     }
-        //   }).catch((err) => console.log(err));
-      console.log("ROLE:", role); 
-      dispatch(setDetails({name:data.name,img:data.img}));
-      setsnackbarmessage("succuss signedUP");
-      setsnackbarseverity("success");
-      setopensackbar(true);
-      
-      if (role === "jobseeker") {
-      router.push("/Seeker/SignupSeeker");
-      } else {
-        router.push("/Provider/SignupProvider");
+      try{
+          
+             const User = new FormData();
+             User.append("name", data.name);
+             User.append("email", statedata.email);
+             User.append("role", statedata.role);
+             User.append("password", data.password);
+             User.append("photo", data.file);
+
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/Signup`,{
+               method: "POST",
+               body: User,
+             });
+
+             if(!response.ok){
+                throw new Error("error in posting user");
+             }
+             const result = await response.json();
+             localStorage.setItem("accessToken",result.token);
+            //  const token = localStorage.getItem("accessToken");
+             console.log("ROLE:", role);
+            //  console.log("Token:",result ); 
+             dispatch(setDetails({name:result.User.name,img:result.User.photo.url}));
+             setsnackbarmessage("succuss signedUp");
+             setsnackbarseverity("success");
+             setopensackbar(true);
+             
+             if (role === "jobseeker") {
+             router.push("/Seeker/SignupSeeker");
+             } else {
+               router.push("/Provider/SignupProvider");
+             }
+             console.log(statedata.details);
+          
+      }catch(err){
+             setsnackbarmessage("Errorin Signing");
+             setsnackbarseverity("error");
+             setopensackbar(true);
       }
-      console.log(statedata.details);
-      
-    //  setIsValid(true);
-      
+       
     }
    }
 
@@ -127,13 +135,14 @@ function SignUpDetail() {
                 //  href="/Auth/Signup"
                  startIcon={<ArrowBackIcon />}
                  onClick={handleback}
-                 className="!mr-6"
-                 sx={{
-                   background: "#956fe2",
-                   py: 1.5,
-                   fontSize: "16px",
-                   width: "25%",
-                 }}>
+                 className="!mr-6 !mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                //  sx={{
+                //    background: "#956fe2",
+                //    py: 1.5,
+                //    fontSize: "16px",
+                //    width: "25%",
+                //  }}
+                >
                  Back
              </Button>    
 
@@ -145,12 +154,14 @@ function SignUpDetail() {
                 //  component={Link}
                 //  to={isValid?(role==="jobseeker"?"/signupseeker":"/signupprovider"):""}
                 //  onClick={handlesubmit}
-                 sx={{
-                   background: "#956fe2",
-                   py: 1.5,
-                   fontSize: "16px",
-                   width: "25%",
-                   }}>
+                //  sx={{
+                //    background: "#956fe2",
+                //    py: 1.5,
+                //    fontSize: "16px",
+                //    width: "25%",
+                //    }}
+                className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                >
                  Next
              </Button>
           </div>

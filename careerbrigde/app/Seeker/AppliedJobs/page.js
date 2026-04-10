@@ -4,187 +4,25 @@ import { FaCalendarAlt, FaFileAlt, FaMapMarkerAlt, FaClock, FaMoneyBillWave, FaL
 import { Card, CardContent, Typography, Button, Chip, Avatar, IconButton, SwipeableDrawer} from "@mui/material";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { addAppliedJobs, hideJob } from "@/redux/slices/appliedJobSlice";
+import { setRole } from "@/redux/slices/signupSlice";
+import { useDispatch } from "react-redux";
+import CustomizedSnackbars from "@/components/CustomizedSnackbars";
+import { useSelector } from "react-redux";
 
-
-const dummyApplications = [
-  {
-    _id: "app1",
-    apId: "ap1",
-    job: {
-      _id: "job1",
-      title: "Senior Frontend Developer",
-      location: "San Francisco, CA",
-      jobType: "Remote",
-      salary: "$120k - $150k",
-      description:
-        "We are looking for an experienced frontend developer proficient in React and TypeScript to lead our UI team.",
-      requirements: ["5+ years React", "TypeScript expertise", "Team leadership"],
-      screeningQuestions: ["Describe a challenging UI problem you solved."],
-      provider: {
-        companyname: "TechCorp Solutions",
-        user: {
-          name: "Alex Morgan",
-          photo: "https://randomuser.me/api/portraits/men/1.jpg",
-        },
-      },
-    },
-    seeker: {
-      user: {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        photo: "https://randomuser.me/api/portraits/men/2.jpg",
-      },
-      headline: "Senior React Developer | 8+ years experience",
-      about:
-        "Passionate about building scalable web applications with React and Node.js.",
-      education: [
-        {
-          _id: "edu1",
-          degree: "B.Sc. Computer Science",
-          institute: "University of Technology",
-          year: "2015-2019",
-          description: "Graduated with honors.",
-        },
-      ],
-      experience: [
-        {
-          _id: "exp1",
-          title: "Frontend Developer",
-          company: "WebSolutions Inc.",
-          duration: "2020-2023",
-          description: "Developed and maintained React-based applications.",
-        },
-      ],
-      skills: ["React", "TypeScript", "Node.js", "Tailwind CSS"],
-      cv: "/uploads/cv-johndoe.pdf",
-    },
-    applyDate: "2025-03-10T10:00:00Z",
-    status: "Pending",
-    isViewed: false,
-    screeningAnswers: ["I once optimized a component that reduced render time by 40%."],
-    cv: "/uploads/cv-johndoe.pdf",
-  },
-  {
-    _id: "app2",
-    apId: "ap2",
-    job: {
-      _id: "job2",
-      title: "Product Manager",
-      location: "New York, NY",
-      jobType: "Hybrid",
-      salary: "$130k - $160k",
-      description:
-        "Seeking a product manager to drive our flagship product roadmap and collaborate with engineering and design.",
-      requirements: ["3+ years PM experience", "Agile methodology", "Strong communication"],
-      screeningQuestions: ["How do you prioritize features?"],
-      provider: {
-        companyname: "TechCorp Solutions",
-        user: {
-          name: "Alex Morgan",
-          photo: "https://randomuser.me/api/portraits/men/1.jpg",
-        },
-      },
-    },
-    seeker: {
-      user: {
-        name: "Jane Smith",
-        email: "jane.smith@example.com",
-        photo: "https://randomuser.me/api/portraits/women/3.jpg",
-      },
-      headline: "Product Manager | 5+ years in SaaS",
-      about:
-        "Experienced in leading cross-functional teams and launching successful products.",
-      education: [
-        {
-          _id: "edu2",
-          degree: "MBA",
-          institute: "Business School",
-          year: "2016-2018",
-          description: "Marketing and strategy.",
-        },
-      ],
-      experience: [
-        {
-          _id: "exp2",
-          title: "Product Manager",
-          company: "SaaS Corp",
-          duration: "2019-2024",
-          description: "Managed product roadmap and collaborated with engineering.",
-        },
-      ],
-      skills: ["Product Strategy", "Agile", "User Research"],
-      cv: "/uploads/cv-janesmith.pdf",
-    },
-    applyDate: "2025-03-12T14:30:00Z",
-    status: "Shortlisted",
-    isViewed: true,
-    screeningAnswers: ["I use a combination of user feedback and business goals to prioritize."],
-    cv: "/uploads/cv-janesmith.pdf",
-  },
-  {
-    _id: "app3",
-    apId: "ap3",
-    job: {
-      _id: "job3",
-      title: "Backend Engineer",
-      location: "Remote",
-      jobType: "Remote",
-      salary: "$90k - $110k",
-      description:
-        "Join our backend team to build scalable APIs and microservices. Experience with Node.js and databases is required.",
-      requirements: ["Node.js", "Express", "MongoDB", "Python"],
-      screeningQuestions: ["How do you handle database transactions?"],
-      provider: {
-        companyname: "DataWorks",
-        user: {
-          name: "Michael Brown",
-          photo: "https://randomuser.me/api/portraits/men/4.jpg",
-        },
-      },
-    },
-    seeker: {
-      user: {
-        name: "Alice Johnson",
-        email: "alice.johnson@example.com",
-        photo: "https://randomuser.me/api/portraits/women/5.jpg",
-      },
-      headline: "Backend Developer | Node.js Specialist",
-      about: "Experienced in building RESTful APIs and microservices.",
-      education: [
-        {
-          _id: "edu3",
-          degree: "B.E. Computer Science",
-          institute: "Engineering College",
-          year: "2017-2021",
-          description: "Focus on backend technologies.",
-        },
-      ],
-      experience: [
-        {
-          _id: "exp3",
-          title: "Backend Developer",
-          company: "AppWorks",
-          duration: "2021-present",
-          description: "Developed and maintained Node.js APIs.",
-        },
-      ],
-      skills: ["Node.js", "Express", "MongoDB", "Docker"],
-      cv: "/uploads/cv-alice.pdf",
-    },
-    applyDate: "2025-03-15T09:00:00Z",
-    status: "Rejected",
-    isViewed: true,
-    screeningAnswers: ["I use transactions and error handling."],
-    cv: "/uploads/cv-alice.pdf",
-  },
-];
 
 
 export default function AppliedJobs() {
-  const [applications, setApplications] = useState([]);
+   const stateapplications=useSelector((state)=>state.appliedJobs);
+  //  console.log(stateapplications);
+  const [applications, setApplications] = useState(stateapplications.applications||[]);
+  const [ishide,setIsHide]=useState(false);
   const [selectedapplication, setseleectedapplication] = useState(null);
   const [opendrawer, setopendrawer] = useState(false);
-
+  const [ openSnackbar, setOpenSackbar ] = useState(false);
+  const [ snackbarMssage, setSnackbarMessage ] = useState("");
+  const [ snackbarSeverity, setSnackbarSeverity ] = useState("success");
+  const dispatch=useDispatch();
   const getStatusColor = (status) => {
     switch (status) {
       case "Hired":
@@ -203,25 +41,78 @@ export default function AppliedJobs() {
     setopendrawer(true);
   };
 
-  const handleHideApplication = (applicationId) => {
-    setApplications((prev) => prev.filter((app) => app._id !== applicationId));
-    if (selectedapplication?._id === applicationId) {
-      setopendrawer(false);
-      setseleectedapplication(null);
-    }
-  };
+  const setIsdeleteToHideJobApplication=async(applicationId)=>{
+               try{
+                console.log(applicationId);
+                const token=localStorage.getItem("token");
+               
+                const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected//DeleteJobApplication/${applicationId}`,{
+                  method:"DELETE",
+                  headers:{
+                     Authorization: `Bearer ${token}` 
+                  }
+                });
+                if(response.ok){
+                    dispatch(hideJob(applicationId)); 
+                    setseleectedapplication(null);
+                    setSnackbarMessage("Job Deleted");
+                    setSnackbarSeverity("error");
+                    setOpenSackbar(true);
+                    setIsHide(true);
+                    setopendrawer(false);
+                }
+               }catch(error){
+                console.log("error",error)
+               }
+           }
+
+  // function getFileName(cv) {
+  //   if (!cv) return "";
+  //   const fullFileName = cv.split("/").pop();
+  //   const nameOnly = fullFileName.replace(/-\d+(?=\.\w+$)/, "");
+  //   return nameOnly;
+  // }
 
   function getFileName(cv) {
-    if (!cv) return "";
-    const fullFileName = cv.split("/").pop();
-    const nameOnly = fullFileName.replace(/-\d+(?=\.\w+$)/, "");
-    return nameOnly;
-  }
+        if (!cv) return "";
+        if (typeof cv === "string") return cv.split("/").pop();
+        if (cv?.name) return cv.name;
+        if (cv?.file?.name) return cv.file.name;
+        return "";
+      }
+
+  const fetchAlreadyAppliedJobs=async()=>{
+            try{
+               const token=localStorage.getItem("token");
+              
+               const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/GetAllJobApplicationOfSeeker`,
+                   {
+                     method: "GET",
+                     headers: { Authorization: `Bearer ${token}` },
+                   }
+                 );
+               if(response.ok){
+                let result=await response.json();
+                console.log("applied jobs",result.data.applications);
+                dispatch(addAppliedJobs(result.data.applications))
+               if (result.data.applications && result.data.applications.length > 0) {
+                 dispatch(setRole(result.data.applications[0].seeker.user.role));
+               }
+                setApplications(result.data.applications);
+               }
+            }catch(error){
+              console.log("eror in fetching already applied jobs",error);
+            }
+          }
+  
 
    useEffect(() => {
-    setApplications(dummyApplications);
+    fetchAlreadyAppliedJobs();
   }, []);
 
+    useEffect(() => {
+    fetchAlreadyAppliedJobs();
+  }, [ishide]);
 
   return (
     <>
@@ -263,8 +154,8 @@ export default function AppliedJobs() {
                   <CardContent className="flex flex-col flex-1 !p-6">
                     <div className="flex items-start gap-3 mb-4">
                       <Avatar
-                        src={application.job.provider.user.photo}
-                        alt={application.job.provider.companyname}
+                        src={application.job.provider.user.photo?.url||""}
+                        alt={application.job.provider.companyName}
                         className="w-12 h-12 !rounded-xl border-2 !border-white !shadow-md"
                         variant="rounded"
                       >
@@ -279,7 +170,7 @@ export default function AppliedJobs() {
                         </Typography>
                         <Typography variant="body2" className="text-gray-500 flex items-center gap-1 !mt-1">
                           <FaBuilding className="text-[#a78cdd]" size={12} />
-                          {application.job.provider.companyname}
+                          {application.job.provider.companyName}
                         </Typography>
                       </div>
                     </div>
@@ -339,7 +230,7 @@ export default function AppliedJobs() {
                         <Button
                           size="small"
                           variant="outlined"
-                          onClick={() => handleHideApplication(application._id)}
+                          onClick={()=>setIsdeleteToHideJobApplication(application._id)}
                           className="!font-[Open_sans] !border-red-500 !text-red-500 hover:!bg-red-50 !rounded-full !px-4 !py-1 !text-xs !transition-all duration-300 hover:!scale-105"
                         >
                           Hide
@@ -391,7 +282,7 @@ export default function AppliedJobs() {
               </Typography>
               <div className="flex items-center gap-3 mt-3">
                 <img
-                  src={selectedapplication.job.provider.user.photo}
+                  src={selectedapplication.job.provider.user.photo?.url||""}
                   alt="company"
                   className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                 />
@@ -401,7 +292,7 @@ export default function AppliedJobs() {
                   </Typography>
                   <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
                     <FaUserTie className="!text-indigo-500" />
-                    at {selectedapplication.job.provider.companyname}
+                    at {selectedapplication.job.provider.companyName}
                   </Typography>
                 </div>
               </div>
@@ -420,7 +311,7 @@ export default function AppliedJobs() {
             <div className="flex-1 overflow-y-auto p-6 space-y-5">
               <div className="flex flex-col items-center text-center">
                 <img
-                  src={selectedapplication.seeker.user.photo}
+                  src={selectedapplication.seeker.user.photo?.url||""}
                   alt="applicant"
                   className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg mb-3"
                 />
@@ -529,12 +420,12 @@ export default function AppliedJobs() {
                 <FaFileAlt className="!text-indigo-500" />
                 {selectedapplication.cv ? (
                   <a
-                    href={selectedapplication.cv}
+                    href={selectedapplication.cv?.url||""}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-[Open_sans] text-sm text-indigo-600 hover:underline"
                   >
-                    CV: {getFileName(selectedapplication.cv)}
+                    CV: {getFileName(selectedapplication.cv?.publicId)}
                   </a>
                 ) : (
                   <span className="text-sm text-gray-700">CV: No CV uploaded</span>
@@ -557,6 +448,12 @@ export default function AppliedJobs() {
           </div>
         )}
       </SwipeableDrawer>
+      <CustomizedSnackbars
+        open={openSnackbar}
+        message={snackbarMssage}
+        severity={snackbarSeverity}
+        onClose={() => setOpenSackbar(false)}
+      />
     </>
   );
 }

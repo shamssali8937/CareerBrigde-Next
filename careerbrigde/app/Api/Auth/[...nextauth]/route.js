@@ -17,10 +17,20 @@ export const authOptions = {
   callbacks: {
 
    async signIn({ user, account, profile, credentials, email }) {
-  const type = account?.type;
-  const role = account?.role;
+  // const type = account?.type;
+  // const role = account?.role;
 
-  return await handleSignIn({ user, account, profile });
+  const dbUser = await handleSignIn({ user, account, profile });
+
+  if (!dbUser) return false;
+
+  user.id = dbUser.id;
+  user.email = dbUser.email;
+  user.role = dbUser.role;
+
+  return true;
+
+  // return await handleSignIn({ user, account, profile });
 },
 
     async jwt({ token, user }) {

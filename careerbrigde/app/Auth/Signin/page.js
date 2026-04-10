@@ -1,6 +1,6 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Layout from "@/layouts/Layout";
 import TextInput from "@/components/TextInput";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
@@ -9,7 +9,8 @@ import Link from "next/link";
 import {useState, useEffect} from "react"
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setEmail } from "@/redux/slices/signupSlice";
+import { setDetails, setEmail, setRole, setSeekerInfo } from "@/redux/slices/signupSlice";
+import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
 
 export default function Signin(){
 
@@ -19,6 +20,7 @@ export default function Signin(){
     const [snackbarseverity, setsnackbarseverity] = useState("success");
 
     const dispatch=useDispatch();
+    const router=useRouter();
     const reduxSignupData=useSelector((state)=>state.signup)
     
     const [data, setData] = useState({
@@ -40,7 +42,7 @@ export default function Signin(){
       });
 
 
-    const handlesignin = (e) => {
+    const  handlesignin =async (e) => {
         e.preventDefault();
     
         
@@ -56,31 +58,164 @@ export default function Signin(){
           setopensackbar(true);
           return;
         }
-    
-        dispatch(setEmail(data.email));
-        setsnackbarmessage(`Welcome, ${data.email}!`);
-        setsnackbarseverity("success");
-        setopensackbar(true);
+
+        try{
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/Signin`,{
+               method: "POST",
+               headers: {
+                 "Content-Type": "application/json",
+               },
+               body: JSON.stringify({
+                 email: data.email,
+                 password: data.password,
+               }),
+             });
+             const result= await response.json();
+
+             if(!response.ok){
+              // throw new Error(result.message || "Login failed");
+              setsnackbarmessage("Login Failed");
+              setsnackbarseverity("error");
+             }
+
+             localStorage.setItem("token", result.AccessToken);
+            //  console.log("Tokenbefre",result.User.AccessToken);
+             dispatch(setEmail(data.email));
+             dispatch(setRole(result.User.role))
+             dispatch(setUser(result.User))
+             dispatch(setDetails(result.User))
+            // console.log("SigINROle",result.User.role)
+             setsnackbarmessage(`Welcome, ${data.email}!`);
+             setsnackbarseverity("success");
+             const token = localStorage.getItem("token");
+             if(result.User.role==="jobseeker"){
+              try {   
+                  // console.log("Token",token);
+                   const providerRes = await fetch(
+                     `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetSeekerProfile`,{
+                      method:"GET",
+                      headers:{
+                        Authorization: `Bearer ${token}`,
+                      }
+                     }
+                   );
+
+                   const seekerData= await providerRes.json();
+         
+                   if (providerRes.ok) {
+                     dispatch(setSeekerInfo(seekerData.data.seeker));
+                     console.log("Provider",seekerData.data.seeker);
+                   }
+                 } catch (err) {
+                   console.log("Provider fetch error:", err);
+                 }
+
+
+                router.push("/Seeker/HomePage");
+             }else{
+                 try {   
+                  // console.log("Token",token);
+                   const providerRes = await fetch(
+                     `${process.env.NEXT_PUBLIC_API_URL}/Protected/GetProviderProfile`,{
+                      method:"GET",
+                      headers:{
+                        Authorization: `Bearer ${token}`,
+                      }
+                     }
+                   );
+
+                   const providerData= await providerRes.json();
+         
+                   if (providerRes.ok) {
+                     dispatch(setProviderDetail(providerData.data.provider));
+                     console.log("Provider",providerData.data.provider);
+                   }
+                 } catch (err) {
+                   console.log("Provider fetch error:", err);
+                 }
+                  router.push("/Provider/HomePage");
+             }
+          setopensackbar(true);     
+
+        }catch(err){
+          console.log(err);
+           setsnackbarmessage(err.message);
+           setsnackbarseverity("error");
+            setopensackbar(true);
+        }
+   
+        // setopensackbar(true);
      };
 
 
-     const sendOtpToEmail = () => {
-        if (!data.email) {
-          setsnackbarmessage("Please enter your email first");
-          setsnackbarseverity("error");
-          setopensackbar(true);
-          return;
-        }
-        setsnackbarmessage(`OTP sent to ${data.email}`);
-        setsnackbarseverity("success");
-        setopensackbar(true);
+     const sendOtpToEmail = async() => {
+         try {
+                const email = data.email;
+                if (!email) {
+                  setsnackbarmessage("Please enter your email first");
+                  setsnackbarseverity("error");
+                  setopensackbar(true);
+                  return;
+                }
+            
+                dispatch(setEmail(email));
+                
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendOtp`, {
+                  method:"POST",
+                  headers:{
+                         "Content-Type":"application/json",
+                    },
+                  body:JSON.stringify({email:email})
+                });
+            
+                if (response.ok) {
+                  let result=await response.json();
+                  const { forgotToken, message } = result; // message contains OTP
+                  const otp = message;
+            
+                  localStorage.setItem("forgetToken", forgotToken);
+            
+                    const mailMessage = {
+                              to: email,
+                              subject: "Password Reset OTP – Action Required",
+                              message: `Dear User,\n\nWe received a request to reset the password for your account.\n\nPlease use the following One-Time Password (OTP) to proceed with resetting your password:\n\nOTP: ${otp}\n\nThis OTP is valid for the next 5 minutes.\nDo not share this code with anyone for security reasons.\n\nIf you did not request a password reset, please ignore this email.\n\nBest regards,\nSupport Team`
+                            };
+                  console.log(mailMessage)
+                  const mailResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/SendMail`,{
+                    method:"POST",
+                    headers:{
+                         "Content-Type":"application/json",
+                    },
+                    body:JSON.stringify(mailMessage)
+                  });
+            
+                  if (mailResponse.ok) {
+                    let token=localStorage.getItem("forgetToken");
+                    setsnackbarmessage("OTP sent to your email");
+                    setsnackbarseverity("success");
+                    setopensackbar(true);
+                    router.push(`/Auth/ForgotPassword?${token}`); // go to OTP page
+                  } else {
+                    setsnackbarmessage("Error In OTP sent to your email");
+                    setsnackbarseverity("error");
+                    setopensackbar(true);
+                  }
+                } else {
+                  throw new Error("Failed to generate OTP");
+                }
+              } catch (err) {
+                console.log("OTP mail error:", err);
+                // setsnackbarmessage(err.response?.data?.message || "Failed to send OTP. Try again.");
+                // setsnackbarseverity("error");
+                // setopensackbar(true);
+              }
       };
     
       
       const handlegooglelogin = () => {
         document.cookie = `oauth_type=login; path=/; max-age=300`;
         signIn("google", {
-          callbackUrl: "/Home", // e.g., "/Protected", "/Dashboard", or "/"
+          callbackUrl: "/Auth/OAuthRedirectPage", // e.g., "/Protected", "/Dashboard", or "/"
         });
         // setsnackbarmessage("Google login clicked");
         // setsnackbarseverity("info");
@@ -114,7 +249,7 @@ export default function Signin(){
               <TextInput label="Password" type="password" name="password" value={data.password} required onChange={handleFieldDataChange} error={clicked.password&&!data.password} helperText={clicked.password&&!data.password?"Password is required":""}/>
                
                 <div className="flex justify-right mt-5">
-                <a onClick={sendOtpToEmail} className="text-[#956fe2] font-bold font-medium text-sm underline cursor-pointer">
+                <a onClick={sendOtpToEmail} className="text-[#956fe2] font-bold !font-[Open_Sans] text-sm underline cursor-pointer">
                   Forgot password ?
                 </a>
               </div>
@@ -127,7 +262,8 @@ export default function Signin(){
                 onClick={handlesignin}
                 // component={Link}
                 // to={canGo ? redirectPath : "#"}
-                sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
+                // sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
+                className="!mt-3 !font-[Open_Sans] !w-[70%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
               >
                 Sign In
               </Button>
@@ -143,6 +279,7 @@ export default function Signin(){
                       style={{ width: 20, height: 20 }}
                     />}
                   onClick={handlegooglelogin} 
+                  className="!font-[Open_Sans] !rounded-full"
                   sx={{
                     textTransform: "none",
                     borderColor: "#ccc",
@@ -157,9 +294,9 @@ export default function Signin(){
                 </Button>
               </div>
         
-              <p className="text-center mt-9 font-bold text-[#A8A8A8]">
+              <p className="font-[Open_Sans] text-center mt-9 font-bold text-[#A8A8A8]">
                 Dont have an Account?{" "}
-                <Link href="/Auth/Signup" className="underline text-[#956fe2]">
+                <Link href="/Auth/Signup" className="!font-[Open_Sans] underline text-[#956fe2]">
                   signup
                 </Link>
               </p>
