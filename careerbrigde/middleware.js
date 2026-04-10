@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAuth } from "./Lib/Auth/auth";
 
-export async function proxy(req) {
+export async function middleware(req) {
     
     const authHeader=req.headers.get("authorization");
     if(!authHeader){
