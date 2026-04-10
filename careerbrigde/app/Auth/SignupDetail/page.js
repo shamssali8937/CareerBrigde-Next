@@ -75,7 +75,7 @@ function SignUpDetail() {
              User.append("password", data.password);
              User.append("photo", data.file);
 
-             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/Signup`,{
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/Signup`,{
                method: "POST",
                body: User,
              });

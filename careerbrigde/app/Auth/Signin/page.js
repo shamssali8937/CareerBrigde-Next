@@ -61,7 +61,7 @@ function SigninContent(){
         }
 
         try{
-             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/Signin`,{
+             const response=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/SignIn`,{
                method: "POST",
                headers: {
                  "Content-Type": "application/json",
