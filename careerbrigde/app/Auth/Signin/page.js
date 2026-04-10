@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Layout from "@/layouts/Layout";
@@ -6,13 +7,13 @@ import TextInput from "@/components/TextInput";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import { Button,  } from "@mui/material";
 import Link from "next/link";
-import {useState, useEffect} from "react"
+import {useState, useEffect, Suspense} from "react"
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setDetails, setEmail, setRole, setSeekerInfo } from "@/redux/slices/signupSlice";
 import { setProviderDetail, setUser } from "@/redux/slices/userDetailSlice";
 
-export default function Signin(){
+function SigninContent(){
 
     const searchParams = useSearchParams()
     const [opensnackbar, setopensackbar] = useState(false);
@@ -309,4 +310,12 @@ export default function Signin(){
             
         </Layout>
     );
+}
+
+export default function Signin() {
+  return (
+    <Suspense fallback={null}>
+      <SigninContent />
+    </Suspense>
+  );
 }
