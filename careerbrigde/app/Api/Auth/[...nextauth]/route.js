@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { handleSignIn } from "@/controllers/oauthController";
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
