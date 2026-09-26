@@ -2,11 +2,8 @@
 import { useState } from "react";
 import {
   TextField,
-  Input,
   InputAdornment,
   IconButton,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -17,6 +14,8 @@ export default function TextInput({
   required = false,
   className = "",
   helperText,
+  error = false,
+  sx = {},
   ...props
 }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,52 +23,59 @@ export default function TextInput({
   const handleShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => event.preventDefault();
 
-  if (type === "password") {
-    return (
-      <FormControl
-        fullWidth
-        variant="standard"
-        margin="normal"
-        sx={{ width: "70%" }}
-        className={className}
-      >
-        <InputLabel>{label}</InputLabel>
-        <Input
-          type={showPassword ? "text" : "password"}
-          required={required}
-          {...props} // helperText is removed from here
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                onClick={handleShowPassword}
-                onMouseDown={handleMouseDownPassword}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-        {helperText && (
-          <p style={{ color: "red", fontSize: "0.75rem", marginTop: 4 }}>
-            {helperText}
-          </p>
-        )}
-      </FormControl>
-    );
-  }
+  const isPassword = type === "password";
 
   return (
     <TextField
       label={label}
-      type={type}
+      type={isPassword ? (showPassword ? "text" : "password") : type}
       required={required}
       fullWidth
-      sx={{ width: "70%" }}
-      className={className}
+      variant="outlined"
       margin="normal"
-      {...props}
+      error={Boolean(error)}
       helperText={helperText}
-      variant="standard"
+      className={`w-full ${className}`}
+      sx={{
+        width: "100%",
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "12px",
+          backgroundColor: "#ffffff",
+          transition: "all 0.2s ease-in-out",
+          "&:hover fieldset": {
+            borderColor: "#6366f1",
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: "#4f46e5",
+            borderWidth: "2px",
+          },
+        },
+        "& .MuiInputLabel-root.Mui-focused": {
+          color: "#4f46e5",
+          fontWeight: 600,
+        },
+        ...sx,
+      }}
+      slotProps={{
+        input: isPassword
+          ? {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    size="small"
+                    className="text-slate-500 hover:text-indigo-600 transition-colors"
+                  >
+                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }
+          : undefined,
+      }}
+      {...props}
     />
   );
 }

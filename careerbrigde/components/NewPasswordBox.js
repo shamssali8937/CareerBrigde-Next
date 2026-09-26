@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Typography } from "@mui/material";
-import TextInput from "../components/TextInput";
+import TextInput from "./TextInput";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@mui/material";
 
 export default function NewPasswordBox() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const router=useRouter();
+  const router = useRouter();
 
-  const handleSubmit =async () => {
+  const handleSubmit = async () => {
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       return;
@@ -28,48 +28,47 @@ export default function NewPasswordBox() {
     try {
       const forgetToken = localStorage.getItem("forgetToken");
       if (!forgetToken) {
-        // setsnackbarmessage("Token missing. Please try OTP verification again.");
-        // setsnackbarseverity("error");
-        // setopensnackbar(true);
+        setError("Session expired. Please request a new OTP.");
         return;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/Protected/ResetPassword`,{
-       method:"POST",
-       headers:{
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${forgetToken}`,
-       },
-       body:JSON.stringify({password:password})
-      });
+        `${process.env.NEXT_PUBLIC_API_URL}/Protected/ResetPassword`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${forgetToken}`,
+          },
+          body: JSON.stringify({ password: password }),
+        }
+      );
 
-      // setsnackbarmessage(response.data.message || "Password reset successfully");
-      // setsnackbarseverity("success");
-      // setopensnackbar(true);
+      if (!response.ok) {
+        throw new Error("Password reset failed. Please try again.");
+      }
+
       setSuccess(true);
       localStorage.removeItem("forgetToken");
-
-      router.push("/Auth/Signin")
-
+      setTimeout(() => {
+        router.push("/Auth/Signin");
+      }, 1500);
     } catch (err) {
-      // setsnackbarmessage(err.response?.data?.message || "Password reset failed");
-      // setsnackbarseverity("error");
-      // setopensnackbar(true);
-      console.log(err)
+      setError(err.message || "Password reset failed");
     }
   };
 
   return (
-    <>
-      <Typography variant="h5" className="!font-[Open_Sans] text-black !mb-2">
-        Set New Password
-      </Typography>
+    <div className="w-full flex flex-col items-center">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Set New Password
+        </h2>
+        <p className="text-sm text-slate-500 mt-1">
+          Enter and confirm your new account password
+        </p>
+      </div>
 
-      <Typography variant="body2" className="!font-[Open_Sans] text-black text-sm text-gray-500 !mb-6">
-        Enter and confirm your new password.
-      </Typography>
-
-      <div className="space-y-4 mb-8">
+      <div className="w-full space-y-3 mb-6">
         <TextInput
           label="New Password"
           type="password"
@@ -79,36 +78,60 @@ export default function NewPasswordBox() {
         />
 
         <TextInput
-          label="Confirm Password"
+          label="Confirm New Password"
           type="password"
           required
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          error={Boolean(error)}
           helperText={error}
         />
       </div>
 
       {!success ? (
-        <button
+        <Button
           onClick={handleSubmit}
-          className={`w-[70%] py-2.5 rounded-lg font-medium transition ${password && confirmPassword? "bg-blue-600 text-white hover:bg-blue-700": "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
           disabled={!password || !confirmPassword}
+          fullWidth
+          variant="contained"
+          sx={{
+            background:
+              password && confirmPassword
+                ? "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)"
+                : "#e2e8f0",
+            color: password && confirmPassword ? "#ffffff" : "#94a3b8",
+            borderRadius: "12px",
+            py: 1.4,
+            fontSize: "14px",
+            fontWeight: 600,
+            textTransform: "none",
+            boxShadow:
+              password && confirmPassword
+                ? "0 4px 14px 0 rgba(79, 70, 229, 0.3)"
+                : "none",
+            "&:hover": {
+              background:
+                password && confirmPassword
+                  ? "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)"
+                  : "#e2e8f0",
+            },
+          }}
         >
           Update Password
-        </button>
+        </Button>
       ) : (
-        <div className="text-center">
-          <p className="mb-4 text-green-600 font-semibold">
-            Password updated successfully!
+        <div className="text-center w-full py-4 bg-emerald-50 rounded-xl border border-emerald-200">
+          <p className="text-emerald-700 font-semibold text-sm mb-3">
+            ✓ Password updated successfully! Redirecting...
           </p>
           <Link
             href="/Auth/Signin"
-            className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="inline-block px-5 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition"
           >
             Go to Sign In
           </Link>
         </div>
       )}
-    </>
+    </div>
   );
 }

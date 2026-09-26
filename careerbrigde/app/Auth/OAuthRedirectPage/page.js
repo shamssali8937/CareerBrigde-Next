@@ -32,7 +32,7 @@ export default function OAuthRedirect() {
     } else if (role === "jobprovider" || role=== "provider") {
       router.replace("/Provider/HomePage");
     } else {
-      router.replace("/Home");
+      router.replace("/");
     }
   }, [session, status, router]);
 

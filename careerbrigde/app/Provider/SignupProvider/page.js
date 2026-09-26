@@ -4,7 +4,6 @@ import ProviderForm from "@/components/ProviderForm";
 import { useDispatch } from "react-redux";
 import { setProviderInfo } from "@/redux/slices/signupSlice";
 import { useRouter } from "next/navigation";
-import { fetchData } from "next-auth/client/_utils";
 import { setProviderDetail } from "@/redux/slices/userDetailSlice";
 
 function SignUpProvider() {
@@ -12,7 +11,7 @@ function SignUpProvider() {
   const router=useRouter();
 
   const handleFinish = async (data) => {
-   const token = localStorage.getItem("accessToken");
+   const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
     console.log(token);
 
   try {
@@ -59,9 +58,9 @@ function SignUpProvider() {
   };
 
   return (
-    <Layout rightImage="/login.svg">
-      <div className="w-full min-h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] flex items-center justify-center bg-[#faf4ff] p-4 md:p-8">
-        <div className="w-full max-w-4xl">
+    <Layout rightImage="/login.svg" wide={true}>
+      <div className="w-full flex items-center justify-center">
+        <div className="w-full">
           <ProviderForm
             backPath="/Auth/SignupDetail"
             finishPath="/Auth/Signin"

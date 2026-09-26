@@ -18,21 +18,25 @@ function SignUpSeeker() {
 
   const handleFinish = async (formData) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      console.log("token",token)
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+      console.log("token", token);
       const formPayload = new FormData();
 
-      formPayload.append("headline", formData.headline);
-      formPayload.append("about", formData.about);
-      formPayload.append("address", formData.address);
-      formPayload.append("city", formData.city);
-      formPayload.append("phone", formData.phone);
-      formPayload.append("country", formData.country);
-      formPayload.append("skills", JSON.stringify(formData.skills));
-      formPayload.append("education", JSON.stringify(formData.education));
-      formPayload.append("experience", JSON.stringify(formData.experience));
-      formPayload.append("SocialLinks", JSON.stringify(formData.socialLinks));
-      formPayload.append("cv", formData.cv.file);
+      formPayload.append("headline", formData.headline || "");
+      formPayload.append("about", formData.about || "");
+      formPayload.append("address", formData.address || "");
+      formPayload.append("city", formData.city || "");
+      formPayload.append("phone", formData.phone || "");
+      formPayload.append("country", formData.country || "");
+      formPayload.append("skills", JSON.stringify(formData.skills || []));
+      formPayload.append("education", JSON.stringify(formData.education || []));
+      formPayload.append("experience", JSON.stringify(formData.experience || []));
+      formPayload.append("SocialLinks", JSON.stringify(formData.socialLinks || []));
+      if (formData.cv?.file instanceof File) {
+        formPayload.append("cv", formData.cv.file);
+      } else if (formData.cv instanceof File) {
+        formPayload.append("cv", formData.cv);
+      }
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Protected/UpdateSeeker`,{
         method:"POST",
@@ -77,8 +81,8 @@ function SignUpSeeker() {
   };
 
   return (
-    <Layout rightImage="/login.svg">
-      <div className="w-full h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] flex flex-col bg-[#faf4ff] p-4 md:p-8 overflow-y-auto">
+    <Layout rightImage="/login.svg" wide={true}>
+      <div className="w-full flex flex-col">
         <SeekerForm
           initialData={{
             s: statedata.seekerInfo,

@@ -673,7 +673,7 @@ export default function jobApplications() {
     return(
         <>
          <Navbar/>
-         <div className="min-h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] backdrop-blur-sm pt-20 pb-10 px-4 sm:px-6 lg:px-8 font-[Open_sans]">
+         <div className="min-h-screen bg-slate-50 pt-6 pb-12 px-4 sm:px-6 lg:px-8">
            <div className="max-w-7xl mx-auto">
               <div className="relative mb-12 flex flex-col items-center text-center">
                  <div className="absolute inset-0 flex items-center justify-center -z-10">
@@ -725,14 +725,14 @@ export default function jobApplications() {
                                          className="w-12 h-12 !rounded-xl border-2 !border-white !shadow-md"
                                          variant="rounded"
                                         >
-                                         <FaBuilding className="text-[#a78cdd]"/>
+                                         <FaBuilding className="text-indigo-600"/>
                                         </Avatar>
                                         <div className="flex-1">
                                            <Typography variant="h6" className="!font-[Open_sans] !font-bold text-gray-800 group-hover:text-indigo-700 transition-colors line-clamp-2">
                                               {job.title}
                                            </Typography>
                                            <Typography variant="body2" className="text-gray-500 flex items-center gap-1 !mt-1">
-                                             <FaBuilding className="text-[#a78cdd]" size={12} />
+                                             <FaBuilding className="text-indigo-600" size={12} />
                                              {job.provider.companyName}
                                            </Typography>
                                         </div>
@@ -783,7 +783,7 @@ export default function jobApplications() {
                                           size="small"
                                           variant="contained"
                                           onClick={() => handleViewApplicants(job)}
-                                          className="!font-[Open_sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] !text-white !rounded-full !px-6 !py-2 !text-sm  !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                          className="!font-[Open_sans] !bg-indigo-600 hover:!bg-indigo-700 !text-white !rounded-full !px-6 !py-2 !text-sm  !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                                         >
                                           View
                                         </Button>
@@ -835,7 +835,7 @@ export default function jobApplications() {
                       value={filterStatus}
                       // label="Status"
                       onChange={(e) => setFilterStatus(e.target.value)}
-                       className="!bg-[#a78cdd] hover:!bg-[#8e6fc5] !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                       className="!bg-indigo-600 hover:!bg-indigo-700 !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                                  sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' },'& .MuiSelect-select': { 
                                        color: 'white !important',
                                        fontFamily: '"Open Sans" !important',
@@ -857,7 +857,7 @@ export default function jobApplications() {
                       value={filterView}
                       // label="Viewed"
                       onChange={(e) => setFilterView(e.target.value)}
-                       className="!bg-[#a78cdd] hover:!bg-[#8e6fc5] !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                       className="!bg-indigo-600 hover:!bg-indigo-700 !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                                  sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' },'& .MuiSelect-select': { 
                                        color: 'white !important',
                                        fontFamily: '"Open Sans" !important',
@@ -945,7 +945,7 @@ export default function jobApplications() {
                    sx: {
                      width: { xs: "100%", sm: 500 },
                      borderRadius: "24px 24px 24px 24px",
-                     background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+                     background: "linear-gradient(to bottom, #f8fafc, #f1f5f9, #e0e7ff)",
                      backdropFilter: "blur(16px)",
                      backgroundColor: "rgba(250, 248, 255, 0.8)", 
                      borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
@@ -1038,8 +1038,8 @@ export default function jobApplications() {
                                <FaGraduationCap className="!text-indigo-500" /> Education
                              </Typography>
                              <div className="space-y-3">
-                               {selectedApplicant.seeker.education.map((edu) => (
-                                 <div key={edu._id} className="bg-white/40 p-3 rounded-xl text-sm">
+                               {selectedApplicant.seeker.education.map((edu, idx) => (
+                                  <div key={edu._id ? String(edu._id) : (edu.id ? String(edu.id) : `edu-${idx}`)} className="bg-white/40 p-3 rounded-xl text-sm">
                                    <Typography className="!font-medium !font-[Open_sans]">
                                      {edu.degree}
                                    </Typography>
@@ -1061,8 +1061,8 @@ export default function jobApplications() {
                                <FaTasks className="!text-emerald-500" /> Experience
                              </Typography>
                              <div className="space-y-3">
-                               {selectedApplicant.seeker.experience.map((exp) => (
-                                 <div key={exp._id} className="bg-white/40 p-3 rounded-xl text-sm">
+                               {selectedApplicant.seeker.experience.map((exp, idx) => (
+                                  <div key={exp._id ? String(exp._id) : (exp.id ? String(exp.id) : `exp-${idx}`)} className="bg-white/40 p-3 rounded-xl text-sm">
                                    <Typography className="!font-medium !font-[Open_sans]">
                                      {exp.title} - {exp.company}
                                    </Typography>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -6,7 +6,6 @@ import {
   TextField,
   Typography,
   Button,
-  Divider
 } from "@mui/material";
 
 const UpdateUserInfoForm = ({ userData, onSubmit }) => {
@@ -31,8 +30,8 @@ const UpdateUserInfoForm = ({ userData, onSubmit }) => {
   };
 
   return (
-    <Box className="mt-4 mb-8 bg-white p-6 rounded-4xl shadow-lg border border-gray-100">
-      <Typography variant="h6" className="!font-sans !font-bold text-gray-800 !mb-4">
+    <Box className="mt-4 mb-8 bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+      <Typography variant="h6" className="!font-sans !font-bold text-slate-900 !mb-4">
         Account Information
       </Typography>
       
@@ -44,7 +43,14 @@ const UpdateUserInfoForm = ({ userData, onSubmit }) => {
           onChange={handleChange}
           fullWidth
           variant="outlined"
-          className="!mb-3"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              "&.Mui-focused fieldset": {
+                borderColor: "#4f46e5",
+              },
+            },
+          }}
         />
 
         <TextField
@@ -54,26 +60,33 @@ const UpdateUserInfoForm = ({ userData, onSubmit }) => {
           onChange={handleChange}
           fullWidth
           variant="outlined"
-          className="!mb-3"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              "&.Mui-focused fieldset": {
+                borderColor: "#4f46e5",
+              },
+            },
+          }}
         />
-
-        {/* <TextField
-          label="New Password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-          type="password"
-          fullWidth
-          placeholder="Leave blank to keep current"
-          variant="outlined"
-          className="!mb-3"
-        /> */}
 
         <Button
           variant="contained"
           fullWidth
           onClick={() => onSubmit(form)}
-          className="!bg-[#956fe2] !py-3 !rounded-xl normal-case text-white font-semibold"
+          sx={{
+            background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+            borderRadius: "12px",
+            py: 1.4,
+            fontSize: "14px",
+            fontWeight: 600,
+            textTransform: "none",
+            boxShadow: "0 4px 14px 0 rgba(79, 70, 229, 0.3)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
+              boxShadow: "0 6px 20px 0 rgba(79, 70, 229, 0.4)",
+            },
+          }}
         >
           Save Account Changes
         </Button>
