@@ -1,155 +1,226 @@
 "use client";
-import {signIn} from "next-auth/react"
-import { Button, Typography, Radio, RadioGroup, FormControlLabel } from "@mui/material";
+import { signIn } from "next-auth/react";
+import { Button } from "@mui/material";
 import TextInput from "@/components/TextInput";
 import Layout from "@/layouts/Layout";
 import CustomizedSnackbars from "@/components/CustomizedSnackbars";
 import Link from "next/link";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setEmail, setRole } from "@/redux/slices/signupSlice";
 import { useRouter } from "next/navigation";
+import { FaUserGraduate, FaBuilding, FaCheckCircle } from "react-icons/fa";
 
 export default function Signup() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const reduxSignupData = useSelector((state) => state.signup);
 
-  const dispatch=useDispatch();
-  const router=useRouter();
-  const reduxSignupData=useSelector((state)=>state.signup);
-
-  const [data,setdata]=useState({
-    email:reduxSignupData.email||"",
-    role:reduxSignupData.role||""
+  const [data, setData] = useState({
+    email: reduxSignupData.email || "",
+    role: reduxSignupData.role || "jobseeker",
   });
 
-  const [clicked,setclicked]=useState({});
-  const [opensnackbar,setopensackbar]=useState(false);
-  const [snackbarmessage,setsnackbarmessage]=useState("");
-  const [snackbarseverity,setsnackbarseverity]=useState("success");
+  const [clicked, setClicked] = useState({});
+  const [opensnackbar, setopensackbar] = useState(false);
+  const [snackbarmessage, setsnackbarmessage] = useState("");
+  const [snackbarseverity, setsnackbarseverity] = useState("success");
 
-  const handlechange=(e)=>{
-    const {name,value}=e.target;
-    setdata(prev=>({...prev,[name]:value}))
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [canGo,setCanGo]=useState(false);
+  const handleRoleSelect = (selectedRole) => {
+    setData((prev) => ({ ...prev, role: selectedRole }));
+  };
 
-   const handlesubmit=(e)=>{
-      e.preventDefault();
-   
-     setclicked({email:true,role:true});
-   
-     const emailValid=/\S+@\S+\.com/.test(data.email);
-   
-     if(!data.email || !data.role || !emailValid){
-       setsnackbarmessage("Enter valid Email and Role");
-       setsnackbarseverity("error");
-       setopensackbar(true);
-       setCanGo(false);
-       return;
-     }
-     dispatch(setEmail(data.email));
-     dispatch(setRole(data.role));
-     setCanGo(true);
-     router.push("/Auth/SignupDetail");
-   }
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const handlegooglesignup=(e)=>{
-      e.preventDefault();
-      if (!data.role) {
-         setsnackbarmessage("Please enter your Role");
-         setsnackbarseverity("error");
-         setopensackbar(true);
-         return;
-      }
-      document.cookie = `oauth_type=signup; path=/; max-age=300`;
-      document.cookie = `oauth_role=${data.role}; path=/; max-age=300`;
-    
-      // 2. Call signIn normally
-      signIn("google", {
-        callbackUrl: "/Auth/Signin",
-      });
+    setClicked({ email: true, role: true });
 
-//   // redirect to backend Google OAuth route
-//   window.location.href = `http://localhost:4321/auth/google/signup?role=${data.role}`;
-//   console.log("loc",window.location.href);
-         dispatch(setRole(data.role));
-         setsnackbarmessage("Successfully signed");
-         setsnackbarseverity("success");
-         setopensackbar(true);
-   }
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
+
+    if (!data.email || !data.role || !emailValid) {
+      setsnackbarmessage("Please enter a valid email address and select your role");
+      setsnackbarseverity("error");
+      setopensackbar(true);
+      return;
+    }
+    dispatch(setEmail(data.email));
+    dispatch(setRole(data.role));
+    router.push("/Auth/SignupDetail");
+  };
+
+  const handleGoogleSignup = (e) => {
+    e.preventDefault();
+    if (!data.role) {
+      setsnackbarmessage("Please select your role first");
+      setsnackbarseverity("error");
+      setopensackbar(true);
+      return;
+    }
+    document.cookie = `oauth_type=signup; path=/; max-age=300`;
+    document.cookie = `oauth_role=${data.role}; path=/; max-age=300`;
+
+    signIn("google", {
+      callbackUrl: "/Auth/Signin",
+    });
+
+    dispatch(setRole(data.role));
+    setsnackbarmessage("Redirecting to Google...");
+    setsnackbarseverity("success");
+    setopensackbar(true);
+  };
 
   return (
-    
- <Layout rightImage="/login.svg">
-      <h2 className="font-[Open_Sans] text-black text-center font-bold text-2xl mt-2 mb-2">
-        Welcome To CarreerBridge!
-      </h2>
-    <form  action="" className="w-full flex flex-col items-center">
-    <div className="flex flex-col items-center w-full gap-4">   
-         <TextInput label="Email" name="email" type="email" value={data.email} required onChange={handlechange} error={clicked.email&&!data.email} helperText={clicked.email&&!data.email?"Please Eneter email":""}/>   
-      <div className="w-full flex flex-col text-black sm:justify-center items-center mt-3">
-        <RadioGroup row defaultValue="jobseeker" name="role"  value={data.role} onChange={handlechange} className="!flex justify-between w-[70%]">
-          <FormControlLabel value="jobseeker" control={<Radio color="primary" />} label="Job Seeker" />
-          <FormControlLabel value="jobprovider" control={<Radio color="primary" />} label="Job Provider" />
-        </RadioGroup>
-        {clicked.role && !data.role && (
-              <Typography
-                variant="body2"
-                sx={{ color: "error.main", fontSize: "13px", mt: 1 }}
+    <Layout rightImage="/login.svg">
+      <div className="w-full flex flex-col items-center">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Create Your Account
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Join CareerBridge and take the next step
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
+          <TextInput
+            label="Email Address"
+            name="email"
+            type="email"
+            value={data.email}
+            required
+            onChange={handleChange}
+            error={clicked.email && !data.email}
+            helperText={clicked.email && !data.email ? "Please enter a valid email" : ""}
+          />
+
+          {/* Modern Interactive Role Selection Cards */}
+          <div className="w-full my-2">
+            <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider">
+              I want to:
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Job Seeker Card */}
+              <div
+                onClick={() => handleRoleSelect("jobseeker")}
+                className={`relative p-3.5 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col items-center text-center ${
+                  data.role === "jobseeker"
+                    ? "border-indigo-600 bg-indigo-50/60 shadow-xs"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
               >
-                Please select a role
-              </Typography>
+                {data.role === "jobseeker" && (
+                  <FaCheckCircle className="absolute top-2.5 right-2.5 text-indigo-600 text-xs" />
+                )}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${
+                  data.role === "jobseeker" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"
+                }`}>
+                  <FaUserGraduate className="text-sm" />
+                </div>
+                <span className="font-semibold text-xs text-slate-800">Find a Job</span>
+                <span className="text-[11px] text-slate-500 mt-0.5">Job Seeker</span>
+              </div>
+
+              {/* Job Provider Card */}
+              <div
+                onClick={() => handleRoleSelect("jobprovider")}
+                className={`relative p-3.5 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col items-center text-center ${
+                  data.role === "jobprovider"
+                    ? "border-indigo-600 bg-indigo-50/60 shadow-xs"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                {data.role === "jobprovider" && (
+                  <FaCheckCircle className="absolute top-2.5 right-2.5 text-indigo-600 text-xs" />
+                )}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${
+                  data.role === "jobprovider" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"
+                }`}>
+                  <FaBuilding className="text-sm" />
+                </div>
+                <span className="font-semibold text-xs text-slate-800">Hire Talent</span>
+                <span className="text-[11px] text-slate-500 mt-0.5">Job Provider</span>
+              </div>
+            </div>
+            {clicked.role && !data.role && (
+              <p className="text-red-500 text-xs mt-1">Please select an account type</p>
             )}
-      </div>
-    </div>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handlesubmit}
-        fullWidth
-        //sx={{ background: "#956fe2", mt: 3, py: 1.5, fontSize: "16px", width: "70%" }}
-        className="!mt-3 !font-[Open_Sans] !w-[70%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
-      >
-        Sign Up
-      </Button>
-      <div className="flex justify-center mt-4 w-[70%]">
+          </div>
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+              borderRadius: "12px",
+              py: 1.5,
+              fontSize: "14px",
+              fontWeight: 600,
+              textTransform: "none",
+              boxShadow: "0 4px 14px 0 rgba(79, 70, 229, 0.3)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
+                boxShadow: "0 6px 20px 0 rgba(79, 70, 229, 0.4)",
+              },
+            }}
+          >
+            Continue
+          </Button>
+        </form>
+
+        <div className="w-full flex items-center my-4">
+          <div className="flex-grow border-t border-slate-200" />
+          <span className="flex-shrink mx-4 text-xs text-slate-400 font-medium uppercase tracking-wider">or</span>
+          <div className="flex-grow border-t border-slate-200" />
+        </div>
+
         <Button
           variant="outlined"
-          startIcon={<img
+          fullWidth
+          startIcon={
+            <img
               src="/google.svg"
               alt="Google Logo"
-              style={{ width: 20, height: 20 }}
-            />}
-          onClick={handlegooglesignup}
-          className="!font-[Open_sans] !rounded-full"
+              style={{ width: 18, height: 18 }}
+            />
+          }
+          onClick={handleGoogleSignup}
           sx={{
             textTransform: "none",
-            borderColor: "#ccc",
-            color: "#555",
-            width: "100%",
+            borderColor: "#e2e8f0",
+            color: "#334155",
+            borderRadius: "12px",
             py: 1.2,
-            fontSize: "15px",
+            fontSize: "14px",
             fontWeight: 500,
+            "&:hover": {
+              borderColor: "#cbd5e1",
+              backgroundColor: "#f8fafc",
+            },
           }}
         >
-          Continue with Google
+          Sign up with Google
         </Button>
-      </div>
 
-     </form>
-      <p className="font-[Open_sans] text-center mt-9  text-[#A8A8A8]">
-        Already have an Account?{" "}
-        <Link href="/Auth/Signin" className="!font-[Open_sans]  underline text-[#956fe2]">
-          signin
-        </Link>
-      </p>
-      <CustomizedSnackbars
-                    open={opensnackbar}
-                    message={snackbarmessage}
-                    severity={snackbarseverity}
-                    onClose={() => setopensackbar(false)}
-                  />
+        <p className="text-center mt-6 text-sm text-slate-600 font-medium">
+          Already have an account?{" "}
+          <Link href="/Auth/Signin" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
+            Sign in
+          </Link>
+        </p>
+
+        <CustomizedSnackbars
+          open={opensnackbar}
+          message={snackbarmessage}
+          severity={snackbarseverity}
+          onClose={() => setopensackbar(false)}
+        />
+      </div>
     </Layout>
   );
 }

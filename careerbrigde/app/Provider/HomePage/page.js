@@ -25,7 +25,7 @@ export default function HomePage() {
   const stateProviderData = useSelector((state) => state.userDetail.provider);
   const dispatch = useDispatch();
   
-  const imagePath = stateData.photo?.url || stateUserdata.photo?.url;
+  const imagePath = stateData?.photo?.url || stateUserdata?.photo?.url;
   const [ jobDetail, setJobDetail] = useState({
     title: "",
     jobType: "Remote",
@@ -447,7 +447,7 @@ export default function HomePage() {
     <>
     <Navbar onProfileClick={()=>setOpenLeftDrawer(true)}/>
 
-    <div className="min-h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] backdrop-blur-sm pt-20 pb-10 px-4 sm:px-6 lg:px-8 font-[Open_sans]">
+    <div className="min-h-screen bg-slate-50 pt-6 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
            <div className="grid grid-cols-1 lg:grid-cols-12 mt-2 gap-6">
               <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
@@ -486,7 +486,7 @@ export default function HomePage() {
                         size="small"
                         startIcon={<FaEdit/>}
                         onClick={handleProfileEditButton}
-                        className="bg-indigo-600 hover:bg-indigo text-white text-xs rounded-full px-6 py-2 transition-all hover:scale-105 shadow-md"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-full px-6 py-2 transition-all hover:scale-105 shadow-md"
                         >  
                         Edit Profile
                         </Button>
@@ -524,7 +524,7 @@ export default function HomePage() {
                         size="small"
                         startIcon={<FaEdit/>}
                         onClick={handleProfileEditButton}
-                        className="bg-indigo-600 hover:bg-indigo text-white text-xs rounded-full px-6 py-2 transition-all hover:scale-105 shadow-md"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-full px-6 py-2 transition-all hover:scale-105 shadow-md"
                         >  
                         Edit Profile
                         </Button>
@@ -534,14 +534,14 @@ export default function HomePage() {
               <div className="lg:col-span-6 space-y-4">
                  <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-xl p-5 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <Typography variant="h5" className="!font-bold !font-[Open_sans] text-gray-800 flex items-center gap-2">
-                      <FaBriefcase className="text-[#a78cdd]"/>
+                      <FaBriefcase className="text-indigo-600"/>
                       Job Feed
                     </Typography>
                     <Button
                     variant="contained"
                     startIcon={<AddIcon/>}
                     onClick={()=>handleJobPostPopup()}
-                    className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                    className="!font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                     >
                     Post New Job
                     </Button>
@@ -571,7 +571,7 @@ export default function HomePage() {
                         expanded={expanded==job._id}
                         onChange={handlesAccordionChange(job._id)}
                         className={`!rounded-3xl !shadow-xl border-0 !overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 
-                            ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
+                            ${expanded === job._id ? "!shadow-xl ring-2 ring-indigo-500/20 z-10" : "hover:shadow-md hover:bg-white"}`}
                           sx={{
                             "&:before": { display: "none" },
                             borderRadius: "24px !important",
@@ -608,7 +608,7 @@ export default function HomePage() {
                                   setJobToEdit(job);
                                   setOpenRightDrawer(true);    
                               }}
-                              className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                              className="!font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                               >
                               Details
                               </Button>
@@ -632,7 +632,7 @@ export default function HomePage() {
               <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
                   <Card className="!rounded-3xl shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md p-6 sticky top-24">
                     <Typography className="text-gray-800 !font-bold !text-lg !mb-4 flex items-center !gap-2">
-                      <FaChevronRight className="text-[#a78cdd]" />
+                      <FaChevronRight className="text-indigo-600" />
                       Hiring Tips
                     </Typography>
                     <ul className="text-sm text-gray-700 space-y-3 list-disc pl-5">
@@ -651,7 +651,7 @@ export default function HomePage() {
 
                   <Card variant="h6" className="!rounded-3xl !shadow-xl border-0 overflow-hidden bg-white/70 backdrop-blur-md !p-6 sticky">
                     <Typography className="!text-gray-800 !font-bold !font-[Open_sans] text-lg !mb-3 flex items-center !gap-2">
-                      <FaUsers className="text-[#a78cdd]" />
+                      <FaUsers className="text-indigo-600" />
                       Quick Stats
                     </Typography>
                     <div className="space-y-2 text-sm">
@@ -833,7 +833,7 @@ export default function HomePage() {
                 <Button
                   variant="contained"
                   onClick={handleJobPosting}
-                  className="w-full !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                  className="w-full !font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                 >
                   {jobToEdit ? "Save Changes" : "Post Job"}
                 </Button>
@@ -849,7 +849,7 @@ export default function HomePage() {
           sx: {
             width: { xs: "100%", sm: 500 },
             borderRadius: "24px 0 0 24px",
-            background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+            background: "linear-gradient(to bottom, #f8fafc, #f1f5f9, #e0e7ff)",
             backdropFilter: "blur(16px)",
             backgroundColor: "rgba(250, 248, 255, 0.8)", 
             borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
@@ -876,7 +876,7 @@ export default function HomePage() {
                    <div>
                      <Typography className="!font-bold !font-[Open_sans]  !text-gray-800">{jobToEdit.provider?.companyName}</Typography>
                      <Typography variant="body2" className="text-gray-600 flex items-center gap-1 !font-[Open_sans]">
-                       <FaUserTie className="text-[#a78cdd]"/>
+                       <FaUserTie className="text-indigo-600"/>
                        {jobToEdit.provider?.user.name}
                      </Typography>
                    </div>
@@ -952,7 +952,7 @@ export default function HomePage() {
                   setOpenRightDrawer(false);
                   handleJobPostPopup(jobToEdit);
                 }}
-                className="w-full !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] !text-white !rounded-full !px-6 !py-2 !text-sm  !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                className="w-full !font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 !text-white !rounded-full !px-6 !py-2 !text-sm  !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
               >
                 Edit This Job
               </Button>
@@ -970,7 +970,7 @@ export default function HomePage() {
           sx: {
             width: { xs: "100%", sm: 500 },
             borderRadius: "0 24px 24px 0",
-            background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+            background: "linear-gradient(to bottom, #f8fafc, #f1f5f9, #e0e7ff)",
             backdropFilter: "blur(16px)",
             backgroundColor: "rgba(250, 248, 255, 0.8)", 
             borderLeft: "1px solid rgba(255, 255, 255, 0.3)",

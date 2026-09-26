@@ -175,23 +175,48 @@ function ProviderForm({
             component={Link}
             href={backPath}
             onClick={handleBack}
-            className="!mr-6 !mt-3 !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+            sx={{
+              borderRadius: "12px",
+              borderColor: "#e2e8f0",
+              color: "#475569",
+              py: 1.2,
+              px: 3,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "14px",
+              "&:hover": {
+                borderColor: "#cbd5e1",
+                backgroundColor: "#f8fafc",
+              },
+            }}
           >
             {backLabel}
           </Button>
         )}
 
-        
-          <Button
-            type="submit"           
-            component={Link}
-            href={finishPath}
-            variant="contained"
-            onClick={handleFinish}
-            className="!mt-3 !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
-          >
-            {finishLabel}
-          </Button>
+        <Button
+          type="submit"           
+          component={Link}
+          href={finishPath}
+          variant="contained"
+          onClick={handleFinish}
+          sx={{
+            background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+            borderRadius: "12px",
+            py: 1.2,
+            px: 4,
+            textTransform: "none",
+            fontWeight: 600,
+            fontSize: "14px",
+            boxShadow: "0 4px 14px 0 rgba(79, 70, 229, 0.3)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
+              boxShadow: "0 6px 20px 0 rgba(79, 70, 229, 0.4)",
+            },
+          }}
+        >
+          {finishLabel}
+        </Button>
         
         {/* {finishPath && (
   <Link to={finishPath}>

@@ -459,7 +459,7 @@ export default function Homepage(){
     return(
         <>
           <Navbar/>
-          <div className="min-h-screen bg-gradient-to-b from-[#faf8ff] via-[#eee7ff] to-[#dcd0ff] pt-20 pb-10 px-4 sm:px-6 lg:px-8 font-[Open_Sans]">
+          <div className="min-h-screen bg-slate-50 pt-6 pb-12 px-4 sm:px-6 lg:px-8">
              <div className="max-w-7xl mx-auto">
                  <motion.div
                   initial={{opacity:0,y:-20}}
@@ -467,10 +467,10 @@ export default function Homepage(){
                   transition={{duration:0.5}}
                   className="flex justify-center mt-4 mb-8"
                  >
-                   <Typography variant="h6" className="!font-bold !font-[Open_sans] flex items-center gap-3 text-center !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-3 !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50">
-                     <FaBriefcase className="text-white" />
-                     Find Your Dream Job
-                   </Typography>
+                   <div className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold text-sm shadow-md shadow-indigo-500/20">
+                     <FaBriefcase className="text-white text-xs" />
+                     <span>Find Your Dream Job</span>
+                   </div>
                  </motion.div>
                   <div className="grid grid-cols-1 lg:grid-cols-12 mt-2 gap-6">
                     <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
@@ -500,11 +500,11 @@ export default function Homepage(){
                                    {stateData.details.name}
                                  </Typography>
                                  <Typography variant="body1" className="!font-[Open_sans] text-gray-600 !mt-3 flex items-center justify-center !gap-2">
-                                   <FaBriefcase className="text-[#a78cdd]" />
+                                   <FaBriefcase className="text-indigo-600" />
                                    {stateData.seekerInfo.experience?.[0]?.title}
                                  </Typography>
                                  <Typography variant="body1" className="!font-[Open_sans] text-gray-600 !mt-3 flex items-center justify-center !gap-2">
-                                   <FaLocationArrow className="text-[#a78cdd]" />
+                                   <FaLocationArrow className="text-indigo-600" />
                                    {stateData.seekerInfo.experience?.[0]?.company}
                                  </Typography>
                                  <Typography variant="body2" className="!font-[Open_sans] text-gray-500 !mt-3">
@@ -520,11 +520,11 @@ export default function Homepage(){
                                    Shams ALi
                                  </Typography>
                                  <Typography variant="body1" className="!font-[Open_sans] text-gray-600 !mt-3 flex items-center justify-center !gap-2">
-                                   <FaBriefcase className="text-[#a78cdd]" />
+                                   <FaBriefcase className="text-indigo-600" />
                                    Web Developer
                                  </Typography>
                                   <Typography variant="body1" className="!font-[Open_sans] text-gray-600 !mt-3 flex items-center justify-center !gap-2">
-                                   <FaLocationArrow className="text-[#a78cdd]" />
+                                   <FaLocationArrow className="text-indigo-600" />
                                     Manager at Evergreen Pvt Ltd.
                                  </Typography>
                                </>
@@ -535,7 +535,7 @@ export default function Homepage(){
                                size="small"
                                startIcon={<FaEdit />}
                                onClick={handleEditBtn}
-                               className="!font-[Open_Sans] bg-indigo-600 hover:bg-indigo text-white text-xs !rounded-full px-6 py-2 !transition-all hover:scale-105 !shadow-md"
+                               className="!font-[Open_Sans] bg-indigo-600 hover:bg-indigo-700 text-white text-xs !rounded-full px-6 py-2 !transition-all hover:scale-105 !shadow-md"
                              >
                                Edit Profile
                              </Button>
@@ -557,11 +557,11 @@ export default function Homepage(){
                                    </Typography>
                                  </div>
                                 <Typography variant="body1" className="!font-[Open_sans] !ml-2 !text-gray-600 !mt-3 flex items-center justify-center !gap-2">
-                                  <FaGraduationCap className="text-[#a78cdd]" />
+                                  <FaGraduationCap className="text-indigo-600" />
                                   {stateData.seekerInfo.headline}
                                 </Typography>
                                 <Typography variant="body1" className="!font-[Open_sans] !text-gray-600 !mt-3 flex items-center justify-center !gap-2">
-                                   <FaSchool className="text-[#a78cdd]" /> 
+                                   <FaSchool className="text-indigo-600" /> 
                                   {stateData.seekerInfo.education?.[0]?.degree} -{" "}
                                   {stateData.seekerInfo.education?.[0]?.year}
                                 </Typography>
@@ -615,7 +615,7 @@ export default function Homepage(){
                                 size="small"
                                 value={jobTypeFilter}
                                 onChange={(e) => setJobTypeFilter(e.target.value)}
-                                className="!bg-[#a78cdd] hover:!bg-[#8e6fc5] !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                className="!bg-indigo-600 hover:!bg-indigo-700 !rounded-full !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                                  sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' },'& .MuiSelect-select': { 
                                        color: 'white !important',
                                        fontFamily: '"Open Sans" !important',
@@ -657,7 +657,7 @@ export default function Homepage(){
                                           variant="h6"
                                           className="!font-bold !font-[Open_sans] text-gray-800 !mb-4 flex items-center gap-2"
                                         >
-                                          <SearchIcon className="!text-[#a78cdd]" /> Search Results
+                                          <SearchIcon className="!text-indigo-600" /> Search Results
                                         </Typography>
                                         <div className="space-y-3">
                                           {jobsToDisplay.length > 0 ? (
@@ -676,7 +676,7 @@ export default function Homepage(){
                                                     expanded={expanded === job._id}
                                                     onChange={handleChange(job._id)}
                                                     className={`!rounded-3xl !shadow-xl border-0 !overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 
-                                                    ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
+                                                    ${expanded === job._id ? "!shadow-xl ring-2 ring-indigo-500/20 z-10" : "hover:shadow-md hover:bg-white"}`}
                                                      sx={{
                                                        "&:before": { display: "none" },
                                                        borderRadius: "24px !important",
@@ -687,7 +687,7 @@ export default function Homepage(){
                                                   >
                                                     <AccordionSummary
                                                       expandIcon={
-                                                        <ExpandMoreIcon className="!text-[#a78cdd]" />
+                                                        <ExpandMoreIcon className="!text-indigo-600" />
                                                       }
                                                       className="bg-transparent hover:bg-white/30 transition-colors rounded-t-3xl"
                                                     >
@@ -696,7 +696,7 @@ export default function Homepage(){
                                                           {job.title}
                                                         </Typography>
                                                         <div className="flex flex-wrap gap-2 text-xs">
-                                                          <span className="font-[Open_sans] bg-[#a78cdd]/20 text-[#7b5fb0] px-3 py-1 rounded-full">
+                                                          <span className="font-[Open_sans] bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
                                                             {job.location}
                                                           </span>
                                                           <span className="font-[Open_sans] bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
@@ -726,7 +726,7 @@ export default function Homepage(){
                                                             variant="contained"
                                                             startIcon={<FaInfoCircle />}
                                                             onClick={() => handleDetailBtn(job)}
-                                                            className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white text-xs !rounded-full px-5 py-1.5 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                                            className="!font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white text-xs !rounded-full px-5 py-1.5 !shadow-sm hover:!shadow-indigo-500/25"
                                                           >
                                                             Details
                                                           </Button>
@@ -776,7 +776,7 @@ export default function Homepage(){
                                                   expanded={expanded === job._id}
                                                   onChange={handleChange(job._id)}
                                                   className={`!rounded-3xl !shadow-xl border-0 !overflow-hidden bg-white/70 !backdrop-blur-md !transition-all duration-300 
-                                                  ${expanded === job._id ? "hover:scale-[1.4] hover:!shadow-2xl z-10" : "hover:bg-white/90"}`}
+                                                  ${expanded === job._id ? "!shadow-xl ring-2 ring-indigo-500/20 z-10" : "hover:shadow-md hover:bg-white"}`}
                                                    sx={{
                                                      "&:before": { display: "none" },
                                                      borderRadius: "24px !important",
@@ -786,7 +786,7 @@ export default function Homepage(){
                                                 >
                                                   <AccordionSummary
                                                     expandIcon={
-                                                      <ExpandMoreIcon className="text-[#a78cdd]" />
+                                                      <ExpandMoreIcon className="text-indigo-600" />
                                                     }
                                                     className="bg-transparent hover:bg-white/30 transition-colors rounded-t-3xl"
                                                   >
@@ -795,7 +795,7 @@ export default function Homepage(){
                                                         {job.title}
                                                       </Typography>
                                                       <div className="flex flex-wrap gap-2 text-xs">
-                                                        <span className="bg-[#a78cdd]/20 text-[#7b5fb0] px-3 py-1 rounded-full">
+                                                        <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
                                                           {job.location}
                                                         </span>
                                                         <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
@@ -825,7 +825,7 @@ export default function Homepage(){
                                                           variant="contained"
                                                           startIcon={<FaInfoCircle />}
                                                           onClick={() => handleDetailBtn(job)}
-                                                          className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                                                          className="!font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                                                         >
                                                           Details
                                                         </Button>
@@ -861,7 +861,7 @@ export default function Homepage(){
                     <div className="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
                         <Card className="!rounded-3xl !shadow-xl border-0 bg-white/70 backdrop-blur-md overflow-hidden p-5">
                           <Typography variant="h5" className="text-gray-800 !font-[Open_sans] text-lg !mb-4 flex items-center gap-2">
-                            <FaBuilding className="text-[#a78cdd]" />
+                            <FaBuilding className="text-indigo-600" />
                             Available Companies
                           </Typography>
                           <div className="space-y-3">
@@ -883,10 +883,10 @@ export default function Homepage(){
                                   key={company._id}
                                   whileHover={{ scale: 1.02 }}
                                   onClick={() => handleCompany(company)}
-                                  className="p-3 bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-[#a78cdd] flex items-center gap-3"
+                                  className="p-3 bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-indigo-400 flex items-center gap-3"
                                 >
                                   <img
-                                    src={company.user.photo?.url}
+                                    src={company.user?.photo?.url || "/iconbridge.jpg"}
                                     alt={company.companyName}
                                     className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
                                   />
@@ -895,7 +895,7 @@ export default function Homepage(){
                                       {company.companyName}
                                     </Typography>
                                     <Typography variant="body2" className="!font-[Open_sans] text-gray-500 flex items-center gap-1">
-                                      <FaUserTie className="text-[#a78cdd]" />
+                                      <FaUserTie className="text-indigo-600" />
                                       {company.user.name}
                                     </Typography>
                                     <Typography variant="body2" className="text-gray-500 flex items-center gap-1">
@@ -922,7 +922,7 @@ export default function Homepage(){
                   sx: {
                     width: { xs: "100%", sm: 500 },
                     borderRadius: "24px 0 0 24px",
-                    background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+                    background: "linear-gradient(to bottom, #f8fafc, #f1f5f9, #e0e7ff)",
                     backdropFilter: "blur(16px)",
                     backgroundColor: "rgba(250, 248, 255, 0.8)",
                     borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
@@ -952,7 +952,7 @@ export default function Homepage(){
                                 {company.companyName}
                               </Typography>
                               <Typography variant="body2" className="!font-[Open_sans] text-gray-600 flex items-center gap-1">
-                                <FaUserTie className="text-[#a78cdd]" />
+                                <FaUserTie className="text-indigo-600" />
                                 {company.user.name}
                               </Typography>
                             </div>
@@ -961,7 +961,7 @@ export default function Homepage(){
                       })()}
                       <div className="flex items-center gap-4 mt-3 text-sm text-gray-700">
                         <span className="flex font-[Open_sans] items-center gap-1 bg-white/60 px-2 py-1 rounded-full">
-                          <FaMapMarkedAlt className="text-[#a78cdd]" />
+                          <FaMapMarkedAlt className="text-indigo-600" />
                           {selectedjob.location}
                         </span>
                         <span className="flex font-[Open_sans] items-center gap-1 bg-white/60 px-2 py-1 rounded-full">
@@ -993,7 +993,7 @@ export default function Homepage(){
         
                       <div>
                         <Typography variant="body1" className="!font-bold !font-[Open_sans] text-gray-800 !mb-2 flex items-center gap-2">
-                          <FaListUl className="text-[#a78cdd]" /> Requirements
+                          <FaListUl className="text-indigo-600" /> Requirements
                         </Typography>
                         <ul className="list-disc list-inside text-lg font-[Open_sans] text-gray-700 space-y-1 pl-2">
                           {selectedjob.requirements.map((req, i) => (
@@ -1006,7 +1006,7 @@ export default function Homepage(){
                         selectedjob.screeningQuestions.length > 0 && (
                           <div>
                             <Typography className="!font-bold !font-[Open_sans] text-gray-800 !mb-2 flex items-center gap-2">
-                              <FaListUl className="text-[#a78cdd]" /> Screening Questions
+                              <FaListUl className="text-indigo-600" /> Screening Questions
                             </Typography>
                             <ul className="list-disc list-inside text-lg font-[Open_sans] text-gray-700 space-y-1 pl-2">
                               {selectedjob.screeningQuestions.map((scq, i) => (
@@ -1018,7 +1018,7 @@ export default function Homepage(){
         
                       <div>
                         <Typography className="!font-bold !font-[Open_sans] text-gray-800 !mb-2 flex items-center gap-2">
-                              <FaFileAlt className="text-[#a78cdd]" />Job Description
+                              <FaFileAlt className="text-indigo-600" />Job Description
                         </Typography>
                         <Typography variant="body1" className="!mt-2 !font-[Open_sans] text-gray-700 leading-relaxed bg-white/60 !p-4 !rounded-xl">
                           {selectedjob.description}
@@ -1031,7 +1031,7 @@ export default function Homepage(){
                         <Button
                           variant="contained"
                           disabled
-                          className="!bg-emerald-600 !pointer-cursor !font-[Open_Sans] !text-white !rounded-full py-3 w-full !transition-all hover:scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                          className="!bg-emerald-600 !pointer-cursor !font-[Open_Sans] !text-white !rounded-full py-3 w-full !transition-all hover:scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                         >
                           Applied
                         </Button>
@@ -1039,7 +1039,7 @@ export default function Homepage(){
                         <Button
                           variant="contained"
                           onClick={handleApply}
-                          className="!font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !py-3 w-full !transition-all hover:scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                          className="!font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white !rounded-full !py-3 w-full !transition-all hover:scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                         >
                           Easy Apply
                         </Button>
@@ -1099,7 +1099,7 @@ export default function Homepage(){
                       </>
                     )}
                   <div className="flex items-center gap-2 border p-3 rounded-xl mt-4 mb-4 cursor-pointer hover:bg-gray-50">
-                    <FaFileUpload className="text-[#a78cdd]" />
+                    <FaFileUpload className="text-indigo-600" />
                     <a
                       href={stateData.seekerInfo?.cv?.url || "#"}
                       target="_blank"
@@ -1112,7 +1112,7 @@ export default function Homepage(){
                   <Button
                     variant="contained"
                     onClick={handleApplySubmit}
-                    className="!w-full !font-[Open_Sans] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !py-3 !transition-all hover:scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+                    className="!w-full !font-[Open_Sans] !bg-indigo-600 hover:!bg-indigo-700 text-white !rounded-full !py-3 !transition-all hover:scale-105 !shadow-sm hover:!shadow-indigo-500/25"
                   >
                     Submit Application
                   </Button>
@@ -1145,7 +1145,7 @@ export default function Homepage(){
                             {selectedCompany.user.name}
                           </Typography>
                           <Typography variant="body1" className="!font-[Open_sans] text-gray-600 flex items-center !gap-1">
-                            <FaUserTie className="text-[#a78cdd]" />
+                            <FaUserTie className="text-indigo-600" />
                             {selectedCompany.positionInCompany}
                           </Typography>
                         </div>
@@ -1160,7 +1160,7 @@ export default function Homepage(){
                             <div
                             key={job._id}
                             onClick={() => handleToSelectJob(job)}
-                            className="p-3 bg-white/60 rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-[#a78cdd] flex justify-between items-center"
+                            className="p-3 bg-white/60 rounded-xl cursor-pointer hover:shadow-md transition-all border border-transparent hover:border-indigo-400 flex justify-between items-center"
                             >
                             <span className="text-sm font-[Open_sans] font-medium text-gray-800">
                               {job.title}
@@ -1185,7 +1185,7 @@ export default function Homepage(){
                   sx: {
                     width: { xs: "100%", sm: 400, md: 500 },
                     borderRadius: "0 24px 24px 0",
-                    background: "linear-gradient(to bottom, #faf8ff, #eee7ff, #dcd0ff)",
+                    background: "linear-gradient(to bottom, #f8fafc, #f1f5f9, #e0e7ff)",
                     backdropFilter: "blur(16px)",
                     backgroundColor: "rgba(250, 248, 255, 0.8)",
                     borderLeft: "1px solid rgba(255, 255, 255, 0.3)",
@@ -1229,10 +1229,10 @@ export default function Homepage(){
                             onChange={(e) => setShowUserUpdateFields(e.target.checked)}
                             sx={{
                               '& .MuiSwitch-switchBase.Mui-checked': {
-                                color: '#a78cdd',
+                                color: '#4f46e5',
                               },
                               '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                backgroundColor: '#a78cdd',
+                                backgroundColor: '#4f46e5',
                               },
                             }}
                           />

@@ -93,12 +93,11 @@ function SeekerForm({
   };
 
 
-  const removeSocial = (id) =>
-    setSocialLinks((prev) => prev.filter((s) => s.id !== id));
+  const removeSocial = (id, index) =>
+    setSocialLinks((prev) => prev.filter((s, idx) => (s._id || s.id || idx) !== (id !== undefined ? id : index)));
 
-
-  const removeexperience = (id) =>
-    setexperiences((ex) => ex.filter((e) => e.id !== id));
+  const removeexperience = (id, index) =>
+    setexperiences((ex) => ex.filter((e, idx) => (e._id || e.id || idx) !== (id !== undefined ? id : index)));
 
   const addeducation = () => {
     setneweducation({
@@ -116,8 +115,8 @@ function SeekerForm({
     ]);
     setneweducation(null);
   };
-  const removeeducation = (id) =>
-    seteducations((ed) => ed.filter((e) => e.id !== id));
+  const removeeducation = (id, index) =>
+    seteducations((ed) => ed.filter((e, idx) => (e._id || e.id || idx) !== (id !== undefined ? id : index)));
 
   const getCvUrl = () => {
   if (!data.cv) return null;
@@ -345,8 +344,8 @@ const handleBackClick = () => {
           </div>
         </div>
         <div className="flex flex-wrap gap-2 !font-[Open_sans] !text-black">
-          {skills.map((s) => (
-            <Chip key={s} label={s} onDelete={() => removeskill(s)} />
+          {skills.map((s, index) => (
+            <Chip key={`skill-${index}-${s}`} label={s} onDelete={() => removeskill(s)} />
           ))}
         </div>
         {clicked.skills && skills.length === 0 && (
@@ -409,25 +408,28 @@ const handleBackClick = () => {
             </div>
           </div>
         )}
-        {experiences.map((exper) => (
-          <div
-            key={exper.id}
-            className="border p-3 rounded bg-white shadow-sm mb-3"
-          >
-            <div className="flex justify-between items-center">
+        {experiences.map((exper, index) => {
+          const itemKey = exper._id ? String(exper._id) : (exper.id ? String(exper.id) : `exp-${index}`);
+          return (
+            <div
+              key={itemKey}
+              className="border border-slate-200 p-3.5 rounded-xl bg-white shadow-xs mb-3 flex justify-between items-center"
+            >
               <div>
-                <Typography className="font-medium !font-[Open_sans] !text-black">{exper.title}</Typography>
-                <Typography variant="body2" color="text.secondary" className="!ont-[Open_sans] !text-black">
+                <Typography className="font-semibold text-slate-900">{exper.title}</Typography>
+                <Typography variant="body2" className="text-slate-500 font-medium">
                   {exper.company}
                 </Typography>
-                <Typography variant="body2" className="!font-[Open_sans] !text-black">{exper.description}</Typography>
+                {exper.description && (
+                  <Typography variant="body2" className="text-slate-600 mt-1">{exper.description}</Typography>
+                )}
               </div>
-              <IconButton onClick={() => removeexperience(exper.id)}>
+              <IconButton onClick={() => removeexperience(exper._id || exper.id, index)} size="small" sx={{ color: "#ef4444" }}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {clicked.experiences && experiences.length === 0 && (
           <Typography color="error">At least one experience is required</Typography>
         )}
@@ -500,25 +502,28 @@ const handleBackClick = () => {
             </div>
           </div>
         )}
-        {educations.map((ed) => (
-          <div
-            key={ed.id}
-            className="border p-3 rounded bg-white shadow-sm mb-3"
-          >
-            <div className="flex justify-between items-center">
+        {educations.map((ed, index) => {
+          const itemKey = ed._id ? String(ed._id) : (ed.id ? String(ed.id) : `edu-${index}`);
+          return (
+            <div
+              key={itemKey}
+              className="border border-slate-200 p-3.5 rounded-xl bg-white shadow-xs mb-3 flex justify-between items-center"
+            >
               <div>
-                <Typography className="font-medium !font-[Open_sans] !text-black">{ed.degree}</Typography>
-                <Typography variant="body2" color="text.secondary" className="!font-[Open_sans] !text-black">
+                <Typography className="font-semibold text-slate-900">{ed.degree}</Typography>
+                <Typography variant="body2" className="text-slate-500 font-medium">
                   {ed.institute} — {ed.year}
                 </Typography>
-                <Typography variant="body2"className="!font-[Open_sans] !text-black" >{ed.description}</Typography>
+                {ed.description && (
+                  <Typography variant="body2" className="text-slate-600 mt-1">{ed.description}</Typography>
+                )}
               </div>
-              <IconButton onClick={() => removeeducation(ed.id)}>
+              <IconButton onClick={() => removeeducation(ed._id || ed.id, index)} size="small" sx={{ color: "#ef4444" }}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {clicked.educations && educations.length === 0 && (
           <Typography color="error">At least one education is required</Typography>
         )}
@@ -567,22 +572,25 @@ const handleBackClick = () => {
           </div>
         )}
 
-        {socialLinks.map((link) => (
-          <div
-            key={link.id}
-            className="border p-3 rounded bg-white shadow-sm mb-3 flex justify-between items-center !font-[Open_sans]"
-          >
-            <div>
-              <Typography className="font-medium !font-[Open_sans] !text-black">{link.label}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                <a href={link.link} target="_blank" className="text-blue-600 underline">{link.link}</a>
-              </Typography>
+        {socialLinks.map((link, index) => {
+          const itemKey = link._id ? String(link._id) : (link.id ? String(link.id) : `social-${index}`);
+          return (
+            <div
+              key={itemKey}
+              className="border border-slate-200 p-3.5 rounded-xl bg-white shadow-xs mb-3 flex justify-between items-center"
+            >
+              <div>
+                <Typography className="font-semibold text-slate-900">{link.label}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <a href={link.link} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">{link.link}</a>
+                </Typography>
+              </div>
+              <IconButton onClick={() => removeSocial(link._id || link.id, index)} size="small" sx={{ color: "#ef4444" }}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
             </div>
-            <IconButton onClick={() => removeSocial(link.id)}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </div>
-        ))}
+          );
+        })}
 
         {clicked.socialLinks && socialLinks.length === 0 && (
           <Typography color="error">
@@ -632,14 +640,27 @@ const handleBackClick = () => {
       </div>
 
       {/* Buttons */}
-      <div className="mt-8 mb-8 flex justify-end ">
+      <div className="mt-8 mb-8 flex flex-col sm:flex-row justify-end gap-3 w-full">
         {backButtonPath && (
           <Button
-            variant="contained"
+            variant="outlined"
             component={Link}
             href={backButtonPath}
             onClick={handleBackClick}
-            className="!mr-6 !mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+            sx={{
+              borderRadius: "12px",
+              borderColor: "#e2e8f0",
+              color: "#475569",
+              py: 1.2,
+              px: 3,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "14px",
+              "&:hover": {
+                borderColor: "#cbd5e1",
+                backgroundColor: "#f8fafc",
+              },
+            }}
           >
             {backButtonLabel}
           </Button>   
@@ -651,7 +672,20 @@ const handleBackClick = () => {
             component={Link}
             href={finishButtonPath}
             onClick={handleFinishClick}
-            className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+            sx={{
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+              borderRadius: "12px",
+              py: 1.2,
+              px: 4,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "14px",
+              boxShadow: "0 4px 14px 0 rgba(79, 70, 229, 0.3)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
+                boxShadow: "0 6px 20px 0 rgba(79, 70, 229, 0.4)",
+              },
+            }}
           >
             {finishButtonLabel}
           </Button>
@@ -659,7 +693,20 @@ const handleBackClick = () => {
           <Button
             variant="contained"
             onClick={handleFinishClick}
-            className="!mt-3 !font-[Open_Sans] !w-[25%] !bg-[#a78cdd] hover:!bg-[#8e6fc5] text-white !rounded-full !px-6 !py-2 !text-sm font-semibold !transition-all duration-300 hover:!scale-105 !shadow-[0_4px_14px_0_rgba(167,140,221,0.39)] hover:!shadow-[#a78cdd]/50"
+            sx={{
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+              borderRadius: "12px",
+              py: 1.2,
+              px: 4,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "14px",
+              boxShadow: "0 4px 14px 0 rgba(79, 70, 229, 0.3)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
+                boxShadow: "0 6px 20px 0 rgba(79, 70, 229, 0.4)",
+              },
+            }}
           >
             {finishButtonLabel}
           </Button>
